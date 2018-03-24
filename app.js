@@ -61,7 +61,6 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
@@ -73,44 +72,14 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// New Foto
+
 // App
 // use MongoDB
 // initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
-var db = require('monk')("mongodb://localhost:27017/FotoBox")
-var fotosdb = db.get("Fotos")
 
-// initialize variables
-var tOutStartSlideShow = 15000;
-var tOutNextSlide = 5000;
-var publicImagesPath = 'fotos';
-var publicThumbnailsPath = 'thumbnails';
-var localImagesPath = 'public/'+publicImagesPath;
-var localThumbnailsPath = 'public/'+publicThumbnailsPath;
-var intervalNextSlide;
-
-// create folders
-if (!fs.existsSync(localImagesPath)) {
-    fs.mkdirSync(localImagesPath);
-}
-if (!fs.existsSync(localThumbnailsPath)) {
-    fs.mkdirSync(localThumbnailsPath);
-}
-
-// initialize
-//var nextSlideTimeout = setTimeout(fotobox.displayNextSlide(files,localImagesPath,tOutNextSlide),tOutNextSlide);
-function init()
-{	
-	clearInterval(intervalNextSlide);
-	var stringsFiles = [];
-	intervalNextSlide = setInterval(fotobox.displayNextSlide,tOutNextSlide,stringsFiles,localImagesPath)
-	fs.readdir(localImagesPath, (err, files) => {
-  		files.forEach(file => {
-  			stringsFiles.push(file);
-    		console.log(file);
-  		});
-	})
-};
-init();
+var fotoBoxController = require('./controllers/fotoBoxController');
+fotoBoxController.init();
 //start watching the folder with chokidar
 /*var watcher = chokidar.watch(localImagesPath, {ignored: /^\./, persistent: true, awaitWriteFinish: {
     stabilityThreshold: 300,

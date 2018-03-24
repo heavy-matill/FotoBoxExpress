@@ -8,4 +8,4 @@ html
 		script(src="/socket.io/socket.io.js")
 		script.
 			var socket = io();  
-			socket.on('change image', function(src){document.getElementById("image").src = "../" + src});
+			socket.on('displayFoto', function(src){document.getElementById("image").src = "../" + src});

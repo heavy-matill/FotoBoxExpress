@@ -1,30 +1,31 @@
 var express = require('express');
 var router = express.Router();
+var app = require('../app');
 var fs = require('fs');
 // use socketApi.js
 var socketApi = require('../socketApi');
 var io = socketApi.io;
+var fotoBoxController = require('../controllers/fotoBoxController');
 
 // GET home page
 router.get('/', function(req, res, next) {
   res.render('fotobox', { title: 'FotoBox Display' });
 });
 
-
-//display function
-function displayImage(file, publicImagesPath){	
+/*//display function
+function displayFoto(file, publicImagesPath){	
 	io.emit('change image', publicImagesPath+'/'+file);
 	console.log('Displaying '+file);
 }
 
 //randomized slideshow
-function displayNextSlide(files,localImagesPath)
+function displayNextFoto(files,publicImagesPath)
 {
 	if(files.length>0)
 	{	
 		//files in array, display in random order and remove from array
 		randomIndex = Math.floor(Math.random() * files.length);
-		displayImage(files[randomIndex]);
+		displayFoto(files[randomIndex]);
 		files.splice(randomIndex,1);
 	}
 }
@@ -32,10 +33,11 @@ function displayNextSlide(files,localImagesPath)
 
 module.exports = {
   router: router,
-  displayNextSlide: function(files,localImagesPath){
-    displayNextSlide(files,localImagesPath);
+  displayNextFoto: function(files,publicImagesPath){
+    displayNextFoto(files,publicImagesPath);
   },
-  displayImage: function(file, publicImagesPath){
-    displayImage(file, publicImagesPath)
+  displayFoto: function(file, publicImagesPath){
+    displayFoto(file, publicImagesPath)
   }
-};
+};*/
+module.exports = {router: router};

@@ -3,15 +3,16 @@ var router = express.Router()
 var path_module = require('path')
 var fs = require('fs')
 var db = require('monk')("mongodb://localhost:27017/FotoBox")
+var settingsController = require('../controllers/settingsController');
 var fotosdb = db.get("Fotos")
 var url = require('url');
 //setup cookies parsing
 
 /* set path variables */
-var publicImagesPath = 'fotos'
-var publicThumbnailsPath = 'thumbnails'
-var localImagesPath = 'public/'+publicImagesPath
-var localThumbnailsPath = 'public/'+publicThumbnailsPath
+var publicImagesPath = settingsController.publicImagesPath
+var publicThumbnailsPath = settingsController.publicThumbnailsPath
+var localImagesPath = settingsController.localImagesPath
+var localThumbnailsPath = settingsController.localThumbnailsPath
 var numberImagesShow = 16
 
 /* initialize variables */
