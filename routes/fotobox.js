@@ -5,10 +5,6 @@ var fs = require('fs');
 var socketApi = require('../socketApi');
 var io = socketApi.io;
 
-// use MongoDB
-// initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
-var db = require('monk')("mongodb://localhost:27017/FotoBox")
-var fotosdb = db.get("Fotos")
 // GET home page
 router.get('/', function(req, res, next) {
   res.render('fotobox', { title: 'FotoBox Display' });

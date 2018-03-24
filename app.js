@@ -74,6 +74,10 @@ app.use(function(err, req, res, next) {
 });
 
 // App
+// use MongoDB
+// initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
+var db = require('monk')("mongodb://localhost:27017/FotoBox")
+var fotosdb = db.get("Fotos")
 
 // initialize variables
 var tOutStartSlideShow = 15000;
