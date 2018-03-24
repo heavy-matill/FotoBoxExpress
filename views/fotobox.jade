@@ -1,0 +1,11 @@
+doctype html
+html
+	head
+		title= title
+		link(rel='stylesheet', href='/stylesheets/fotobox.css')
+	body
+		img(id="image", src="../fotos/IMGP1111.jpg")
+		script(src="/socket.io/socket.io.js")
+		script.
+			var socket = io();  
+			socket.on('change image', function(src){document.getElementById("image").src = "../" + src});

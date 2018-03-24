@@ -1,0 +1,118 @@
+extends layout
+
+block content
+	script(src="/socket.io/socket.io.js")
+	script.
+		var socket = io.connect('http://localhost:8000');
+		/*
+		socket.on('likeConfirmed', function(data) {
+			var _likeCounter = document.getElementById("likeCounter-" + data.imageName);
+			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) + 1).toString() + ")";
+		});
+		socket.on('dislikeConfirmed', function(data) {
+			var _likeCounter = document.getElementById("likeCounter-" + data.imageName);
+			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) - 1).toString() + ")";
+		});
+		*/
+
+		function popup() {
+			popupS.confirm({
+				content: 'Do you want to delete ?',
+				labelOk: 'Yes',
+				labelCancel: 'No',
+				onSubmit: function() {
+					window.location.href = "/users/removeUser/}"
+				},
+				onClose: function() {
+					console.log(':(');
+				}
+			});
+		}
+		function userPopup() {
+			popupS.prompt({
+				title: 'Nutzername anlegen?',
+				content: 'Um Favoriten zu markieren muss ein Nutzername angegeben werden. Falls als Name eine valide E-Mail Adresse gewählt wurde, erhälte diese am Ende des Abends eine E-Mail mit den markierten Fotos.',
+				placeholder: 'Nutzername/E-Mail: ',
+				labelOk: 'Ok',
+				labelCancel: 'Abbruch',
+				onSubmit: function(val) {
+					console.log(':)')
+					//window.location.href = "/users/removeUser/}"
+					if (val)
+						window.location.search += ('&user=' + val)
+				},				
+				onClose: function() {
+					socket.emit('dislike', {user: '#{user}', image: 'IMGP9971'});
+					console.log(':(');
+				}
+			});
+		}
+		function likeImage(element, sessionId, imageName) {
+			socket.emit("requestLike", {"sessionId": sessionId, "imageName": imageName});
+			element.src = "../images/ic_favorite_white_24dp_1x.png";
+			element.setAttribute( "onclick", "dislikeImage(this, '" + sessionId + "', '" + imageName + "');");
+			var _likeCounter = document.getElementById("likeCounter-" + imageName);
+			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) + 1).toString() + ")";
+		}
+		function dislikeImage(element, sessionId, imageName) {
+			socket.emit("requestDislike", {"sessionId": sessionId, "imageName": imageName});
+			element.src = "../images/ic_favorite_border_white_24dp_1x.png";
+			element.setAttribute( "onclick", "likeImage(this, '" + sessionId + "', '" + imageName + "');");
+			var _likeCounter = document.getElementById("likeCounter-" + imageName);
+			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) - 1).toString() + ")";
+		}
+		function updateURLParameter(param, paramVal) {
+			// https://stackoverflow.com/questions/1090948/change-url-parameters/10997390#10997390
+			var url = window.location.search
+			var newAdditionalURL = "";
+			var tempArray = url.split("?");
+			var baseURL = tempArray[0];
+			var additionalURL = tempArray[1];
+			var temp = "";
+			if (additionalURL) {
+				tempArray = additionalURL.split("&");
+				for (var i=0; i<tempArray.length; i++){
+					if(tempArray[i].split('=')[0] != param){
+						newAdditionalURL += temp + tempArray[i];
+						temp = "&";
+					}
+				}
+			}
+			var rows_txt = temp + "" + param + "=" + paramVal;
+			return baseURL + "?" + newAdditionalURL + rows_txt;
+		}
+		function showPageNumber(numberPage){
+			window.location.search=updateURLParameter("numberPage", numberPage);
+		}
+	link(rel='stylesheet', href='/stylesheets/gallery.css')
+	h1= title
+	p Welcome to #{title}
+	input(type="button" value="login mathe" onclick="window.location.search += '&user=mathe23491@gmx.de'")
+	input(type="button" value="alert" onclick="userPopup()")
+	input(type="button" value="mesage" onclick="socketApi.sendNotification")
+	div(class="routing") 
+		- for (var n = 1; n <= numberPagesMax; n++)
+			.div(onclick="javascript:showPageNumber(" + (n - 1) + ")")=n
+	div#image_container
+		each image in imageList
+			div(class="responsive" id="gallery_item_#{number}")
+				div(class="gallery")
+					a(class="image_ref" target="_blank" href="../fotos/#{image.file}.jpg")
+						img(class="image_thumb" src="../thumbnails/#{image.file}_thumb.jpg" alt="#{file}")
+					div(class="props") 
+						div
+							div #{image.file}
+							div #{image.timestamp}
+						div(class="props-left")
+							div 
+								if image.likedBool
+									img(id="likeImg-#{image.file}" src="../images/ic_favorite_white_24dp_2x.png" onclick="dislikeImage(this, '#{sessionId}', '#{image.file}');")
+								else
+									img(id="likeImg-#{image.file}" src="../images/ic_favorite_border_white_24dp_2x.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}');")								
+								div(id="likeCounter-#{image.file}") (#{image.likeCounter}) 
+							a(href="../fotos/#{image.file}.jpg" id="download-#{image.file}") 
+								img(src="../images/ic_get_app_white_24dp_2x.png")
+	div(class="clearfix")
+	div(class="routing") 
+		- for (var n = 1; n <= numberPagesMax; n++)
+			.div(onclick="showPageNumber(" + (n - 1) + ")")=n
