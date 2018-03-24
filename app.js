@@ -29,7 +29,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 //cookieSession
 app.use(session({
   secret: ['my keys']  ,
-  store: new MongoStore({url: 'mongodb://localhost:27017/sessions'})
+  store: new MongoStore({url: 'mongodb://localhost:27017/sessions'}),
+  resave: true,
+  saveUnitialized: true
 }));
 
 // route to other js files
