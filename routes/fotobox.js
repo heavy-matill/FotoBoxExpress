@@ -27,6 +27,14 @@ var publicThumbnailsPath = 'thumbnails'
 var localImagesPath = 'public/'+publicImagesPath
 var localThumbnailsPath = 'public/'+publicThumbnailsPath
 
+// create folders
+if (!fs.existsSync(localImagesPath)) {
+    fs.mkdirSync(localImagesPath);
+}
+if (!fs.existsSync(localThumbnailsPath)) {
+    fs.mkdirSync(localThumbnailsPath);
+}
+
 // initialize
 var files = [];
 var nextSlideTimeout = setTimeout(displayNextSlide,tOutNextSlide);
