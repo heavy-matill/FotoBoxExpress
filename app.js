@@ -6,6 +6,11 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 //var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var fs = require('fs');
+var thumb = require('node-thumbnail').thumb;
+
+var chokidar = require('chokidar');
+var path_module = require('path');
 
 var app = express();
 // Further commands done in "www"
@@ -34,6 +39,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
+
 // route to other js files
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -43,7 +49,7 @@ var cookies = require('./routes/cookies');
 var newfoto = require('./routes/newfoto');
 app.use('/', index);
 app.use('/users', users);
-app.use('/fotobox', fotobox);
+app.use('/fotobox', fotobox.router);
 app.use('/gallery', gallery);
 app.use('/cookies', cookies);
 app.use('/newfoto', newfoto);
@@ -66,4 +72,64 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// App
+
+// initialize variables
+var tOutStartSlideShow = 15000;
+var tOutNextSlide = 5000;
+var publicImagesPath = 'fotos'
+var publicThumbnailsPath = 'thumbnails'
+var localImagesPath = 'public/'+publicImagesPath
+var localThumbnailsPath = 'public/'+publicThumbnailsPath
+
+// create folders
+if (!fs.existsSync(localImagesPath)) {
+    fs.mkdirSync(localImagesPath);
+}
+if (!fs.existsSync(localThumbnailsPath)) {
+    fs.mkdirSync(localThumbnailsPath);
+}
+
+// initialize
+var files = [];
+var nextSlideInterval = setInterval(fotobox.displayNextSlide,tOutNextSlide,files,localImagesPath)
+//var nextSlideTimeout = setTimeout(fotobox.displayNextSlide(files,localImagesPath,tOutNextSlide),tOutNextSlide);
+
+//start watching the folder with chokidar
+/*var watcher = chokidar.watch(localImagesPath, {ignored: /^\./, persistent: true, awaitWriteFinish: {
+    stabilityThreshold: 300,
+    pollInterval: 100,
+    depth: 0
+  }});
+
+watcher
+  	.on('add', function(path){
+  		clearTimeout(nextSlideTimeout);
+  		nextSlideTimeout = setTimeout(displayNextSlide(files,localImagesPath,tOutNextSlide),tOutStartSlideShow);
+		console.log('File', path, 'has been added' )
+		var file = path_module.parse(path).base;  		
+  		displayImage(file, publicImagesPath)
+  		//add to random queue
+  		files.push(file)
+      //get creation timestamp
+      fs.stat(path, function(err, stats){
+        //var mtime = new Date(util.inspect(stats.ctime));        
+        //insert to MongoDB
+        fotosdb.insert({name: file, timestamp: stats.ctime})
+      });
+
+		// thumb(options, callback);
+		thumb({
+  			source: localImagesPath+'/'+file, // could be a filename: dest/path/image.jpg
+  			destination: localThumbnailsPath,
+  			concurrency: 4,
+  			width: 300,
+  			height: 200
+		}, function(files, err, stdout, stderr) {
+  		console.log('Thumbnail for '+file+' generated!');
+		});
+  	});*/
+
+
 module.exports = app;
