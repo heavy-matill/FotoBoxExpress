@@ -40,11 +40,13 @@ var users = require('./routes/users');
 var fotobox = require('./routes/fotobox');
 var gallery = require('./routes/gallery');
 var cookies = require('./routes/cookies');
+var newfoto = require('./routes/newfoto');
 app.use('/', index);
 app.use('/users', users);
 app.use('/fotobox', fotobox);
 app.use('/gallery', gallery);
 app.use('/cookies', cookies);
+app.use('/newfoto', newfoto);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
