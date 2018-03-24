@@ -10,4 +10,4 @@ router.get('/123/', function(req, res, next) {
 });
 
 
-module.exports = router;
+module.exports = {router: router};

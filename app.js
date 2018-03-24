@@ -47,12 +47,12 @@ var fotobox = require('./routes/fotobox');
 var gallery = require('./routes/gallery');
 var cookies = require('./routes/cookies');
 var newfoto = require('./routes/newfoto');
-app.use('/', index);
-app.use('/users', users);
+app.use('/', index.router);
+app.use('/users', users.router);
 app.use('/fotobox', fotobox.router);
-app.use('/gallery', gallery);
-app.use('/cookies', cookies);
-app.use('/newfoto', newfoto);
+app.use('/gallery', gallery.router);
+app.use('/cookies', cookies.router);
+app.use('/newfoto', newfoto.router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -82,10 +82,11 @@ var fotosdb = db.get("Fotos")
 // initialize variables
 var tOutStartSlideShow = 15000;
 var tOutNextSlide = 5000;
-var publicImagesPath = 'fotos'
-var publicThumbnailsPath = 'thumbnails'
-var localImagesPath = 'public/'+publicImagesPath
-var localThumbnailsPath = 'public/'+publicThumbnailsPath
+var publicImagesPath = 'fotos';
+var publicThumbnailsPath = 'thumbnails';
+var localImagesPath = 'public/'+publicImagesPath;
+var localThumbnailsPath = 'public/'+publicThumbnailsPath;
+var intervalNextSlide;
 
 // create folders
 if (!fs.existsSync(localImagesPath)) {
@@ -96,10 +97,20 @@ if (!fs.existsSync(localThumbnailsPath)) {
 }
 
 // initialize
-var files = [];
-var nextSlideInterval = setInterval(fotobox.displayNextSlide,tOutNextSlide,files,localImagesPath)
 //var nextSlideTimeout = setTimeout(fotobox.displayNextSlide(files,localImagesPath,tOutNextSlide),tOutNextSlide);
-
+function init()
+{	
+	clearInterval(intervalNextSlide);
+	var stringsFiles = [];
+	intervalNextSlide = setInterval(fotobox.displayNextSlide,tOutNextSlide,stringsFiles,localImagesPath)
+	fs.readdir(localImagesPath, (err, files) => {
+  		files.forEach(file => {
+  			stringsFiles.push(file);
+    		console.log(file);
+  		});
+	})
+};
+init();
 //start watching the folder with chokidar
 /*var watcher = chokidar.watch(localImagesPath, {ignored: /^\./, persistent: true, awaitWriteFinish: {
     stabilityThreshold: 300,
