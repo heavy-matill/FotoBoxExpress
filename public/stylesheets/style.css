@@ -1,6 +1,17 @@
-body {
-  padding: 50px;
-  font: 20px "Lucida Grande", Helvetica, Arial, sans-serif;
+@media (pointer:fine) 
+{
+	body {
+  		padding: 50px;
+  		font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	}
+}
+
+@media (pointer:coarse) 
+{
+	body {
+  		padding: 50px;
+  		font: 28px "Lucida Grande", Helvetica, Arial, sans-serif;
+	}
 }
 
 a {

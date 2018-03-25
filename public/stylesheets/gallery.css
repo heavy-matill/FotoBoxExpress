@@ -11,9 +11,25 @@ div.gallery:hover {
     border: 1px solid white;
 }
 
-div.gallery img {
+.image_thumb {
     width: 100%;
     height: auto;
+}
+
+@media (pointer:fine) 
+{
+    .imageButton {
+        width: 24px;
+        height: auto;
+    }
+}
+
+@media (pointer:coarse) 
+{
+    .imageButton {
+        width: 100%;
+        height: auto;
+    }
 }
 
 .flex-container {
@@ -36,8 +52,8 @@ div.gallery img {
     display: flex;
     justify-content: flex-end;
 }.div{
-    padding: 2px;
-    margin: 2px;
+    padding: 5px;
+    margin: 5px;
     background-color: #404040;  
     border: 1px solid #777;   
     cursor: pointer;
