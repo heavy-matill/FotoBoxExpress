@@ -16,16 +16,18 @@ div.gallery img {
     height: auto;
 }
 
-div.props div{
-    padding: 2px;
+.flex-container {
+    padding: 0;
+    margin: 0;
+    list-style: none;
     display: flex;
-    justify-content: space-between;
-    text-align: right;
 }
-div.props-left div{
-    padding: 2px;
-    display: flex;
-    justify-content: flex-start;
+.space-between{
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+.align-center{
+    align-items: center;
 }
 * {
     box-sizing: border-box;

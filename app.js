@@ -7,7 +7,6 @@ var MongoStore = require('connect-mongo')(session);
 //var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fs = require('fs');
-var thumb = require('node-thumbnail').thumb;
 
 var chokidar = require('chokidar');
 var path_module = require('path');
@@ -72,48 +71,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-// New Foto
-
-// App
-// use MongoDB
-// initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
-
+//start FotoBox
 var fotoBoxController = require('./controllers/fotoBoxController');
 fotoBoxController.init();
-//start watching the folder with chokidar
-/*var watcher = chokidar.watch(localImagesPath, {ignored: /^\./, persistent: true, awaitWriteFinish: {
-    stabilityThreshold: 300,
-    pollInterval: 100,
-    depth: 0
-  }});
-
-watcher
-  	.on('add', function(path){
-  		clearTimeout(nextSlideTimeout);
-  		nextSlideTimeout = setTimeout(displayNextSlide(files,localImagesPath,tOutNextSlide),tOutStartSlideShow);
-		console.log('File', path, 'has been added' )
-		var file = path_module.parse(path).base;  		
-  		displayImage(file, publicImagesPath)
-  		//add to random queue
-  		files.push(file)
-      //get creation timestamp
-      fs.stat(path, function(err, stats){
-        //var mtime = new Date(util.inspect(stats.ctime));        
-        //insert to MongoDB
-        fotosdb.insert({name: file, timestamp: stats.ctime})
-      });
-
-		// thumb(options, callback);
-		thumb({
-  			source: localImagesPath+'/'+file, // could be a filename: dest/path/image.jpg
-  			destination: localThumbnailsPath,
-  			concurrency: 4,
-  			width: 300,
-  			height: 200
-		}, function(files, err, stdout, stderr) {
-  		console.log('Thumbnail for '+file+' generated!');
-		});
-  	});*/
-
 
 module.exports = app;

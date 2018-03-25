@@ -3,7 +3,8 @@ extends layout
 block content
 	script(src="/socket.io/socket.io.js")
 	script.
-		var socket = io.connect('http://localhost:8000');
+		//var socket = io.connect('http://localhost:8000');		
+		var socket = io.connect(window.location.search.split("/")[0]);
 		/*
 		socket.on('likeConfirmed', function(data) {
 			var _likeCounter = document.getElementById("likeCounter-" + data.imageName);
@@ -49,14 +50,14 @@ block content
 		}
 		function likeImage(element, sessionId, imageName) {
 			socket.emit("requestLike", {"sessionId": sessionId, "imageName": imageName});
-			element.src = "../images/ic_favorite_white_24dp_1x.png";
+			element.src = "../images/ic_favorite_white_24dp_2x.png";
 			element.setAttribute( "onclick", "dislikeImage(this, '" + sessionId + "', '" + imageName + "');");
 			var _likeCounter = document.getElementById("likeCounter-" + imageName);
 			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) + 1).toString() + ")";
 		}
 		function dislikeImage(element, sessionId, imageName) {
 			socket.emit("requestDislike", {"sessionId": sessionId, "imageName": imageName});
-			element.src = "../images/ic_favorite_border_white_24dp_1x.png";
+			element.src = "../images/ic_favorite_border_white_24dp_2x.png";
 			element.setAttribute( "onclick", "likeImage(this, '" + sessionId + "', '" + imageName + "');");
 			var _likeCounter = document.getElementById("likeCounter-" + imageName);
 			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) - 1).toString() + ")";
@@ -99,17 +100,18 @@ block content
 				div(class="gallery")
 					a(class="image_ref" target="_blank" href="../fotos/#{image.file}.jpg")
 						img(class="image_thumb" src="../thumbnails/#{image.file}_thumb.jpg" alt="#{file}")
-					div(class="props") 
-						div
-							div #{image.file}
-							div #{image.timestamp}
-						div(class="props-left")
-							div 
+					ul(class="flex-container space-between")						
+						li #{image.file}
+						li #{image.timestamp}
+					ul(class="flex-container space-between")
+						ul(class="flex-container align-center")
+							li
 								if image.likedBool
 									img(id="likeImg-#{image.file}" src="../images/ic_favorite_white_24dp_2x.png" onclick="dislikeImage(this, '#{sessionId}', '#{image.file}');")
 								else
 									img(id="likeImg-#{image.file}" src="../images/ic_favorite_border_white_24dp_2x.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}');")								
-								div(id="likeCounter-#{image.file}") (#{image.likeCounter}) 
+							li(id="likeCounter-#{image.file}") (#{image.likeCounter}) 
+						li
 							a(href="../fotos/#{image.file}.jpg" id="download-#{image.file}") 
 								img(src="../images/ic_get_app_white_24dp_2x.png")
 	div(class="clearfix")

@@ -61,7 +61,7 @@ router.get('/', function(req, res, next) {
 
 	//get files from mongodb
 	var imageList = [];
-	var imageFilter = {};
+	var imageFilter = {"available": true};
 	var numberImagesMax = 0;
 
 	var imageDataStruct = fotosdb.find(imageFilter, {"skip": numberImagesShow*numberPage, "limit" : numberImagesShow, "sort" : {"name": -1}});

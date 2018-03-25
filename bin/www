@@ -46,6 +46,7 @@ io.on('connection', function(client) {
     //client.emit('dislikeConfirmed', data);
   });
   client.on('requestLike', function(data) {
+    console.log("like requested for " + data.imageName);
     fotosCollection.find({"name": data.imageName + ".jpg"}, function(err, docList){
       if(docList[0].likes.indexOf(data.sessionId) == -1) {
         fotosCollection.update({"name": data.imageName + ".jpg"}, {$push : {"likes": data.sessionId}});
