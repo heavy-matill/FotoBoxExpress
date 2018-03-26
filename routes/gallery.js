@@ -77,7 +77,7 @@ router.get('/', function(req, res, next) {
 			console.log(error, count);
 			numberImagesMax = count;
 			var numberPagesMax = Math.ceil(numberImagesMax / numberImagesShow);
-			res.render("gallery", { "title": "Gallery"+numberPage, "number": numberPage, "imageList": imageList, "thisUrl": thisUrl, "user": user, "sessionId": sessionId, "numberPagesMax": numberPagesMax});
+			res.render("gallery", { "title": settingsController.strEvent, "number": numberPage, "imageList": imageList, "thisUrl": thisUrl, "user": user, "sessionId": sessionId, "numberPagesMax": numberPagesMax});
 		});
 	});
 	//first filter
@@ -129,4 +129,4 @@ router.get('/', function(req, res, next) {
 });*/
 
 
-module.exports = {router: router};
+module.exports = router;

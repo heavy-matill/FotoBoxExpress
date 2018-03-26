@@ -16,7 +16,7 @@ block content
 		});
 		*/
 
-		function popup() {
+		/*function popup() {
 			popupS.confirm({
 				content: 'Do you want to delete ?',
 				labelOk: 'Yes',
@@ -47,7 +47,7 @@ block content
 					console.log(':(');
 				}
 			});
-		}
+		}*/
 		function likeImage(element, sessionId, imageName) {
 			socket.emit("requestLike", {"sessionId": sessionId, "imageName": imageName});
 			element.src = "../images/ic_favorite_white_24dp_2x.png";
@@ -86,14 +86,18 @@ block content
 			window.location.search=updateURLParameter("numberPage", numberPage);
 		}
 	link(rel='stylesheet', href='/stylesheets/gallery.css')
-	h1= title
-	p Welcome to #{title}
+	h1 Gallery
+	h2 #{title}
+	p Page #{number+1}
 	input(type="button" value="login mathe" onclick="window.location.search += '&user=mathe23491@gmx.de'")
 	input(type="button" value="alert" onclick="userPopup()")
 	input(type="button" value="mesage" onclick="socketApi.sendNotification")
 	div(class="routing") 
 		- for (var n = 1; n <= numberPagesMax; n++)
-			.div(onclick="javascript:showPageNumber(" + (n - 1) + ")")=n
+			if(n == number+1)				
+				.div(style="border-style: inset;")=n
+			else
+				.div(onclick="showPageNumber(" + (n - 1) + ")")=n
 	div#image_container
 		each image in imageList
 			div(class="responsive" id="gallery_item_#{number}")
@@ -117,4 +121,7 @@ block content
 	div(class="clearfix")
 	div(class="routing") 
 		- for (var n = 1; n <= numberPagesMax; n++)
-			.div(onclick="showPageNumber(" + (n - 1) + ")")=n
+			if(n == number+1)				
+				.div(style="border-style: inset;")=n
+			else
+				.div(onclick="showPageNumber(" + (n - 1) + ")")=n

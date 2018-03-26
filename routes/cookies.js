@@ -16,4 +16,4 @@ router.get('/test', function(req, res, next) {
 
 	res.send(req.cookies)
 })
-module.exports = {router: router};
+module.exports = router;

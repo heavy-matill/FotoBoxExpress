@@ -9,4 +9,4 @@ router.get('/:folder/:file', function(req, res, next) {
 	res.end('File available: ' + req.params.folder + '/' + req.params.file);
 });
 
-module.exports = {router: router};
+module.exports = router;

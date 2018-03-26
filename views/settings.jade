@@ -1,0 +1,53 @@
+extends layout
+
+block content
+	script.
+		var settingsController = require('../controllers/settingsController');
+		function setFotoBoxSettings(){
+			settingsController.setFotoBoxSettings();
+		}
+	link(rel='stylesheet', href='/stylesheets/settings.css')
+	h1 Settings
+	h2 FotoBox
+	tr
+		td Resume slide show delay
+		td
+			input(name="tOutStartSlideShow" type="text" value="#{tOutStartSlideShow}")
+	tr
+		td Next slide delay
+		td
+			input(name="tOutNextSlide" type="text" value="#{tOutNextSlide}")
+
+	h2 Paths
+	tr
+		td Foto path
+		td
+			input(name="publicImagesPath" type="text" value="#{publicImagesPath}")
+	tr
+		td Thumbnail path
+		td
+			input(name="publicThumbnailsPath" type="text" value="#{publicThumbnailsPath}")
+
+	h2 MongoDB
+	tr
+		td Server
+		td
+			input(name="strMongoServer" type="text" value="#{strMongoServer}")
+	tr
+		td Port
+		td
+			input(name="strMongoPort" type="text" value="#{strMongoPort}")
+	tr
+		td Database
+		td
+			input(name="strMongoDB" type="text" value="#{strMongoDB}")
+
+	h2 Event
+	tr
+		td Name
+		td
+			input(name="strEvent" type="text" value="#{strEvent}")
+	tr
+		td Date
+		td
+			input(name="strEventDate" type="text" value="#{strEventDate}")

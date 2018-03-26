@@ -11,11 +11,21 @@ exports.stringsFiles = [];
 exports.intervalNextFoto;
 
 // initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
-var db = monk("mongodb://localhost:27017/FotoBox");
-var fotosdb = db.get("Fotos");
+
+var db = monk(settingsController.urlMongoDB());
+db.create(settingsController.strMongoCollection(), function(err){
+	console.log(err);
+});
+var fotosdb = db.get(settingsController.strMongoCollection());
 
 
 exports.init = function(){	
+	// initialize MongoDB connection
+	var db = monk(settingsController.urlMongoDB());
+	db.create(settingsController.strMongoCollection(), function(err){
+		console.log(err);
+	});
+	var fotosdb = db.get(settingsController.strMongoCollection());
 	// create folders
 	if (!fs.existsSync(settingsController.localImagesPath)) {
 		fs.mkdirSync(settingsController.localImagesPath);
@@ -40,7 +50,7 @@ function refreshFiles(){
 		}
 		files.forEach( function (file){
 			if(!fotosdb.count({"name": file})){				
-				exports.addNewFoto(file);
+				this.addNewFoto(file);
 			}
 			else{		
 				reactivateFoto(file);

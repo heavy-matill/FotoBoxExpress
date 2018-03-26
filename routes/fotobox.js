@@ -40,4 +40,4 @@ module.exports = {
     displayFoto(file, publicImagesPath)
   }
 };*/
-module.exports = {router: router};
+module.exports = router;

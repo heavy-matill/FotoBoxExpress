@@ -12,6 +12,10 @@ var chokidar = require('chokidar');
 var path_module = require('path');
 
 var app = express();
+
+
+var fotoBoxController = require('./controllers/fotoBoxController');
+var settingsController = require('./controllers/settingsController');
 // Further commands done in "www"
 //var server = require('http').Server(express);
 //var io = require('socket.io')(server);
@@ -33,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //cookieSession
 app.use(session({
   secret: ['my keys']  ,
-  store: new MongoStore({url: 'mongodb://localhost:27017/sessions'}),
+  store: new MongoStore({url: settingsController.urlMongoDB()}),
   resave: true,
   saveUninitialized: true
 }));
@@ -42,16 +46,18 @@ app.use(session({
 // route to other js files
 var index = require('./routes/index');
 var users = require('./routes/users');
+var settings = require('./routes/settings');
 var fotobox = require('./routes/fotobox');
 var gallery = require('./routes/gallery');
 var cookies = require('./routes/cookies');
 var newfoto = require('./routes/newfoto');
-app.use('/', index.router);
-app.use('/users', users.router);
-app.use('/fotobox', fotobox.router);
-app.use('/gallery', gallery.router);
-app.use('/cookies', cookies.router);
-app.use('/newfoto', newfoto.router);
+app.use('/', index);
+app.use('/users', users);
+app.use('/settings', settings);
+app.use('/fotobox', fotobox);
+app.use('/gallery', gallery);
+app.use('/cookies', cookies);
+app.use('/newfoto', newfoto);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -72,7 +78,6 @@ app.use(function(err, req, res, next) {
 });
 
 //start FotoBox
-var fotoBoxController = require('./controllers/fotoBoxController');
 fotoBoxController.init();
 
 module.exports = app;
