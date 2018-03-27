@@ -15,7 +15,7 @@ var app = express();
 
 
 var fotoBoxController = require('./controllers/fotoBoxController');
-var settingsController = require('./controllers/settingsController');
+var nconf = require('nconf');
 // Further commands done in "www"
 //var server = require('http').Server(express);
 //var io = require('socket.io')(server);
@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //cookieSession
 app.use(session({
   secret: ['my keys']  ,
-  store: new MongoStore({url: settingsController.urlMongoDB()}),
+  store: new MongoStore({url: nconf.get("Mongo:URL")}),
   resave: true,
   saveUninitialized: true
 }));
@@ -50,7 +50,7 @@ var settings = require('./routes/settings');
 var fotobox = require('./routes/fotobox');
 var gallery = require('./routes/gallery');
 var cookies = require('./routes/cookies');
-var newfoto = require('./routes/newfoto');
+var newfoto = require('./routes/newfoto');	
 app.use('/', index);
 app.use('/users', users);
 app.use('/settings', settings);

@@ -102,8 +102,8 @@ block content
 		each image in imageList
 			div(class="responsive" id="gallery_item_#{number}")
 				div(class="gallery")
-					a(class="image_ref" target="_blank" href="../fotos/#{image.file}.jpg")
-						img(class="image_thumb" src="../thumbnails/#{image.file}_thumb.jpg" alt="#{file}")
+					a(class="image_ref" target="_blank" href="../fotos/#{strUnique}/#{image.file}.jpg")
+						img(class="image_thumb" src="../thumbnails/#{strUnique}/#{image.file}_thumb.jpg" alt="#{file}")
 					ul(class="flex-container space-between")						
 						li #{image.file}
 						li #{image.timestamp}
@@ -116,7 +116,7 @@ block content
 									img(id="likeImg-#{image.file}" src="../images/ic_favorite_border_white_24dp_2x.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}');" class="imageButton")								
 							li(id="likeCounter-#{image.file}") (#{image.likeCounter}) 
 						li
-							a(href="../fotos/#{image.file}.jpg" id="download-#{image.file}") 
+							a(href="../fotos/#{strUnique}/#{image.file}.jpg" id="download-#{image.file}") 
 								img(src="../images/ic_get_app_white_24dp_2x.png" class="imageButton")
 	div(class="clearfix")
 	div(class="routing") 

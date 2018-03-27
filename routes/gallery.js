@@ -2,18 +2,30 @@ var express = require('express')
 var router = express.Router()
 var path_module = require('path')
 var fs = require('fs')
-var db = require('monk')("mongodb://localhost:27017/FotoBox")
-var settingsController = require('../controllers/settingsController');
-var fotosdb = db.get("Fotos")
+var nconf = require('nconf');
+nconf.argv()
+	.env()
+	.file({ file: 'config.json' });
+var db = require('monk')(nconf.get("Mongo:URL"))
+
+var fotosdb = db.get(nconf.get("Mongo:Collection"))
 var url = require('url');
 //setup cookies parsing
-
+exports.init = function(){
+	var nconf = require('nconf');
+	nconf.argv()
+		.env()
+		.file({ file: 'config.json' });
+	var db = require('monk')(nconf.get("Mongo:URL"))
+	var fotosdb = db.get(nconf.get("Mongo:Collection"))
+}
 /* set path variables */
-var publicImagesPath = settingsController.publicImagesPath
-var publicThumbnailsPath = settingsController.publicThumbnailsPath
-var localImagesPath = settingsController.localImagesPath
-var localThumbnailsPath = settingsController.localThumbnailsPath
+var publicImagesPath = nconf.get("Paths:publicFotos")
+var publicThumbnailsPath = nconf.get("Paths:publicThumbnails")
+var localImagesPath = nconf.get("Paths:localFotos")
+var localThumbnailsPath = nconf.get("Paths:localThumbnails")
 var numberImagesShow = 16
+var strUnique = nconf.get("Paths:strUnique")
 
 /* initialize variables */
 /*var urlMongo = "mongodb://localhost:27017/FotoBox"
@@ -77,7 +89,16 @@ router.get('/', function(req, res, next) {
 			console.log(error, count);
 			numberImagesMax = count;
 			var numberPagesMax = Math.ceil(numberImagesMax / numberImagesShow);
-			res.render("gallery", { "title": settingsController.strEvent, "number": numberPage, "imageList": imageList, "thisUrl": thisUrl, "user": user, "sessionId": sessionId, "numberPagesMax": numberPagesMax});
+			res.render("gallery", 
+				{ 
+					"title": nconf.strEvent, 
+					"number": numberPage, 
+					"imageList": imageList, 
+					"thisUrl": thisUrl, 
+					"user": user, 
+					"sessionId": sessionId, 
+					"numberPagesMax": numberPagesMax, 
+					"strUnique": strUnique});
 		});
 	});
 	//first filter

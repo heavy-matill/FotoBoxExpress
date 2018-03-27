@@ -7,8 +7,13 @@ var app = require('../app');
 var debug = require('debug')('fotoboxexpress:server');
 var http = require('http');
 // MongoDB connection
-var db = require('monk')("mongodb://localhost:27017/FotoBox");
-var fotosCollection = db.get("Fotos");
+var nconf = require('nconf');
+nconf.argv()
+  .env()
+  .file({ file: 'config.json' });
+var db = require('monk')(nconf.get("Mongo:URL"))
+
+var fotosCollection = db.get(nconf.get("Mongo:Collection"))
 
 /**
  * Get port from environment and store in Express.
@@ -37,9 +42,9 @@ io.on('connection', function(client) {
       console.log(data);
   });
   client.on('requestDislike', function(data) {
-    fotosCollection.find({"name": data.imageName + ".jpg"}, function(err, docList){
+    fotosCollection.find({"name": data.imageName + ".JPG"}, function(err, docList){
       if(docList[0].likes.indexOf(data.sessionId) !== -1) {
-        fotosCollection.update({"name": data.imageName + ".jpg"}, {$pull : {"likes": data.sessionId}});
+        fotosCollection.update({"name": data.imageName + ".JPG"}, {$pull : {"likes": data.sessionId}});
       }   
     });
     //console.log(data.sessionId+" disliked "+data.imageName);
@@ -47,9 +52,9 @@ io.on('connection', function(client) {
   });
   client.on('requestLike', function(data) {
     console.log("like requested for " + data.imageName);
-    fotosCollection.find({"name": data.imageName + ".jpg"}, function(err, docList){
+    fotosCollection.find({"name": data.imageName + ".JPG"}, function(err, docList){
       if(docList[0].likes.indexOf(data.sessionId) == -1) {
-        fotosCollection.update({"name": data.imageName + ".jpg"}, {$push : {"likes": data.sessionId}});
+        fotosCollection.update({"name": data.imageName + ".JPG"}, {$push : {"likes": data.sessionId}});
       }   
     });
     //console.log(data.sessionId+" liked "+data.imageName);

@@ -1,7 +1,7 @@
 var assert = require('assert');
 
 var fotoBoxController = require('../controllers/fotoBoxController');
-var settingsController = require('../controllers/settingsController');
+var nconf = require('nconf');
 
 var fs = require('fs');
 

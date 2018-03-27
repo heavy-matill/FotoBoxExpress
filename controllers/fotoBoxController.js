@@ -5,46 +5,53 @@ var fs = require('fs');
 var monk = require('monk')
 var thumb = require('node-thumbnail').thumb;
 
-var settingsController = require('./settingsController');
+var nconf = require('nconf');
+nconf.argv()
+	.env()
+	.file({ file: 'config.json' });
 
 exports.stringsFiles = [];
 exports.intervalNextFoto;
 
 // initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
 
-var db = monk(settingsController.urlMongoDB());
-db.create(settingsController.strMongoCollection(), function(err){
+var db = monk(nconf.get("Mongo:URL"));
+db.create(nconf.get("Mongo:Collection"), function(err){
 	console.log(err);
 });
-var fotosdb = db.get(settingsController.strMongoCollection());
-
+var fotosdb = db.get(nconf.get("Mongo:Collection"));
+fotosdb.createIndex({name: 1, ctime: 1}, {unique:true})
 
 exports.init = function(){	
+	nconf.argv()
+		.env()
+		.file({ file: 'config.json' });
 	// initialize MongoDB connection
-	var db = monk(settingsController.urlMongoDB());
-	db.create(settingsController.strMongoCollection(), function(err){
+	var db = monk(nconf.get("Mongo:URL"));
+	db.create(nconf.get("Mongo:Collection"), function(err){
 		console.log(err);
 	});
-	var fotosdb = db.get(settingsController.strMongoCollection());
+	var fotosdb = db.get(nconf.get("Mongo:Collection"));
+	fotosdb.createIndex({name: 1, ctime: 1}, {unique:true})
 	// create folders
-	if (!fs.existsSync(settingsController.localImagesPath)) {
-		fs.mkdirSync(settingsController.localImagesPath);
+	if (!fs.existsSync(nconf.get("Paths:localFotos"))) {
+		fs.mkdirSync(nconf.get("Paths:localFotos"));
 	}
-	if (!fs.existsSync(settingsController.localThumbnailsPath)) {
-		fs.mkdirSync(settingsController.localThumbnailsPath);
+	if (!fs.existsSync(nconf.get("Paths:localThumbnails"))) {
+		fs.mkdirSync(nconf.get("Paths:localThumbnails"));
 	}
-	clearInterval(settingsController.intervalNextFoto);
+	clearInterval(nconf.intervalNextFoto);
 	
 	refreshFiles();
 
-	exports.intervalNextFoto = setInterval(exports.displayNextFoto,settingsController.tOutNextSlide)
+	exports.intervalNextFoto = setInterval(exports.displayNextFoto,nconf.get("FotoBox:tOutNextSlide"))
 	
 };
 
 function refreshFiles(){	
 	exports.stringsFiles = [];
 	deactivateAllFotos();
-	fs.readdir(settingsController.localImagesPath, function(err, files){
+	fs.readdir(nconf.get("Paths:localFotos"), function(err, files){
 		if (err){
 			return console.error(err);
 		}
@@ -102,19 +109,19 @@ function reactivateFoto(name){
 }
 
 exports.displayFoto = function(file){    
-	io.emit('displayFoto', settingsController.publicImagesPath+'/'+file);
+	io.emit('displayFoto', nconf.get("Paths:publicFotos")+'/'+file);
 	console.log('Displaying '+file);
 };
 
 exports.displayNewFoto = function(file){  
 	exports.displayFoto(file);  
 	clearTimeout(exports.intervalNextFoto);
-	exports.intervalNextFoto = setTimeout(exports.displaySlideShow, settingsController.tOutStartSlideShow);	
+	exports.intervalNextFoto = setTimeout(exports.displaySlideShow, nconf.get("FotoBox:tOutStartSlideShow"));	
 };
 
 exports.displaySlideShow = function(){
 	clearTimeout(exports.intervalNextFoto);
-	exports.intervalNextFoto = setInterval(exports.displayNextFoto,settingsController.tOutNextSlide);	
+	exports.intervalNextFoto = setInterval(exports.displayNextFoto,nconf.get("FotoBox:tOutNextSlide"));	
 };
 
 exports.displayNextFoto = function(){
@@ -124,6 +131,8 @@ exports.displayNextFoto = function(){
 		var randomIndex = Math.floor(Math.random() * exports.stringsFiles.length);
 		exports.displayFoto(exports.stringsFiles[randomIndex]);
 		exports.stringsFiles.splice(randomIndex,1);
+	} else {
+		refreshFiles();
 	}
 };
 
@@ -131,7 +140,7 @@ exports.addNewFoto = function(file){
   	//add to random queue
   	exports.stringsFiles.push(file)
     //get creation timestamp ... to be exported to model
-	fs.stat(settingsController.localImagesPath + '/' + file, function(err, stats){      
+	fs.stat(nconf.get("Paths:localFotos") + '/' + file, function(err, stats){      
 		//insert to MongoDB
 		fotosdb.insert({
 			name: file, 
@@ -146,7 +155,7 @@ exports.addNewFoto = function(file){
 
 exports.downloadNewFoto = function(folder,file){
 	var request = http.get("http://192.168.178.27/DCIM/" + folder + "/" + file, function(res) {
-  		var stream = res.pipe(fs.createWriteStream(settingsController.localImagesPath + '/' + file));
+  		var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + file));
   		stream.on('finish', function () {
 			exports.displayNewFoto(file);
 			exports.addNewFoto(file);
@@ -156,8 +165,8 @@ exports.downloadNewFoto = function(folder,file){
 
 exports.createThumbnail = function(file){
 	thumb({
-		source: settingsController.localImagesPath+'/'+file, // could be a filename: dest/path/image.jpg
-		destination: settingsController.localThumbnailsPath,
+		source: nconf.get("Paths:localFotos")+'/'+file, // could be a filename: dest/path/image.jpg
+		destination: nconf.get("Paths:localThumbnails"),
 		concurrency: 1,
 		width: 300,
 		height: 200

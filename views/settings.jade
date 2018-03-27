@@ -2,52 +2,95 @@ extends layout
 
 block content
 	script.
-		var settingsController = require('../controllers/settingsController');
-		function setFotoBoxSettings(){
-			settingsController.setFotoBoxSettings();
+		var fs = require('fs')
+		var nconf = require('nconf');
+		var fotoBoxController = require('../controllers/fotoBoxController');
+		var gallery = require('../routes/gallery');
+		function saveSettings(){
+			var strUnique = (document.getElementById("strEventDate").value + "_" + document.getElementById("strEvent").value).replace("/[^a-zA-Z0-9\-]+/","_");
+			nconf.set("Event:Name", document.getElementById("strEvent").value)); //.replace("/[^a-zA-Z0-9\-]+/","_")
+			nconf.set("Event:Date", document.getElementById("strEventDate").value);
+
+			nconf.set("FotoBox:tOutStartSlideShow",	document.getElementById("tOutStartSlideShow").value.toInt());
+			nconf.set("FotoBox:tOutNextSlide",	document.getElementById("tOutNextSlide").value.toInt());
+
+			nconf.set("Mongo:Server", document.getElementById("strMongoServer").value);
+			nconf.set("Mongo:Port", document.getElementById("strMongoPort").value);
+			nconf.set("Mongo:DB", document.getElementById("strMongoDB").value);
+			nconf.set("Mongo:Collection", strUnique);
+
+			nconf.set("Paths:localFotos", "fotos/" + strUnique);
+			nconf.set("Paths:localThumbnails", "thumbnails/" + strUnique);
+			nconf.set("Paths:publicFotos", "public/fotos/" + safetring);
+			nconf.set("Paths:publicThumbnails", "public/thumbnails/" + strUnique);
+			nconf.set("Paths:strUnique", strUnique)
+
+			nconf.save(function (err){
+				fs.writeFile('path/to/your/config.json', function (err, data) {
+					console.dir(JSON.parse(data.toString()))
+				});
+			});
+
+			fotoBoxController.init();
+			gallery.init();
 		}
 	link(rel='stylesheet', href='/stylesheets/settings.css')
 	h1 Settings
-	h2 FotoBox
-	tr
-		td Resume slide show delay
-		td
-			input(name="tOutStartSlideShow" type="text" value="#{tOutStartSlideShow}")
-	tr
-		td Next slide delay
-		td
-			input(name="tOutNextSlide" type="text" value="#{tOutNextSlide}")
+	table
+		tr
+			td
+				h2 Event
+		tr
+			td Name
+			td
+				input(name="strEvent" type="text" value="#{strEvent}")
+		tr
+			td Date
+			td
+				input(name="strEventDate" type="text" value="#{strEventDate}")
 
-	h2 Paths
-	tr
-		td Foto path
-		td
-			input(name="publicImagesPath" type="text" value="#{publicImagesPath}")
-	tr
-		td Thumbnail path
-		td
-			input(name="publicThumbnailsPath" type="text" value="#{publicThumbnailsPath}")
+		tr
+			td
+				h2 FotoBox
+		tr
+			td Resume slide show delay
+			td
+				input(name="tOutStartSlideShow" type="text" value="#{tOutStartSlideShow}")
+		tr
+			td Next slide delay
+			td
+				input(name="tOutNextSlide" type="text" value="#{tOutNextSlide}")
 
-	h2 MongoDB
-	tr
-		td Server
-		td
-			input(name="strMongoServer" type="text" value="#{strMongoServer}")
-	tr
-		td Port
-		td
-			input(name="strMongoPort" type="text" value="#{strMongoPort}")
-	tr
-		td Database
-		td
-			input(name="strMongoDB" type="text" value="#{strMongoDB}")
+		tr
+			td
+				h2 Paths
+		tr
+			td Foto path
+			td
+				input(name="publicImagesPath" type="text" value="#{publicImagesPath}")
+		tr
+			td Thumbnail path
+			td
+				input(name="publicThumbnailsPath" type="text" value="#{publicThumbnailsPath}")
 
-	h2 Event
-	tr
-		td Name
-		td
-			input(name="strEvent" type="text" value="#{strEvent}")
-	tr
-		td Date
-		td
-			input(name="strEventDate" type="text" value="#{strEventDate}")
+		tr
+			td
+				h2 MongoDB
+		tr
+			td Server
+			td
+				input(name="strMongoServer" type="text" value="#{strMongoServer}")
+		tr
+			td Port
+			td
+				input(name="strMongoPort" type="text" value="#{strMongoPort}")
+		tr
+			td Database
+			td
+				input(name="strMongoDB" type="text" value="#{strMongoDB}")
+
+		tr
+			td
+			td
+				input(type="button" value="Reset" onclick="location.reload();")
+				input(type="button" value="Save" onclick="saveSettings();")
