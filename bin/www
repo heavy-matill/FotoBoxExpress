@@ -3,14 +3,15 @@
 /**
  * Module dependencies.
  */
-var app = require('../app');
-var debug = require('debug')('fotoboxexpress:server');
-var http = require('http');
-// MongoDB connection
 var nconf = require('nconf');
 nconf.argv()
   .env()
   .file({ file: 'config.json' });
+var app = require('../app');
+var debug = require('debug')('fotoboxexpress:server');
+var http = require('http');
+// MongoDB connection
+
 var db = require('monk')(nconf.get("Mongo:URL"))
 
 var fotosCollection = db.get(nconf.get("Mongo:Collection"))

@@ -3,9 +3,6 @@ var router = express.Router()
 var path_module = require('path')
 var fs = require('fs')
 var nconf = require('nconf');
-nconf.argv()
-	.env()
-	.file({ file: 'config.json' });
 var db = require('monk')(nconf.get("Mongo:URL"))
 
 var fotosdb = db.get(nconf.get("Mongo:Collection"))

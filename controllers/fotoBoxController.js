@@ -6,9 +6,6 @@ var monk = require('monk')
 var thumb = require('node-thumbnail').thumb;
 
 var nconf = require('nconf');
-nconf.argv()
-	.env()
-	.file({ file: 'config.json' });
 
 exports.stringsFiles = [];
 exports.intervalNextFoto;
@@ -23,9 +20,6 @@ var fotosdb = db.get(nconf.get("Mongo:Collection"));
 fotosdb.createIndex({name: 1, ctime: 1}, {unique:true})
 
 exports.init = function(){	
-	nconf.argv()
-		.env()
-		.file({ file: 'config.json' });
 	// initialize MongoDB connection
 	var db = monk(nconf.get("Mongo:URL"));
 	db.create(nconf.get("Mongo:Collection"), function(err){
