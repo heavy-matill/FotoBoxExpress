@@ -4,8 +4,8 @@
     "Date": "2018-03-27"
   },
   "FotoBox": {
-  "tOutStartSlideShow": 15000,
-  "tOutNextSlide": 5000
+    "tOutStartSlideShow": 15000,
+    "tOutNextSlide": 5000
   },
   "Paths": {
     "publicFotos": "fotos/2018-03-27_Geburstag_von_ABC",

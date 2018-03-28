@@ -11,5 +11,4 @@ router.get('/', function(req, res, next) {
 		"Paths": nconf.get("Paths")
 	});
 });
-
 module.exports = router;
