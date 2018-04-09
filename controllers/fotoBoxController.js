@@ -4,8 +4,12 @@ var io = socketApi.io;
 var fs = require('fs');
 var monk = require('monk')
 var thumb = require('node-thumbnail').thumb;
-
+var tq = require('task-queue');
 var nconf = require('nconf');
+
+
+var queue = tq.Queue({capacity: 10, concurrency: 1});
+
 
 exports.stringsFiles = [];
 exports.intervalNextFoto;
@@ -35,11 +39,12 @@ exports.init = function(){
 		fs.mkdirSync(nconf.get("Paths:localThumbnails"));
 	}
 	clearInterval(nconf.intervalNextFoto);
+	queue.stop();
 	
 	refreshFiles();
 
 	exports.intervalNextFoto = setInterval(exports.displayNextFoto,nconf.get("FotoBox:tOutNextSlide"))
-	
+	queue.start();
 };
 
 function refreshFiles(){	
@@ -113,12 +118,14 @@ exports.displayNewFoto = function(file){
 	exports.intervalNextFoto = setTimeout(exports.displaySlideShow, nconf.get("FotoBox:tOutStartSlideShow"));	
 };
 
-exports.displaySlideShow = function(){
+exports.displaySlideShow = function(){	
+	queue.start();
 	clearTimeout(exports.intervalNextFoto);
 	exports.intervalNextFoto = setInterval(exports.displayNextFoto,nconf.get("FotoBox:tOutNextSlide"));	
 };
 
 exports.displayNextFoto = function(){
+	queue.start();
 	if(exports.stringsFiles.length>0)
 	{	
 		//files in array, display in random order and remove from array
@@ -131,6 +138,8 @@ exports.displayNextFoto = function(){
 };
 
 exports.addNewFoto = function(file){
+	//stop generating thumbnails
+	queue.stop();
   	//add to random queue
   	exports.stringsFiles.push(file)
     //get creation timestamp ... to be exported to model
@@ -144,7 +153,7 @@ exports.addNewFoto = function(file){
 		});
 	});
 	console.log('File', file, 'has been added');
-	exports.createThumbnail(file);
+	queue.enqueue(exports.createThumbnail, {args: [file]});
 };
 
 exports.downloadNewFoto = function(folder,file){
