@@ -4,9 +4,7 @@
  * Module dependencies.
  */
 var nconf = require('nconf');
-nconf.argv()
-  .env()
-  .file({ file: 'config.json' });
+nconf.argv().env().file({ file: 'config.json' });
 var app = require('../app');
 var debug = require('debug')('fotoboxexpress:server');
 var http = require('http');
@@ -44,19 +42,19 @@ io.on('connection', function(client) {
       console.log(data);
   });
   client.on('requestDislike', function(data) {
-    fotosCollection.find({"name": data.imageName + ".JPG"}, function(err, docList){
+    fotosCollection.find({"name": data.fileName}, function(err, docList){
       if(docList[0].likes.indexOf(data.sessionId) !== -1) {
-        fotosCollection.update({"name": data.imageName + ".JPG"}, {$pull : {"likes": data.sessionId}});
+        fotosCollection.update({"name": data.fileName}, {$pull : {"likes": data.sessionId}});
       }   
     });
     //console.log(data.sessionId+" disliked "+data.imageName);
     //client.emit('dislikeConfirmed', data);
   });
   client.on('requestLike', function(data) {
-    console.log("like requested for " + data.imageName);
-    fotosCollection.find({"name": data.imageName + ".JPG"}, function(err, docList){
+    //console.log("like requested for " + data.fileName);
+    fotosCollection.find({"name": data.fileName}, function(err, docList){
       if(docList[0].likes.indexOf(data.sessionId) == -1) {
-        fotosCollection.update({"name": data.imageName + ".JPG"}, {$push : {"likes": data.sessionId}});
+        fotosCollection.update({"name": data.fileName}, {$push : {"likes": data.sessionId}});
       }   
     });
     //console.log(data.sessionId+" liked "+data.imageName);
@@ -64,6 +62,8 @@ io.on('connection', function(client) {
   });
   client.on('saveSettings', function(data) {
       settingsController.saveSettings(data)
+      console.log(data);
+      nconf.argv().env().file({ file: 'config.json' });
   });
 });
 

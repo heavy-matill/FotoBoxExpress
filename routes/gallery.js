@@ -10,11 +10,10 @@ var url = require('url');
 //setup cookies parsing
 exports.init = function(){
 	var nconf = require('nconf');
-	nconf.argv()
-		.env()
-		.file({ file: 'config.json' });
-	var db = require('monk')(nconf.get("Mongo:URL"))
-	var fotosdb = db.get(nconf.get("Mongo:Collection"))
+	nconf.argv().env().file({ file: 'config.json' });
+	var db = require('monk')(nconf.get("Mongo:URL"));
+	var fotosdb = db.get(nconf.get("Mongo:Collection"));
+	console.log(nconf.get("Mongo:Collection"));
 }
 /* set path variables */
 var publicImagesPath = nconf.get("Paths:publicFotos")
@@ -75,8 +74,10 @@ router.get('/', function(req, res, next) {
 
 	var imageDataStruct = fotosdb.find(imageFilter, {"skip": numberImagesShow*numberPage, "limit" : numberImagesShow, "sort" : {"name": -1}});
 	imageDataStruct.each((entry, {close, pause, resume}) => {
+		var nameParts = entry.name.split(".");
 		imageList.push({
-			file: entry.name.replace(/\.[^/.]+$/, ""), 
+			file: nameParts[0], 
+			extension: nameParts[1],
 			timestamp:  entry.timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''),      // replace T with a space
 			likedBool: entry.likes.indexOf(sessionId) > -1,
 			likeCounter: entry.likes.length

@@ -24,6 +24,7 @@ var fotosdb = db.get(nconf.get("Mongo:Collection"));
 fotosdb.createIndex({name: 1, ctime: 1}, {unique:true})
 
 exports.init = function(){	
+	console.log(nconf.get("Mongo:Collection"));
 	// initialize MongoDB connection
 	var db = monk(nconf.get("Mongo:URL"));
 	db.create(nconf.get("Mongo:Collection"), function(err){

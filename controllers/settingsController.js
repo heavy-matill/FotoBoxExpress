@@ -1,6 +1,7 @@
 var nconf = require('nconf');
 var fotoBoxController = require('./fotoBoxController');
-var gallery = require('../routes/gallery');
+var gallery = require('../routes/gallery');  
+var fs    = require('fs');
 
 exports.strEvent = "Geburtstag_von_xyz"
 exports.strEventDate = "2018-03-26"
@@ -43,10 +44,11 @@ exports.setMongoSettings = function(strMongoServer, strMongoPort, strMongoDB){
 };
 
 exports.saveSettings = function(data){
-	nconf.overrides(data);
-
+	nconf.set("Event", data.Event);
+	nconf.set("FotoBox", data.FotoBox);
+	nconf.set("Mongo", data.Mongo);
+	nconf.set("Paths", data.Paths);
 	nconf.save();
-
 	fotoBoxController.init();
 	//gallery.init();
 }

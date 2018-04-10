@@ -48,18 +48,18 @@ block content
 				}
 			});
 		}*/
-		function likeImage(element, sessionId, imageName) {
-			socket.emit("requestLike", {"sessionId": sessionId, "imageName": imageName});
+		function likeImage(element, sessionId, fileName) {
+			socket.emit("requestLike", {"sessionId": sessionId, "fileName": fileName});
 			element.src = "../images/ic_favorite_white_24dp_2x.png";
-			element.setAttribute( "onclick", "dislikeImage(this, '" + sessionId + "', '" + imageName + "');");
-			var _likeCounter = document.getElementById("likeCounter-" + imageName);
+			element.setAttribute( "onclick", "dislikeImage(this, '" + sessionId + "', '" + fileName + "');");
+			var _likeCounter = document.getElementById("likeCounter-" + fileName.split(".")[0]);
 			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) + 1).toString() + ")";
 		}
-		function dislikeImage(element, sessionId, imageName) {
-			socket.emit("requestDislike", {"sessionId": sessionId, "imageName": imageName});
+		function dislikeImage(element, sessionId, fileName) {
+			socket.emit("requestDislike", {"sessionId": sessionId, "fileName": fileName});
 			element.src = "../images/ic_favorite_border_white_24dp_2x.png";
-			element.setAttribute( "onclick", "likeImage(this, '" + sessionId + "', '" + imageName + "');");
-			var _likeCounter = document.getElementById("likeCounter-" + imageName);
+			element.setAttribute( "onclick", "likeImage(this, '" + sessionId + "', '" + fileName + "');");
+			var _likeCounter = document.getElementById("likeCounter-" + fileName.split(".")[0]);
 			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) - 1).toString() + ")";
 		}
 		function updateURLParameter(param, paramVal) {
@@ -102,8 +102,8 @@ block content
 		each image in imageList
 			div(class="responsive" id="gallery_item_#{number}")
 				div(class="gallery")
-					a(class="image_ref" target="_blank" href="../fotos/#{strUnique}/#{image.file}.jpg")
-						img(class="image_thumb" src="../thumbnails/#{strUnique}/#{image.file}_thumb.jpg" alt="#{file}")
+					a(class="image_ref" target="_blank" href="../fotos/#{strUnique}/#{image.file}.#{image.extension}")
+						img(class="image_thumb" src="../thumbnails/#{strUnique}/#{image.file}_thumb.#{image.extension}" alt="#{image.file}")
 					ul(class="flex-container space-between")						
 						li #{image.file}
 						li #{image.timestamp}
@@ -111,12 +111,12 @@ block content
 						ul(class="flex-container align-center")
 							li
 								if image.likedBool
-									img(id="likeImg-#{image.file}" src="../images/ic_favorite_white_24dp_2x.png" onclick="dislikeImage(this, '#{sessionId}', '#{image.file}');" class="imageButton")
+									img(id="likeImg-#{image.file}" src="../images/ic_favorite_white_24dp_2x.png" onclick="dislikeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")
 								else
-									img(id="likeImg-#{image.file}" src="../images/ic_favorite_border_white_24dp_2x.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}');" class="imageButton")								
+									img(id="likeImg-#{image.file}" src="../images/ic_favorite_border_white_24dp_2x.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")								
 							li(id="likeCounter-#{image.file}") (#{image.likeCounter}) 
 						li
-							a(href="../fotos/#{strUnique}/#{image.file}.jpg" id="download-#{image.file}") 
+							a(href="../fotos/#{strUnique}/#{image.file}.#{image.extension}" id="download-#{image.file}") 
 								img(src="../images/ic_get_app_white_24dp_2x.png" class="imageButton")
 	div(class="clearfix")
 	div(class="routing") 

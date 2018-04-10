@@ -7,7 +7,7 @@ block content
 		var socket = io.connect(window.location.search.split("/")[0]);
 
 		function saveSettings(){
-			var strUnique = (document.getElementById("Event-Date").value + "_" + document.getElementById("Event-Name").value).replace("/[^a-zA-Z0-9\-]+/","_");
+			var strUnique = (document.getElementById("Event-Date").value + "_" + document.getElementById("Event-Name").value).replace(/[^a-zA-Z0-9\-]+/g,"_");
 			
 			socket.emit("saveSettings", {
 				"Event": {
@@ -20,12 +20,13 @@ block content
 					"Server": document.getElementById("Mongo-Server").value,
 					"Port": document.getElementById("Mongo-Port").value,
 					"DB": document.getElementById("Mongo-DB").value,
-					"Collection": strUnique},
+					"Collection": strUnique,
+					"URL": "mongodb://" + document.getElementById("Mongo-Server").value + ":" + document.getElementById("Mongo-Port").value + "/" + document.getElementById("Mongo-DB").value},
 				"Paths": {
-					"localFotos": "fotos/" + strUnique,
-					"localThumbnails": "thumbnails/" + strUnique,
-					"publicFotos": "public/fotos/" + strUnique,
-					"publicThumbnails": "public/thumbnails/" + strUnique,
+					"localFotos": "public/fotos/" + strUnique,
+					"localThumbnails": "public/thumbnails/" + strUnique,
+					"publicFotos": "fotos/" + strUnique,
+					"publicThumbnails": "thumbnails/" + strUnique,
 					"strUnique": strUnique}
 				}
 			);
