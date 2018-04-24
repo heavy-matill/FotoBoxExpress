@@ -7,6 +7,9 @@
     "tOutStartSlideShow": 15000,
     "tOutNextSlide": 5000
   },
+  "Source": {
+    "IP": "192.168.178.27"
+  },
   "Paths": {
     "publicFotos": "fotos/2018-03-27_Geburstag_von_ABC",
     "publicThumbnails": "thumbnails/2018-03-27_Geburstag_von_ABC",

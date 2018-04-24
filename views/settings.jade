@@ -16,6 +16,8 @@ block content
 				"FotoBox": {
 					"tOutStartSlideShow": document.getElementById("FotoBox-tOutStartSlideShow").value,
 					"tOutNextSlide": document.getElementById("FotoBox-tOutNextSlide").value},
+				"Source": {
+					"IP": document.getElementById("Source-IP").value},
 				"Mongo": {
 					"Server": document.getElementById("Mongo-Server").value,
 					"Port": document.getElementById("Mongo-Port").value,
@@ -56,6 +58,14 @@ block content
 			td Next slide delay
 			td
 				input(id="FotoBox-tOutNextSlide" type="text" value="#{FotoBox.tOutNextSlide}")
+
+		tr
+			td
+				h2 Source
+		tr
+			td Camera IP
+			td
+				input(id="Source-IP" type="text" value="#{Source.IP}")
 
 		tr
 			td
