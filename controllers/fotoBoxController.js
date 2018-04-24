@@ -157,13 +157,19 @@ exports.addNewFoto = function(file){
 };
 
 exports.downloadNewFoto = function(folder,file){
-	if(folder=="testLocal"){
-		//for testing "download" the local test image
-		var url = "http://localhost:8000";
-		folder = "public/images";
-		file = "IMGP0000.JPG";
-	}
-	else{
+	if(folder=="test"){
+		if(file=="local"){
+			//for testing "download" the local test image
+			var url = "http://localhost:8000";
+			folder = "public/images";
+			file = "IMGP0000.JPG";
+		} else {			
+			//for testing download random image from web https://upload.wikimedia.org/wikipedia/commons/d/db/Patern_test.jpg	 		
+			var url = "https://upload.wikimedia.org";
+			folder = "wikipedia/commons/d/db";
+			file = "Patern_test.jpg";
+		}
+	} else {
 		var url = "http://192.168.178.27/DCIM";
 	}	
 	var request = http.get(url + "/" + folder + "/" + file, function(res) {
