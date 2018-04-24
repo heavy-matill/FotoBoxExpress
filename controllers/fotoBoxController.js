@@ -38,7 +38,7 @@ exports.init = function(){
 	if (!fs.existsSync(nconf.get("Paths:localThumbnails"))) {
 		fs.mkdirSync(nconf.get("Paths:localThumbnails"));
 	}
-	clearInterval(nconf.intervalNextFoto);
+	clearInterval(exports.intervalNextFoto);
 	queue.stop();
 	
 	refreshFiles();
