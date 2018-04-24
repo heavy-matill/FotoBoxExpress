@@ -157,7 +157,16 @@ exports.addNewFoto = function(file){
 };
 
 exports.downloadNewFoto = function(folder,file){
-	var request = http.get("http://192.168.178.27/DCIM/" + folder + "/" + file, function(res) {
+	if(folder=="testLocal"){
+		//for testing "download" the local test image
+		var url = "http://localhost:8000";
+		folder = "public/images";
+		file = "IMGP0000.JPG";
+	}
+	else{
+		var url = "http://192.168.178.27/DCIM";
+	}	
+	var request = http.get(url + "/" + folder + "/" + file, function(res) {
   		var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + file));
   		stream.on('finish', function () {
 			exports.displayNewFoto(file);
