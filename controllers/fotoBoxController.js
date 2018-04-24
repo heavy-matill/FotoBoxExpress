@@ -6,6 +6,7 @@ var monk = require('monk')
 var thumb = require('node-thumbnail').thumb;
 var tq = require('task-queue');
 var nconf = require('nconf');
+var sharp = require('sharp');
 
 
 var queue = tq.Queue({capacity: 10, concurrency: 1});
@@ -40,13 +41,21 @@ exports.init = function(){
 		fs.mkdirSync(nconf.get("Paths:localThumbnails"));
 	}
 	clearInterval(nconf.intervalNextFoto);
-	queue.stop();
+	this.stopQueue();
 	
 	refreshFiles();
 
 	exports.intervalNextFoto = setInterval(exports.displayNextFoto,nconf.get("FotoBox:tOutNextSlide"))
+	this.startQueue();
+}
+
+exports.stopQueue = function(){
+	queue.stop();
+};
+exports.startQueue = function(){
 	queue.start();
 };
+
 
 function refreshFiles(){	
 	exports.stringsFiles = [];
@@ -84,14 +93,14 @@ function refreshDatabase(){
 			reactivateFoto(entry.name);
 		}
 	});
-}
+};
 
 function deactivateFoto(name){
 	fotosdb.update(
 		{ "name":name },
 		{ $set: {"available": false }});
 	console.log("deactivated " + name);
-}
+};
 
 function deactivateAllFotos(){
 	fotosdb.update(
@@ -99,14 +108,14 @@ function deactivateAllFotos(){
 		{ $set: {"available": false }},
 		{ multi: true});
 	console.log("deactivated all");
-}
+};
 
 function reactivateFoto(name){
 	fotosdb.update(
 		{ "name": name },
 		{ $set: {"available": true }});
 	console.log("reactivated " + name);
-}
+};
 
 exports.displayFoto = function(file){    
 	io.emit('displayFoto', nconf.get("Paths:publicFotos")+'/'+file);
@@ -120,13 +129,13 @@ exports.displayNewFoto = function(file){
 };
 
 exports.displaySlideShow = function(){	
-	queue.start();
+	exports.startQueue();
 	clearTimeout(exports.intervalNextFoto);
 	exports.intervalNextFoto = setInterval(exports.displayNextFoto,nconf.get("FotoBox:tOutNextSlide"));	
 };
 
-exports.displayNextFoto = function(){
-	queue.start();
+exports.displayNextFoto = function(){	
+	exports.startQueue();
 	if(exports.stringsFiles.length>0)
 	{	
 		//files in array, display in random order and remove from array
@@ -140,7 +149,7 @@ exports.displayNextFoto = function(){
 
 exports.addNewFoto = function(file){
 	//stop generating thumbnails
-	queue.stop();
+	exports.stopQueue();
   	//add to random queue
   	exports.stringsFiles.push(file)
     //get creation timestamp ... to be exported to model
@@ -168,7 +177,7 @@ exports.downloadNewFoto = function(folder,file){
 };
 
 exports.createThumbnail = function(file){
-	thumb({
+	/*thumb({
 		source: nconf.get("Paths:localFotos")+'/'+file, // could be a filename: dest/path/image.jpg
 		destination: nconf.get("Paths:localThumbnails"),
 		concurrency: 1,
@@ -176,6 +185,7 @@ exports.createThumbnail = function(file){
 		height: 200
 	}, function(files, err, stdout, stderr) {
 		console.log('Thumbnail for '+file+' generated!');
-	});
+	});*/
+	sharp(nconf.get("Paths:localFotos")+'/'+file).resize(300).toFile(nconf.get("Paths:localThumbnails")+'/'+file);
 };
 

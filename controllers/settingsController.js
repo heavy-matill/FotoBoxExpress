@@ -12,6 +12,13 @@ exports.setEventSettings = function(strEvent, strEventDate){
 	this.strEvent = strEvent;
 	this.strEventDate = strEventDate;
 };
+exports.setEventName = function(strEventName){
+	nconf.set("Event:Name", strEventName);
+	var strEventDate = nconf.get("Event:Date");
+	console.log(strEventName, strEventDate);
+	var strUnique = (strEventDate + "_" + strEventName).replace(/[^a-zA-Z0-9\-]+/g,"_");
+	console.log(strUnique);
+}
 
 exports.tOutStartSlideShow = 15000;
 exports.tOutNextSlide = 5000;
@@ -48,7 +55,10 @@ exports.saveSettings = function(data){
 	nconf.set("FotoBox", data.FotoBox);
 	nconf.set("Mongo", data.Mongo);
 	nconf.set("Paths", data.Paths);
+	exports.saveInit();
+};
+exports.saveInit = function(){
 	nconf.save();
 	fotoBoxController.init();
 	//gallery.init();
-}
+};

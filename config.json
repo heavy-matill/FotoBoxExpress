@@ -1,24 +1,24 @@
 {
   "Event": {
-    "Name": "Some Partiieie 123",
-    "Date": "52463q46"
+    "Name": "Some Pas",
+    "Date": "2018-04-23"
   },
   "FotoBox": {
     "tOutStartSlideShow": "15000",
-    "tOutNextSlide": "1000"
+    "tOutNextSlide": "5000"
   },
   "Paths": {
-    "localFotos": "public/fotos/52463q46_Some_Partiieie_123",
-    "localThumbnails": "public/thumbnails/52463q46_Some_Partiieie_123",
-    "publicFotos": "fotos/52463q46_Some_Partiieie_123",
-    "publicThumbnails": "thumbnails/52463q46_Some_Partiieie_123",
-    "strUnique": "52463q46_Some_Partiieie_123"
+    "localFotos": "public/fotos/52463q46_Some_Pas",
+    "localThumbnails": "public/thumbnails/52463q46_Some_Pas",
+    "publicFotos": "fotos/52463q46_Some_Pas",
+    "publicThumbnails": "thumbnails/52463q46_Some_Pas",
+    "strUnique": "52463q46_Some_Pas"
   },
   "Mongo": {
     "Server": "localhost",
     "Port": "27017",
     "DB": "FotoBox",
-    "Collection": "52463q46_Some_Partiieie_123",
+    "Collection": "52463q46_Some_Pas",
     "URL": "mongodb://localhost:27017/FotoBox"
   }
 }
