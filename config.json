@@ -7,6 +7,9 @@
     "tOutStartSlideShow": "15000",
     "tOutNextSlide": "5000"
   },
+  "Source": {
+    "IP": "192.168.178.27"
+  },
   "Paths": {
     "localFotos": "public/fotos/52463q46_Some_Pas",
     "localThumbnails": "public/thumbnails/52463q46_Some_Pas",

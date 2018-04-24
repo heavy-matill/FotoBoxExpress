@@ -40,7 +40,8 @@ exports.init = function(){
 	if (!fs.existsSync(nconf.get("Paths:localThumbnails"))) {
 		fs.mkdirSync(nconf.get("Paths:localThumbnails"));
 	}
-	clearInterval(nconf.intervalNextFoto);
+	
+	clearInterval(exports.intervalNextFoto);
 	this.stopQueue();
 	
 	refreshFiles();
@@ -167,7 +168,22 @@ exports.addNewFoto = function(file){
 };
 
 exports.downloadNewFoto = function(folder,file){
-	var request = http.get("http://192.168.178.27/DCIM/" + folder + "/" + file, function(res) {
+	if(folder=="test"){
+		if(file=="local"){
+			//for testing "download" the local test image
+			var url = "http://localhost:8000";
+			folder = "public/images";
+			file = "IMGP0000.JPG";
+		} else {			
+			//for testing download random image from web https://upload.wikimedia.org/wikipedia/commons/d/db/Patern_test.jpg	 		
+			var url = "https://upload.wikimedia.org";
+			folder = "wikipedia/commons/d/db";
+			file = "Patern_test.jpg";
+		}
+	} else {
+		var url = "http://" + nconf.get("Source:IP") + "/DCIM";
+	}	
+	var request = http.get(url + "/" + folder + "/" + file, function(res) {
   		var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + file));
   		stream.on('finish', function () {
 			exports.displayNewFoto(file);

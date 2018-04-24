@@ -5,6 +5,13 @@ var fs    = require('fs');
 
 exports.strEvent = "Geburtstag_von_xyz"
 exports.strEventDate = "2018-03-26"
+
+exports.setSourceIP = function(strIP, bSave=true){
+	nconf.set("Source:IP", strIP);
+	if(bSave)
+		exports.saveSettings();
+};
+
 exports.strMongoCollection = function(){
 	return this.strEventDate + " " + this.strEvent;
 };
