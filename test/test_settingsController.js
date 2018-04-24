@@ -11,4 +11,3 @@ describe('change Settings', function() {
     });
 });
 
-server.close();

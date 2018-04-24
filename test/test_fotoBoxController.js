@@ -1,7 +1,9 @@
-/*var assert = require('assert');
+var server = require('../bin/www');
+var assert = require('assert');
+var request = require('request');
+
 
 var fotoBoxController = require('../controllers/fotoBoxController');
-var settingsController = require('../controllers/settingsController');
 var nconf = require('nconf');
 
 var fs = require('fs');
@@ -11,7 +13,11 @@ describe('set Ev', function(){
 });
 
 describe('addNewFoto', function(){	
-	fotoBoxController.addNewFoto("IMGP0999.JPG");
+  request('http://localhost:8000/newfoto/test/local', function (error, response, body) {
+    console.log('error:', error); // Print the error if one occurred
+    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    console.log('body:', body); // Print the HTML for the Google homepage.
+  });
 });
 
 describe('Array', function() {
@@ -20,4 +26,5 @@ describe('Array', function() {
       assert.equal([1,2,3].indexOf(4), -1);
     });
   });
-});*/
+});
+
