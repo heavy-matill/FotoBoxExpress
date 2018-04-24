@@ -40,7 +40,7 @@ exports.init = function(){
 	if (!fs.existsSync(nconf.get("Paths:localThumbnails"))) {
 		fs.mkdirSync(nconf.get("Paths:localThumbnails"));
 	}
-	
+
 	clearInterval(exports.intervalNextFoto);
 	this.stopQueue();
 	
@@ -172,7 +172,7 @@ exports.downloadNewFoto = function(folder,file){
 		if(file=="local"){
 			//for testing "download" the local test image
 			var url = "http://localhost:8000";
-			folder = "public/images";
+			folder = "images";
 			file = "IMGP0000.JPG";
 		} else {			
 			//for testing download random image from web https://upload.wikimedia.org/wikipedia/commons/d/db/Patern_test.jpg	 		
