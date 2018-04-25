@@ -12,20 +12,64 @@ exports.setSourceIP = function(strIP, bSave=true){
 		exports.saveSettings();
 };
 
-exports.strMongoCollection = function(){
-	return this.strEventDate + " " + this.strEvent;
-};
 exports.setEventSettings = function(strEvent, strEventDate){
 	this.strEvent = strEvent;
 	this.strEventDate = strEventDate;
 };
-exports.setEventName = function(strEventName){
+exports.setEventName = function(strEventName, bSave=true){
 	nconf.set("Event:Name", strEventName);
-	var strEventDate = nconf.get("Event:Date");
-	console.log(strEventName, strEventDate);
-	var strUnique = (strEventDate + "_" + strEventName).replace(/[^a-zA-Z0-9\-]+/g,"_");
-	console.log(strUnique);
+	var strEventDate = nconf.get("Event:Date");	
+	exports.setStrUnique(strUnique(strEventDate, strEventName, bSave=false));
+	exports.setStrUnique(strMongoCollection(strEventDate, strEventName, bSave=bSave));
+};
+
+exports.setEventDate = function(strEventDate, bSave=true){
+	nconf.set("Event:Date", strEventName);
+	var strEventName = nconf.get("Event:Name");
+	exports.setStrUnique(strUnique(strEventDate, strEventName, bSave=false));
+	exports.setStrUnique(strMongoCollection(strEventDate, strEventName, bSave=bSave));
+};
+
+function strMongoCollection(strEventDate, strEventName){
+	return strEventDate + " " + strEventName;
+};
+exports.setStrMongoCollection(strMongoCollection, bSave=true){	
+	nconf.set("Mongo:Collection", strMongoCollection);
+	if(bSave)
+		exports.saveSettings();
+};
+
+function strUnique(strEventDate, strEventName){
+	return (strEventDate + "_" + strEventName).replace(/[^a-zA-Z0-9\-]+/g,"_");
+};
+exports.setStrUnique = function(strUnique, bSave=true){
+	nconf.set("Paths:localFotos", "public/fotos/" + strUnique);
+	nconf.set("Paths:localThumbnails", "public/thumbnails/" + strUnique);
+	nconf.set("Paths:publicFotos", "fotos/" + strUnique);
+	nconf.set("Paths:publicThumbnails", "thumbnails/" + strUnique);
+	nconf.set("Paths:strUnique", strUnique);	
+	if(bSave)
+		exports.saveSettings();
 }
+
+exports.setMongoServer = function(strMongoServer, bSave=true){	
+	nconf.set("Mongo:Server", strMongoServer);	
+	if(bSave)
+		exports.saveSettings();
+};
+exports.setMongoPort = function(strMongoPort, bSave=true){	
+	nconf.set("Mongo:Port", strMongoPort);	
+	if(bSave)
+		exports.saveSettings();
+};
+exports.setMongoDB = function(strMongoDB, bSave=true){	
+	nconf.set("Mongo:DB", strMongoDB);	
+	if(bSave)
+		exports.saveSettings();
+};
+exports.getMongoURL = function(){
+	return "mongodb://" + nconf.get("Mongo:Server") + ":" + nconf.get("Mongo:Port") + "/" + nconf.get("Mongo:DB");
+};
 
 exports.tOutStartSlideShow = 15000;
 exports.tOutNextSlide = 5000;
