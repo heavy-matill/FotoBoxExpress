@@ -181,7 +181,7 @@ exports.downloadNewFoto = function(folder,file){
 			file = "Patern_test.jpg";
 		}
 	} else {
-		var url = "http://" + nconf.get("Source:IP") + "/DCIM";
+		var url = "http://" + nconf.get("Camera:IP") + "/DCIM";
 	}	
 	var request = http.get(url + "/" + folder + "/" + file, function(res) {
   		var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + file));
