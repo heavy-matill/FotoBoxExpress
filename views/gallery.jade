@@ -109,7 +109,7 @@ block content
 						li #{image.timestamp}
 					ul(class="flex-container space-between")
 						ul(class="flex-container align-center")
-							li
+							li 
 								if image.likedBool
 									img(id="likeImg-#{image.file}" src="../images/ic_favorite_white_24dp_2x.png" onclick="dislikeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")
 								else
