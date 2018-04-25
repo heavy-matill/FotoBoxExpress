@@ -33,7 +33,7 @@ exports.setEventDate = function(strEventDate, bSave=true){
 function strMongoCollection(strEventDate, strEventName){
 	return strEventDate + " " + strEventName;
 };
-exports.setStrMongoCollection(strMongoCollection, bSave=true){	
+exports.setStrMongoCollection = function(strMongoCollection, bSave=true){	
 	nconf.set("Mongo:Collection", strMongoCollection);
 	if(bSave)
 		exports.saveSettings();
