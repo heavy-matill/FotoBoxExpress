@@ -1,19 +1,15 @@
 var gpio = require("gpio");
 var fotoBoxController = require('./fotoBoxController');
 
-console.log("gpio is ready");
 
-exports.getGPIO4 = function(){
-	console.log("gpio is ready");
-};
-
-var gpio4 = gpio.export(4, {
+var gpioShooting = gpio.export(4, {
 	direction: "in",
 	ready: function() {
+		console.log("gpio is ready");
 	}
 });
 
-gpio4.on("change", function(val) {
+gpioShooting.on("change", function(val) {
 	// value will report either 1 or 0 (number) when the value changes 
 	console.log("gpio is ", val);
 	if(val){
