@@ -5,23 +5,24 @@
   },
   "FotoBox": {
     "tOutStartSlideShow": "15000",
-    "tOutNextSlide": "5000"
+    "tOutNextSlide": "5000",
+    "bPrintFromScreen": false
   },
   "Camera": {
     "IP": "192.168.178.27"
   },
   "Paths": {
-    "localFotos": "public/fotos/52463q46_Some_Pas",
-    "localThumbnails": "public/thumbnails/52463q46_Some_Pas",
-    "publicFotos": "fotos/52463q46_Some_Pas",
-    "publicThumbnails": "thumbnails/52463q46_Some_Pas",
-    "strUnique": "52463q46_Some_Pas"
+    "localFotos": "public/fotos/2018-04-23_Some_Pas",
+    "localThumbnails": "public/thumbnails/2018-04-23_Some_Pas",
+    "publicFotos": "fotos/2018-04-23_Some_Pas",
+    "publicThumbnails": "thumbnails/2018-04-23_Some_Pas",
+    "strUnique": "2018-04-23_Some_Pas"
   },
   "Mongo": {
     "Server": "localhost",
     "Port": "27017",
     "DB": "FotoBox",
-    "Collection": "52463q46_Some_Pas",
+    "Collection": "2018-04-23_Some_Pas",
     "URL": "mongodb://localhost:27017/FotoBox"
   }
 }

@@ -7,6 +7,7 @@ router.get('/', function(req, res, next) {
 	res.render('settings', {
 		"Event": nconf.get("Event"), 
 		"FotoBox": nconf.get("FotoBox"), 
+		"Camera": nconf.get("Camera"), 
 		"Mongo": nconf.get("Mongo"), 
 		"Paths": nconf.get("Paths")
 	});

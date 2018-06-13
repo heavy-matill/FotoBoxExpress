@@ -16,7 +16,6 @@ var app = express();
 
 var fotoBoxController = require('./controllers/fotoBoxController');
 var gpioController = require('./controllers/gpioController');
-gpioController.getGPIO4();
 var nconf = require('nconf');
 // Further commands done in "www"
 //var server = require('http').Server(express);

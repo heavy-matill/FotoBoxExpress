@@ -1,116 +1,124 @@
 extends layout
 
 block content
-	script(src="/socket.io/socket.io.js")
-	script.
-		//var socket = io.connect('http://localhost:8000');		
-		var socket = io.connect(window.location.search.split("/")[0]);
+    script(src="/socket.io/socket.io.js")
+    script.
+        //var socket = io.connect('http://localhost:8000');		
+        var socket = io.connect(window.location.search.split("/")[0]);
 
-		function saveSettings(){
-			var strUnique = (document.getElementById("Event-Date").value + "_" + document.getElementById("Event-Name").value).replace(/[^a-zA-Z0-9\-]+/g,"_");
-			
-			socket.emit("saveSettings", {
-				"Event": {
-					"Name": document.getElementById("Event-Name").value,
-					"Date": document.getElementById("Event-Date").value},
-				"FotoBox": {
-					"tOutStartSlideShow": document.getElementById("FotoBox-tOutStartSlideShow").value,
-					"tOutNextSlide": document.getElementById("FotoBox-tOutNextSlide").value},
-				"Camera": {
-					"IP": document.getElementById("Camera-IP").value},
-				"Mongo": {
-					"Server": document.getElementById("Mongo-Server").value,
-					"Port": document.getElementById("Mongo-Port").value,
-					"DB": document.getElementById("Mongo-DB").value,
-					"Collection": strUnique,
-					"URL": "mongodb://" + document.getElementById("Mongo-Server").value + ":" + document.getElementById("Mongo-Port").value + "/" + document.getElementById("Mongo-DB").value},
-				"Paths": {
-					"localFotos": "public/fotos/" + strUnique,
-					"localThumbnails": "public/thumbnails/" + strUnique,
-					"publicFotos": "fotos/" + strUnique,
-					"publicThumbnails": "thumbnails/" + strUnique,
-					"strUnique": strUnique}
-				}
-			);
-		}
-	link(rel='stylesheet', href='/stylesheets/settings.css')
-	h1 Settings
-	table
-		tr
-			td
-				h2 Event
-		tr
-			td Name
-			td
-				input(id="Event-Name" type="text" value="#{Event.Name}")
-		tr
-			td Date
-			td
-				input(id="Event-Date" type="text" value="#{Event.Date}")
+        function saveSettings(){
+            var strUnique = (document.getElementById("Event-Date").value + "_" + document.getElementById("Event-Name").value).replace(/[^a-zA-Z0-9\-]+/g,"_");
 
-		tr
-			td
-				h2 FotoBox
-		tr
-			td Resume slide show delay
-			td
-				input(id="FotoBox-tOutStartSlideShow" type="text" value="#{FotoBox.tOutStartSlideShow}")
-		tr
-			td Next slide delay
-			td
-				input(id="FotoBox-tOutNextSlide" type="text" value="#{FotoBox.tOutNextSlide}")
+            socket.emit("saveSettings", {
+                "Event": {
+                    "Name": document.getElementById("Event-Name").value,
+                    "Date": document.getElementById("Event-Date").value},
+                "FotoBox": {
+                    "tOutStartSlideShow": document.getElementById("FotoBox-tOutStartSlideShow").value,
+                    "tOutNextSlide": document.getElementById("FotoBox-tOutNextSlide").value,
+                    "bPrintFromScreen": document.getElementById("FotoBox-bPrintFromScreen").checked},
+                "Camera": {
+                    "IP": document.getElementById("Camera-IP").value},
+                "Mongo": {
+                    "Server": document.getElementById("Mongo-Server").value,
+                    "Port": document.getElementById("Mongo-Port").value,
+                    "DB": document.getElementById("Mongo-DB").value,
+                    "Collection": strUnique,
+                    "URL": "mongodb://" + document.getElementById("Mongo-Server").value + ":" + document.getElementById("Mongo-Port").value + "/" + document.getElementById("Mongo-DB").value},
+                "Paths": {
+                    "localFotos": "public/fotos/" + strUnique,
+                    "localThumbnails": "public/thumbnails/" + strUnique,
+                    "publicFotos": "fotos/" + strUnique,
+                    "publicThumbnails": "thumbnails/" + strUnique,
+                    "strUnique": strUnique}
+                }
+            );            
+        }
+    link(rel='stylesheet', href='/stylesheets/settings.css')
+    h1 Settings
+    table
+        tr
+            td
+                h2 Event
+        tr
+            td Name
+            td
+                input(id="Event-Name" type="text" value="#{Event.Name}")
+        tr
+            td Date
+            td
+                input(id="Event-Date" type="text" value="#{Event.Date}")
 
-		tr
-			td
-				h2 Camera
-		tr
-			td Camera IP
-			td
-				input(id="Camera-IP" type="text" value="#{Camera.IP}")
+        tr
+            td
+                h2 FotoBox
+        tr
+            td Resume slide show delay
+            td
+                input(id="FotoBox-tOutStartSlideShow" type="text" value="#{FotoBox.tOutStartSlideShow}")
+        tr
+            td Next slide delay
+            td
+                input(id="FotoBox-tOutNextSlide" type="text" value="#{FotoBox.tOutNextSlide}")
+        tr
+            td Print from FotoBox
+            td
+                -if(FotoBox.bPrintFromScreen)
+                    input(id="FotoBox-bPrintFromScreen" type="checkbox" checked)
+                -else
+                    input(id="FotoBox-bPrintFromScreen" type="checkbox")
 
-		tr
-			td
-				h2 MongoDB
-		tr
-			td Server
-			td
-				input(id="Mongo-Server" type="text" value="#{Mongo.Server}")
-		tr
-			td Port
-			td
-				input(id="Mongo-Port" type="text" value="#{Mongo.Port}")
-		tr
-			td Database
-			td
-				input(id="Mongo-DB" type="text" value="#{Mongo.DB}")
-		tr
-			td Collection
-			td
-				input(id="Mongo-Collection" type="text" value="#{Mongo.Collection}" readonly)
+        tr
+            td
+                h2 Camera
+        tr
+            td Camera IP
+            td
+                input(id="Camera-IP" type="text" value="#{Camera.IP}")
 
-		tr
-			td
-				h2 Paths
-		tr
-			td Fotos local
-			td
-				input(type="text" value="#{Paths.localFotos}" readonly)
-		tr
-			td Fotos public
-			td
-				input(type="text" value="#{Paths.publicFotos}" readonly)
-		tr
-			td Thumbnails local
-			td
-				input(type="text" value="#{Paths.localThumbnails}" readonly)
-		tr
-			td Thumbnails public
-			td
-				input(type="text" value="#{Paths.publicThumbnails}" readonly)
-		
+        tr
+            td
+                h2 MongoDB
+        tr
+            td Server
+            td
+                input(id="Mongo-Server" type="text" value="#{Mongo.Server}")
+        tr
+            td Port
+            td
+                input(id="Mongo-Port" type="text" value="#{Mongo.Port}")
+        tr
+            td Database
+            td
+                input(id="Mongo-DB" type="text" value="#{Mongo.DB}")
+        tr
+            td Collection
+            td
+                input(id="Mongo-Collection" type="text" value="#{Mongo.Collection}" readonly)
 
-		tr
-			td
-			td
-				input(type="button" value="Reset" onclick="location.reload();")
-				input(type="button" value="Save" onclick="saveSettings();")
+        tr
+            td
+                h2 Paths
+        tr
+            td Fotos local
+            td
+                input(type="text" value="#{Paths.localFotos}" readonly)
+        tr
+            td Fotos public
+            td
+                input(type="text" value="#{Paths.publicFotos}" readonly)
+        tr
+            td Thumbnails local
+            td
+                input(type="text" value="#{Paths.localThumbnails}" readonly)
+        tr
+            td Thumbnails public
+            td
+                input(type="text" value="#{Paths.publicThumbnails}" readonly)
+
+
+        tr
+            td
+            td
+                input(type="button" value="Reset" onclick="location.reload();")
+                input(type="button" value="Save" onclick="saveSettings();")

@@ -61,9 +61,9 @@ io.on('connection', function(client) {
     //client.emit('likeConfirmed', data);
   });
   client.on('saveSettings', function(data) {
-      settingsController.saveSettings(data)
-      console.log(data);
-      nconf.argv().env().file({ file: 'config.json' });
+    console.log(data);
+    settingsController.saveSettings(data)
+    nconf.argv().env().file({ file: 'config.json' });
   });
 });
 

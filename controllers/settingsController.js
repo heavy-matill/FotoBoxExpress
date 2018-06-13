@@ -73,9 +73,10 @@ exports.getMongoURL = function(){
 
 exports.tOutStartSlideShow = 15000;
 exports.tOutNextSlide = 5000;
-exports.setFotoBoxSettings = function(tOutStartSlideShow, tOutNextSlide){
-	this.tOutStartSlideShow = dataFotoBox.tOutStartSlideShow;
-	this.tOutNextSlide = dataFotoBox.tOutNextSlide;
+exports.setFotoBoxSettings = function(tOutStartSlideShow, tOutNextSlide, bPrintFromScreen=false){
+	this.tOutStartSlideShow = tOutStartSlideShow;
+    this.tOutNextSlide = tOutNextSlide;
+    this.bPrintFromScreen = bPrintFromScreen;
 };
 
 exports.publicImagesPath = 'fotos/Geburtstag von xyz';
@@ -104,8 +105,9 @@ exports.setMongoSettings = function(strMongoServer, strMongoPort, strMongoDB){
 exports.saveSettings = function(data){
 	nconf.set("Event", data.Event);
 	nconf.set("FotoBox", data.FotoBox);
+	nconf.set("Camera", data.Camera);
 	nconf.set("Mongo", data.Mongo);
-	nconf.set("Paths", data.Paths);
+    nconf.set("Paths", data.Paths);
 	exports.saveInit();
 };
 exports.saveInit = function(){
