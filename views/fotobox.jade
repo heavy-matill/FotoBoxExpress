@@ -1,11 +1,19 @@
 doctype html
 html
-	head
-		title= title
-		link(rel='stylesheet', href='/stylesheets/fotobox.css')
-	body
-		img(id="image", src="../fotos/IMGP1111.jpg")
-		script(src="/socket.io/socket.io.js")
-		script.
-			var socket = io();  
-			socket.on('displayFoto', function(src){document.getElementById("image").src = "../" + src});
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/fotobox.css')
+        script.
+            function confirmPrintFoto(src){
+                confirm("Willst du das Foto " + src + " wirklich drucken?")
+            };
+    body
+        img(id="image", src="../images/aperture.png")
+        a(id="printButton" title="Print" href="" onclick="confirmPrintFoto('asd');")
+            img(id="printImage", src="../images/baseline_print_white_48dp.png")
+        script(src="/socket.io/socket.io.js")
+        script.
+            var socket = io();  
+            socket.on('displayFoto', function(src){document.getElementById("image").src = "../" + src});
+    
+        
