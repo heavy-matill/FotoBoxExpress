@@ -5,6 +5,9 @@ block content
 	script.
 		//var socket = io.connect('http://localhost:8000');		
 		var socket = io.connect(window.location.search.split("/")[0]);
+		function displayImageName(name) {
+			popupS.alert({content: 'Bitte trage die Nummer '+name.slice(-4)+' in das Fotobuch ein!'});
+		}
 		/*
 		socket.on('likeConfirmed', function(data) {
 			var _likeCounter = document.getElementById("likeCounter-" + data.imageName);
@@ -15,7 +18,7 @@ block content
 			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) - 1).toString() + ")";
 		});
 		*/
-
+		
 		/*function popup() {
 			popupS.confirm({
 				content: 'Do you want to delete ?',
@@ -115,9 +118,11 @@ block content
 								else
 									img(id="likeImg-#{image.file}" src="../images/ic_favorite_border_white_24dp_2x.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")								
 							li(id="likeCounter-#{image.file}") (#{image.likeCounter}) 
+							//- li
+							//- 	img(id="commentImg-#{image.file}" src="../images/ic_message_white_24dp_2x.png" onclick="commentImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="commentButton")
+							//- li(id="commentCounter-#{image.file}") (#{image.commentCounter})
 							li
-								img(id="commentImg-#{image.file}" src="../images/ic_message_white_24dp_2x.png" onclick="commentImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="commentButton")
-							li(id="commentCounter-#{image.file}") (#{image.commentCounter}) 
+								img(id="commentImg-#{image.file}" src="../images/baseline_print_white_24dp.png" onclick="displayImageName('#{image.file}');" class="getNameButton")							
 						li
 							a(href="../fotos/#{strUnique}/#{image.file}.#{image.extension}" id="download-#{image.file}") 
 								img(src="../images/ic_get_app_white_24dp_2x.png" class="imageButton")
