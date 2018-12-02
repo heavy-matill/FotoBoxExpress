@@ -6,10 +6,17 @@ var fs = require('fs');
 var socketApi = require('../socketApi');
 var io = socketApi.io;
 var fotoBoxController = require('../controllers/fotoBoxController');
+var nconf = require('nconf');
 
 // GET home page
 router.get('/', function(req, res, next) {
-  res.render('fotobox', { title: 'FotoBox Display' });
+	res.render('fotobox', {
+		"Event": nconf.get("Event"), 
+		"FotoBox": nconf.get("FotoBox"), 
+		"Camera": nconf.get("Camera"), 
+		"Mongo": nconf.get("Mongo"), 
+		"Paths": nconf.get("Paths")
+	});
 });
 
 /*//display function

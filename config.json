@@ -1,7 +1,7 @@
 {
   "Event": {
-    "Name": "Some Pas",
-    "Date": "2018-04-23"
+    "Name": "Neu212",
+    "Date": "2018-12-02"
   },
   "FotoBox": {
     "tOutStartSlideShow": "15000",
@@ -12,17 +12,17 @@
     "IP": "192.168.178.27"
   },
   "Paths": {
-    "localFotos": "public/fotos/2018-04-23_Some_Pas",
-    "localThumbnails": "public/thumbnails/2018-04-23_Some_Pas",
-    "publicFotos": "fotos/2018-04-23_Some_Pas",
-    "publicThumbnails": "thumbnails/2018-04-23_Some_Pas",
-    "strUnique": "2018-04-23_Some_Pas"
+    "localFotos": "public/fotos/2018-12-02_Neu212",
+    "localThumbnails": "public/thumbnails/2018-12-02_Neu212",
+    "publicFotos": "fotos/2018-12-02_Neu212",
+    "publicThumbnails": "thumbnails/2018-12-02_Neu212",
+    "strUnique": "2018-12-02_Neu212"
   },
   "Mongo": {
     "Server": "localhost",
     "Port": "27017",
     "DB": "FotoBox",
-    "Collection": "2018-04-23_Some_Pas",
+    "Collection": "2018-12-02_Neu212",
     "URL": "mongodb://localhost:27017/FotoBox"
   }
 }

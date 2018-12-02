@@ -9,8 +9,11 @@ html
             };
     body
         img(id="image", src="../images/aperture.png")
-        a(id="printButton" title="Print" href="" onclick="confirmPrintFoto('asd');")
-            img(id="printImage", src="../images/baseline_print_white_48dp.png")
+        if FotoBox.bPrintFromScreen
+            a(id="printButton" title="Print" href="" onclick="confirmPrintFoto('asd');")
+                img(id="printImage", src="../images/baseline_print_white_48dp.png")
+        else
+
         script(src="/socket.io/socket.io.js")
         script.
             var socket = io();  
