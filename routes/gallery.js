@@ -89,7 +89,7 @@ router.get('/', function(req, res, next) {
 			var numberPagesMax = Math.ceil(numberImagesMax / numberImagesShow);
 			res.render("gallery", 
 				{ 
-					"title": nconf.strEvent, 
+					"Event": nconf.get("Event"), 
 					"number": numberPage, 
 					"imageList": imageList, 
 					"thisUrl": thisUrl, 

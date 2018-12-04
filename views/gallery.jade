@@ -89,12 +89,11 @@ block content
 			window.location.search=updateURLParameter("numberPage", numberPage);
 		}
 	link(rel='stylesheet', href='/stylesheets/gallery.css')
-	h1 Gallery
-	h2 #{title}
+	h1 Gallery - #{Event.Name}
 	p Page #{number+1}
-	input(type="button" value="login mathe" onclick="window.location.search += '&user=mathe23491@gmx.de'")
-	input(type="button" value="alert" onclick="userPopup()")
-	input(type="button" value="mesage" onclick="socketApi.sendNotification")
+	//input(type="button" value="login mathe" onclick="window.location.search += '&user=mathe23491@gmx.de'")
+	//input(type="button" value="alert" onclick="userPopup()")
+	//input(type="button" value="mesage" onclick="socketApi.sendNotification")
 	div(class="routing") 
 		- for (var n = 1; n <= numberPagesMax; n++)
 			if(n == number+1)				
@@ -121,8 +120,8 @@ block content
 							//- li
 							//- 	img(id="commentImg-#{image.file}" src="../images/ic_message_white_24dp_2x.png" onclick="commentImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="commentButton")
 							//- li(id="commentCounter-#{image.file}") (#{image.commentCounter})
-							li
-								img(id="commentImg-#{image.file}" src="../images/baseline_print_white_24dp.png" onclick="displayImageName('#{image.file}');" class="getNameButton")							
+							//-li
+							//-	img(id="commentImg-#{image.file}" src="../images/baseline_print_white_24dp.png" onclick="displayImageName('#{image.file}');" class="getNameButton")							
 						li
 							a(href="../fotos/#{strUnique}/#{image.file}.#{image.extension}" id="download-#{image.file}") 
 								img(src="../images/ic_get_app_white_24dp_2x.png" class="imageButton")
