@@ -122,3 +122,4 @@ block content
             td
                 input(type="button" value="Reset" onclick="location.reload();")
                 input(type="button" value="Save" onclick="saveSettings();location.reload();")
+                input(type="button" value="Shutdown" onclick="socket.emit('shutdown',prompt('Enter password to shutdown:'));")

@@ -15,6 +15,9 @@ var db = require('monk')(nconf.get("Mongo:URL"))
 
 var fotosCollection = db.get(nconf.get("Mongo:Collection"))
 
+// Run scripts in shell
+const shellExec = require('shell-exec')
+
 /**
  * Get port from environment and store in Express.
  */
@@ -64,6 +67,12 @@ io.on('connection', function(client) {
     console.log(data);
     settingsController.saveSettings(data)
     nconf.argv().env().file({ file: 'config.json' });
+  });
+  client.on('shutdown', function(data) {
+    if(data=="Secret"){
+      console.log("Shutdown initiated.");
+      shellExec('sudo halt -p');
+    }
   });
 });
 
