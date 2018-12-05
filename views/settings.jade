@@ -125,3 +125,9 @@ block content
                 input(type="button" value="Shutdown" onclick="socket.emit('shutdown',prompt('Enter password to shutdown:'));")
                 input(type="button" value="Kill Process" onclick="socket.emit('kill',prompt('Enter password to kill nodejs:'));")
                 input(type="button" value="Update" onclick="socket.emit('update',prompt('Enter password to pull update from git:'));")
+
+    textarea#log
+    script(src="/socket.io/socket.io.js")
+    script.
+        var socket = io();  
+        socket.on('message', function(data){document.getElementById("log").append(data+"\r\n")});

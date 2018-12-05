@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+
 var nconf = require('nconf');
 nconf.argv().env().file({ file: 'config.json' });
 var app = require('../app');
@@ -17,6 +18,8 @@ var fotosCollection = db.get(nconf.get("Mongo:Collection"))
 
 // Run scripts in shell
 const shellExec = require('shell-exec')
+
+
 
 /**
  * Get port from environment and store in Express.
@@ -40,9 +43,14 @@ var socketApi = require('../socketApi');
 var io = socketApi.io;
 io.attach(server);
 io.on('connection', function(client) { 
+  
+  function log(data){
+    console.log(data);
+    client.emit('message',data);
+  }
   console.log('Client connected...');
   client.on('join', function(data) {
-      console.log(data);
+      log(data);
   });
   client.on('requestDislike', function(data) {
     fotosCollection.find({"name": data.fileName}, function(err, docList){
@@ -64,27 +72,27 @@ io.on('connection', function(client) {
     //client.emit('likeConfirmed', data);
   });
   client.on('saveSettings', function(data) {
-    console.log(data);
+    log(data);
     settingsController.saveSettings(data)
     nconf.argv().env().file({ file: 'config.json' });
   });
   client.on('shutdown', function(data) {
     if(data=="Secret"){
-      console.log("Shutdown initiated.");
-      shellExec('sudo halt -p').then(console.log);
+      log("Shutdown initiated.");
+      shellExec('sudo halt -p').then(value => log(value.stdout + value.stderr));
     }
   });
   client.on('kill', function(data) {
     if(data=="Secret"){
-      console.log("Killing node.");
-      shellExec('sudo killall node').then(console.log);
+      log("Killing node.");
+      shellExec('sudo killall node').then(value => log(value.stdout + value.stderr));
     }
   });
   client.on('update', function(data) {
     if(data=="Secret"){
-      console.log("Update initiated.");
-      shellExec('cd FotoBoxExpress/').then(console.log).then(console.log);
-      shellExec('git pull').then(console.log).then(console.log);
+      log("Update initiated.");
+      shellExec('cd FotoBoxExpress/').then(value => log(value.stdout + value.stderr));
+      shellExec('git pull').then(value => log(value.stdout + value.stderr));
     }
   });
 });
