@@ -71,7 +71,20 @@ io.on('connection', function(client) {
   client.on('shutdown', function(data) {
     if(data=="Secret"){
       console.log("Shutdown initiated.");
-      shellExec('sudo halt -p');
+      shellExec('sudo halt -p').then(console.log);
+    }
+  });
+  client.on('kill', function(data) {
+    if(data=="Secret"){
+      console.log("Killing node.");
+      shellExec('sudo killall node').then(console.log);
+    }
+  });
+  client.on('update', function(data) {
+    if(data=="Secret"){
+      console.log("Update initiated.");
+      shellExec('cd FotoBoxExpress/').then(console.log).then(console.log);
+      shellExec('git pull').then(console.log).then(console.log);
     }
   });
 });
