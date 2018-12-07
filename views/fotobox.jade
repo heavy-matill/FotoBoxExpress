@@ -1,22 +1,38 @@
 doctype html
-html
+html        
+    link(rel='stylesheet', href='/stylesheets/fotobox.css')
+    script.
+        function confirmPrintFoto(src){
+            confirm("Willst du das Foto " + src + " wirklich drucken?");
+        };
+        function hideNavigation()
+        {
+            for (el of document.getElementsByClassName("navButtonOpt")){
+                el.classList.add("navHide");
+            }
+            document.getElementById("navButton").setAttribute("onclick", "showNavigation();");
+        };
+        function showNavigation()
+        {
+            for (el of document.getElementsByClassName("navButtonOpt")){
+                el.classList.remove("navHide");
+            }
+            document.getElementById("navButton").setAttribute("onclick", "hideNavigation();");
+        };
     head
         title= title
-        link(rel='stylesheet', href='/stylesheets/fotobox.css')
-        script.
-            function confirmPrintFoto(src){
-                confirm("Willst du das Foto " + src + " wirklich drucken?")
-            };
     body
-        img(id="image", src="../images/aperture.png")
+        img(id="image", src="../images/aperture.png", onclick="hideNavigation();")
         if FotoBox.bPrintFromScreen
             a(id="printButton" title="Print" href="" onclick="confirmPrintFoto('asd');")
                 img(id="printImage", src="../images/baseline_print_white_48dp.png")
         else
+            a#nav
+                img#navButton.navImage.navButton(src="../images/ic_message_white_24dp_2x.png" onclick="showNavigation();")
+                img#printButton.navImage.navButtonOpt.navHide(src="../images/baseline_print_white_48dp.png")
+                img.navImage.navButtonOpt.navHide(src="../images/ic_face_white_24dp_2x.png")
 
         script(src="/socket.io/socket.io.js")
         script.
             var socket = io();  
             socket.on('displayFoto', function(src){document.getElementById("image").src = "../" + src});
-    
-        
