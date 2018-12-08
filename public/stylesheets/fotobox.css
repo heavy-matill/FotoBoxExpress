@@ -33,10 +33,11 @@ img {
     background: rgba(0,0,0,0.2);
     margin: 10px; 
     padding: 5px;
-    height: 48px;
-    width: 48px;
+    height: 78px;
+    width: 78px;
     text-indent: -999em;
     text-decoration: none;
+    cursor: pointer;
 } 
 .navButtonOpt {
     position: relative;
@@ -46,8 +47,8 @@ img {
     background: rgba(0,0,0,0.2);
     margin: 10px; 
     padding: 5px;
-    height: 48px;
-    width: 48px;
+    height: 78px;
+    width: 78px;
     text-indent: -999em;
     text-decoration: none;
 } 
