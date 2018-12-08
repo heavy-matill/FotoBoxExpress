@@ -43,6 +43,19 @@ app.use(session({
   saveUninitialized: true
 }));
 
+function requireLogin(req, res, next){
+  if (req.session.loggedIn){
+    next(); //allow the next route to run
+  } else {
+    // require the user to login
+    res.redirect("/login?ref="+req.url); //or render a form etc
+  }
+}
+
+// automatically apply the require Login middleare to allroutes starting with admin
+app.all("/admin/*", requireLogin, function(req,res,next){
+  next(); //if middleware allowed to get us here, just move on to the next route
+});
 
 // route to other js files
 var index = require('./routes/index');
@@ -52,13 +65,15 @@ var fotobox = require('./routes/fotobox');
 var gallery = require('./routes/gallery');
 var cookies = require('./routes/cookies');
 var newfoto = require('./routes/newfoto');	
+var login = require('./routes/login');	
 app.use('/', index);
 app.use('/users', users);
-app.use('/settings', settings);
+app.use('/admin/settings', settings);
 app.use('/fotobox', fotobox);
 app.use('/gallery', gallery);
 app.use('/cookies', cookies);
 app.use('/newfoto', newfoto);
+app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

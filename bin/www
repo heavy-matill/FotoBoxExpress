@@ -95,6 +95,12 @@ io.on('connection', function(client) {
       shellExec('git pull').then(value => log(value.stdout + value.stderr));
     }
   });
+  client.on('login', function(data) {
+    if(data=="Secret"){
+      log("Logged in.");
+      client.emit("loginValid");
+    }
+  });
 });
 
 /**
