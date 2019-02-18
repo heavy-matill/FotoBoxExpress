@@ -93,6 +93,7 @@ io.on('connection', function(client) {
     if(data=="Secret"){
       log("Update initiated.");
       shellExec('cd FotoBoxExpress/').then(value => log(value.stdout + value.stderr));
+      shellExec('git stash').then(value => log(value.stdout + value.stderr));
       shellExec('git pull').then(value => log(value.stdout + value.stderr));
     }
   });
