@@ -90,6 +90,7 @@ router.get('/', function(req, res, next) {
 			res.render("gallery", 
 				{ 
 					"FotoBox": nconf.get("FotoBox"), 
+					"Printer": nconf.get("Printer"), 
 					"Event": nconf.get("Event"), 
 					"number": numberPage, 
 					"imageList": imageList, 

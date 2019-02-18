@@ -73,10 +73,14 @@ exports.getMongoURL = function(){
 
 exports.tOutStartSlideShow = 15000;
 exports.tOutNextSlide = 5000;
-exports.setFotoBoxSettings = function(tOutStartSlideShow, tOutNextSlide, bPrintFromScreen=false){
+exports.setFotoBoxSettings = function(tOutStartSlideShow, tOutNextSlide){
 	this.tOutStartSlideShow = tOutStartSlideShow;
     this.tOutNextSlide = tOutNextSlide;
-    this.bPrintFromScreen = bPrintFromScreen;
+};
+
+exports.setPrinterSettings = function(bEnable=false, grayscaleOptions='-equalize -colorspace Gray -contrast-stretch 5%x10%'){
+	this.bEnable = bEnable;
+    this.grayscaleOptions = grayscaleOptions;
 };
 
 exports.publicImagesPath = 'fotos/Geburtstag von xyz';
@@ -106,6 +110,7 @@ exports.saveSettings = function(data){
 	nconf.set("Event", data.Event);
 	nconf.set("FotoBox", data.FotoBox);
 	nconf.set("Camera", data.Camera);
+	nconf.set("Printer", data.Printer);
 	nconf.set("Mongo", data.Mongo);
     nconf.set("Paths", data.Paths);
 	exports.saveInit();

@@ -12,25 +12,33 @@ block content
             socket.emit("saveSettings", {
                 "Event": {
                     "Name": document.getElementById("Event-Name").value,
-                    "Date": document.getElementById("Event-Date").value},
+                    "Date": document.getElementById("Event-Date").value
+                    },
                 "FotoBox": {
                     "tOutStartSlideShow": document.getElementById("FotoBox-tOutStartSlideShow").value,
-                    "tOutNextSlide": document.getElementById("FotoBox-tOutNextSlide").value,
-                    "bPrintFromScreen": document.getElementById("FotoBox-bPrintFromScreen").checked},
+                    "tOutNextSlide": document.getElementById("FotoBox-tOutNextSlide").value
+                    },
                 "Camera": {
-                    "IP": document.getElementById("Camera-IP").value},
+                    "IP": document.getElementById("Camera-IP").value
+                    },
+                "Printer": {
+                    "bEnable": document.getElementById("Printer-bEnable").checked,
+                    "grayscaleOptions": document.getElementById("Printer-grayscaleOptions").value
+                    },
                 "Mongo": {
                     "Server": document.getElementById("Mongo-Server").value,
                     "Port": document.getElementById("Mongo-Port").value,
                     "DB": document.getElementById("Mongo-DB").value,
                     "Collection": strUnique,
-                    "URL": "mongodb://" + document.getElementById("Mongo-Server").value + ":" + document.getElementById("Mongo-Port").value + "/" + document.getElementById("Mongo-DB").value},
+                    "URL": "mongodb://" + document.getElementById("Mongo-Server").value + ":" + document.getElementById("Mongo-Port").value + "/" + document.getElementById("Mongo-DB").value
+                    },
                 "Paths": {
                     "localFotos": "public/fotos/" + strUnique,
                     "localThumbnails": "public/thumbnails/" + strUnique,
                     "publicFotos": "fotos/" + strUnique,
                     "publicThumbnails": "thumbnails/" + strUnique,
-                    "strUnique": strUnique}
+                    "strUnique": strUnique
+                    }
                 }
             );            
         }
@@ -60,13 +68,6 @@ block content
             td Next slide delay
             td
                 input(id="FotoBox-tOutNextSlide" type="text" value="#{FotoBox.tOutNextSlide}")
-        tr
-            td Print from FotoBox
-            td
-                -if(FotoBox.bPrintFromScreen)
-                    input(id="FotoBox-bPrintFromScreen" type="checkbox" checked)
-                -else
-                    input(id="FotoBox-bPrintFromScreen" type="checkbox")
 
         tr
             td
@@ -75,6 +76,30 @@ block content
             td Camera IP
             td
                 input(id="Camera-IP" type="text" value="#{Camera.IP}")
+
+        tr
+            td
+                h2 Printer
+        tr
+            td Enable printing
+            td
+                -if(Printer.bEnable)
+                    input(id="Printer-bEnable" type="checkbox" checked)
+                -else
+                    input(id="Printer-bEnable" type="checkbox")
+        tr
+            td Grayscale options for imagemagick
+            td
+                input(id="Printer-grayscaleOptions" type="text" value="#{Printer.grayscaleOptions}")
+        tr  
+            td -equalize
+            td every color same intensity
+        tr  
+            td -colorspace Gray
+            td convert to gray
+        tr  
+            td -contrast-stretch 10%x15%
+            td clips 10% darkest tones and 15% lightest tones
 
         tr
             td

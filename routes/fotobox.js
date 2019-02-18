@@ -14,6 +14,7 @@ router.get('/', function(req, res, next) {
 		"Event": nconf.get("Event"), 
 		"FotoBox": nconf.get("FotoBox"), 
 		"Camera": nconf.get("Camera"), 
+		"Printer": nconf.get("Printer"), 
 		"Mongo": nconf.get("Mongo"), 
 		"Paths": nconf.get("Paths")
 	});

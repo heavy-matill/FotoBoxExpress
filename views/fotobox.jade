@@ -32,7 +32,7 @@ html
             a#settingsButton(href="../admin/settings").navImage.navButtonOpt.navHide
                 img(src="../images/baseline_settings_white_48dp.png")
                 
-            if FotoBox.bPrintFromScreen
+            if Printer.bEnable
                 a#printButton(href="" onclick="confirmPrintFoto('asd');").navImage.navButton
                     img(src="../images/baseline_print_white_48dp.png")
 

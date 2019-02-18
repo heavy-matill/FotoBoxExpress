@@ -5,11 +5,14 @@
   },
   "FotoBox": {
     "tOutStartSlideShow": "15000",
-    "tOutNextSlide": "5000",
-    "bPrintFromScreen": true
+    "tOutNextSlide": "5000"
   },
   "Camera": {
     "IP": "192.168.178.27"
+  },
+  "Printer": {
+    "bEnable": true,
+    "grayscaleOptions": "-equalize"
   },
   "Paths": {
     "localFotos": "public/fotos/2018-12-02_Neu212",

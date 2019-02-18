@@ -8,6 +8,9 @@ block content
 		function displayImageName(name) {
 			popupS.alert({content: 'Bitte trage die Nummer '+name.slice(-4)+' in das Fotobuch ein!'});
 		}
+		function printImage(sessionId, fileName) {
+			socket.emit("printImage", {"sessionId": sessionId, "fileName": fileName})
+		}
 		/*
 		socket.on('likeConfirmed', function(data) {
 			var _likeCounter = document.getElementById("likeCounter-" + data.imageName);
@@ -121,9 +124,9 @@ block content
 							//- 	img(id="commentImg-#{image.file}" src="../images/ic_message_white_24dp_2x.png" onclick="commentImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="commentButton")
 							//- li(id="commentCounter-#{image.file}") (#{image.commentCounter})
 							
-							if FotoBox.bPrintFromScreen	
+							if Printer.bEnable	
 								li
-									img(id="commentImg-#{image.file}" src="../images/baseline_print_white_24dp.png" onclick="displayImageName('#{image.file}');" class="getNameButton")							
+									img(id="commentImg-#{image.file}" src="../images/baseline_print_white_24dp.png" onclick="printImage('#{sessionId}', '#{image.file}.#{image.extension}');" class="getNameButton")							
 						li
 							a(href="../fotos/#{strUnique}/#{image.file}.#{image.extension}" id="download-#{image.file}") 
 								img(src="../images/ic_get_app_white_24dp_2x.png" class="imageButton")

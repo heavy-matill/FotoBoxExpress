@@ -11,6 +11,7 @@ var debug = require('debug')('fotoboxexpress:server');
 var http = require('http');
 // MongoDB connection
 var settingsController = require('../controllers/settingsController');
+var printerController = require('../controllers/printerController');
 
 var db = require('monk')(nconf.get("Mongo:URL"))
 
@@ -100,6 +101,10 @@ io.on('connection', function(client) {
       log("Logged in.");
       client.emit("loginValid");
     }
+  });
+  client.on('printImage', function(data) {
+    console.log(data)
+    printerController.printThumbnail(data.fileName)
   });
 });
 
