@@ -6,7 +6,7 @@
   "FotoBox": {
     "tOutStartSlideShow": "15000",
     "tOutNextSlide": "5000",
-    "bPrintFromScreen": false
+    "bPrintFromScreen": true
   },
   "Camera": {
     "IP": "192.168.178.27"
