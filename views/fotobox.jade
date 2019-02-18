@@ -28,13 +28,13 @@ html
                 img(id="printImage", src="../images/baseline_print_white_48dp.png")
         else
             div#nav
-                a#navButton.navImage.navButton( onclick="showNavigation();")
+                a#navButton( onclick="showNavigation();").navImage.navButton
                     img(src="../images/baseline_menu_white_48dp.png")                
                 a#printButton(href="./asd").navImage.navButtonOpt.navHide
                     img(src="../images/baseline_print_white_48dp.png")
-                a#galleryButton.navImage.navButtonOpt.navHide(href="../gallery").navImage.navButtonOpt.navHide
+                a#galleryButton(href="../gallery").navImage.navButtonOpt.navHide
                     img(src="../images/baseline_view_module_white_48dp.png")
-                a#settingsButton.navImage.navButtonOpt.navHide(href="../admin/settings").navImage.navButtonOpt.navHide
+                a#settingsButton(href="../admin/settings").navImage.navButtonOpt.navHide
                     img(src="../images/baseline_settings_white_48dp.png")
 
         script(src="/socket.io/socket.io.js")
