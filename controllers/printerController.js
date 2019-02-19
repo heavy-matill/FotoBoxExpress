@@ -53,6 +53,7 @@ function convertImage(thumbnailImage, grayscaleOptions, grayscaleImage, callback
         }
     )
 }
+const asyncConvert = util.promisify(convertImage);
 
 exports.printThumbnail = async function(fileName) {
     let image = ''
@@ -83,8 +84,8 @@ getGrayscaleImage = async function(fileName) {
     let grayscaleOptions = nconf.get("Printer:grayscaleOptions")
     let grayscaleImage = path.join(grayscalePath, fileName)
     
-    const asyncConvert = util.promisify(convertImage(thumbnailImage, grayscaleOptions, grayscaleImage));
-    console.log(await asyncConvert(thumbnailImage, grayscaleOptions, grayscaleImage))
+    await asyncConvert(thumbnailImage, grayscaleOptions, grayscaleImage, console.log)
+    console.log(fs.statSync(grayscaleImage).size)
     //im.convert([thumbnailImage, grayscaleOptions, grayscaleImage])
     //shellExec("convert " + thumbnailImage + " " + grayscaleOptions + " " + grayscaleImage)
     /*im.convert(['kittens.jpg', '-resize', '25x120', 'kittens-small.jpg'], 
