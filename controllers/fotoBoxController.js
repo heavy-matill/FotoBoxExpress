@@ -7,6 +7,7 @@ var thumb = require('node-thumbnail').thumb;
 var tq = require('task-queue');
 var nconf = require('nconf');
 var sharp = require('sharp');
+var path = require("path")
 
 
 var queue = tq.Queue({capacity: 10, concurrency: 1});
@@ -167,23 +168,9 @@ exports.addNewFoto = function(file){
 	queue.enqueue(exports.createThumbnail, {args: [file]});
 };
 
-exports.downloadNewFoto = function(folder,file){
-	if(folder=="test"){
-		if(file=="local"){
-			//for testing "download" the local test image
-			var url = "http://localhost:8000";
-			folder = "images";
-			file = "IMGP0000.JPG";
-		} else {			
-			//for testing download random image from web https://upload.wikimedia.org/wikipedia/commons/d/db/Patern_test.jpg	 		
-			var url = "https://upload.wikimedia.org";
-			folder = "wikipedia/commons/d/db";
-			file = "Patern_test.jpg";
-		}
-	} else {
-		var url = "http://" + nconf.get("Camera:IP") + "/DCIM";
-	}	
-	var request = http.get(url + "/" + folder + "/" + file, function(res) {
+exports.downloadNewFoto = function(imageUrl){
+	let file = path.basename(imageUrl)	
+	http.get(imageUrl, function(res) {
   		var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + file));
   		stream.on('finish', function () {
 			exports.displayNewFoto(file);
