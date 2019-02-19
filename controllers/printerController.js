@@ -40,13 +40,26 @@ var im = require('imagemagick')
 var fs = require('fs')
 var nconf = require('nconf')
 var path = require('path')
-const shellExec = require('shell-exec')
+var shellExec = require('shell-exec')
+var util = require('util')
+
+function convertImage(thumbnailImage, grayscaleOptions, grayscaleImage, callback) {    
+    im.convert([thumbnailImage, grayscaleOptions, grayscaleImage],
+        function(err, res) {
+            if (err) {
+                throw err
+            }
+            callback(err, res);
+        }
+    )
+}
+const asyncConvert = util.promisify(convertImage(thumbnailImage, grayscaleOptions, grayscaleImage));
 
 exports.printThumbnail = async function(fileName) {
     let image = ''
     grayscaleImage = await getGrayscaleImage(fileName)
     console.log(grayscaleImage)
-    shellExec('lp- d 58mmThermal -o portrait -o fit-to-page ' + grayscaleImage)
+    shellExec('lp -d 58mmThermal -o portrait -o fit-to-page ' + grayscaleImage)
     let grayscaleOptions = nconf.get("Printer:grayscaleOptions")
     shellExec('echo "' + fileName + '\n' + grayscaleOptions + '" | lp -d 58mmThermal')
 }
@@ -70,8 +83,14 @@ getGrayscaleImage = async function(fileName) {
     
     let grayscaleOptions = nconf.get("Printer:grayscaleOptions")
     let grayscaleImage = path.join(grayscalePath, fileName)
-    im.convert([thumbnailImage, grayscaleOptions, grayscaleImage])
+    console.log(await asyncConvert(thumbnailImage, grayscaleOptions, grayscaleImage))
+    //im.convert([thumbnailImage, grayscaleOptions, grayscaleImage])
     //shellExec("convert " + thumbnailImage + " " + grayscaleOptions + " " + grayscaleImage)
+    /*im.convert(['kittens.jpg', '-resize', '25x120', 'kittens-small.jpg'], 
+function(err, stdout){
+  if (err) throw err;
+  console.log('stdout:', stdout);
+});*/
     return grayscaleImage
 }
 

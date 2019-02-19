@@ -94,7 +94,7 @@ io.on('connection', function(client) {
       log("Update initiated.");
       shellExec('cd FotoBoxExpress/').then(value => log(value.stdout + value.stderr));
       shellExec('git stash').then(value => log(value.stdout + value.stderr));
-      shellExec('git pull').then(value => log(value.stdout + value.stderr));
+      shellExec('sudo git pull').then(value => log(value.stdout + value.stderr));
       shellExec('npm install').then(value => log(value.stdout + value.stderr));
     }
   });
