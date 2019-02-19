@@ -45,55 +45,55 @@ var util = require('util')
 
 function convertImage(thumbnailImage, grayscaleOptions, grayscaleImage, callback) {    
     im.convert([thumbnailImage, grayscaleOptions, grayscaleImage],
-        function(err, res) {
-            if (err) {
-                throw err
-            }
-            callback(err, res);
+        function(res) {            
+            callback(res)
         }
     )
 }
 const asyncConvert = util.promisify(convertImage);
 
 exports.printThumbnail = async function(fileName) {
-    let image = ''
-    grayscaleImage = await getGrayscaleImage(fileName)
-    console.log(grayscaleImage)
-    shellExec('lp -d 58mmThermal -o portrait -o fit-to-page ' + grayscaleImage)
+    [thumbnailImage, grayscaleImage] = await getGrayscaleImagePath(fileName)
     let grayscaleOptions = nconf.get("Printer:grayscaleOptions")
-    shellExec('echo "' + fileName + '\n' + grayscaleOptions + '" | lp -d 58mmThermal')
+    //await asyncConvert(thumbnailImage, grayscaleOptions, grayscaleImage, console.log)
+    im.convert([thumbnailImage, grayscaleOptions, grayscaleImage], 
+        function(err, stdout){
+            if (err) {
+                throw err;
+            }
+            console.log('stdout:', stdout);
+            printImage(grayscaleImage, fileName + '\n' + grayscaleOptions)
+        })
 }
 
-getGrayscaleImage = async function(fileName) {
+printImage = function(filePath, comment="") {
+    
+    console.log("printing" + filePath)
+    shellExec('lp -d 58mmThermal -o portrait -o fit-to-page ' + filePath)
+    if(comment!="")
+    {
+        shellExec('echo "' + comment + '" | lp -d 58mmThermal')
+    }
+}
+
+getGrayscaleImagePath = async function(fileName) {
     // check if thumbnail exists
     let thumbnailPath = nconf.get("Paths:localThumbnails")
     let thumbnailImage = path.join(thumbnailPath, fileName)
     if (!fs.existsSync(thumbnailImage)) {
-        throw error
+        throw "Thumbnail does not exist"
     }
 
     // check if greyscale folder exists
     let grayscalePath = path.join(thumbnailPath, "grayscales")
     if (!fs.existsSync(grayscalePath)) {
         // create path if necessary
-        fs.mkdir(grayscalePath)
+        await fs.mkdir(grayscalePath)
     }
 
     // generate geryscale thumbnail with contrast settings
-    
-    let grayscaleOptions = nconf.get("Printer:grayscaleOptions")
     let grayscaleImage = path.join(grayscalePath, fileName)
-    
-    await asyncConvert(thumbnailImage, grayscaleOptions, grayscaleImage, console.log)
-    console.log(fs.statSync(grayscaleImage).size)
-    //im.convert([thumbnailImage, grayscaleOptions, grayscaleImage])
-    //shellExec("convert " + thumbnailImage + " " + grayscaleOptions + " " + grayscaleImage)
-    /*im.convert(['kittens.jpg', '-resize', '25x120', 'kittens-small.jpg'], 
-function(err, stdout){
-  if (err) throw err;
-  console.log('stdout:', stdout);
-});*/
-    return grayscaleImage
+    return [thumbnailImage, grayscaleImage]
 }
 
 exports.deleteAllGrayscales = function() {
