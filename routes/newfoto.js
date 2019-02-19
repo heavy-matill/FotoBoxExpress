@@ -11,6 +11,8 @@ var bodyParser = require('body-parser');
 });*/
 router.post('/', function(req, res, next) {	
 	const body = req.body;
+	console.log(req)
+	console.log(body)
 	console.log("new image available at: " + body.imageUrl)
 	fotoBoxController.downloadNewFoto(body.imageUrl);
 	res.end()
