@@ -62,7 +62,9 @@ exports.printThumbnail = async function(fileName) {
                 throw err;
             }
             console.log('stdout:', stdout);
-            printImage(grayscaleImage, fileName + '\n' + grayscaleOptions)
+            let comment = ""
+            //comment = fileName + '\n' + grayscaleOptions
+            printImage(grayscaleImage, comment)
         })
 }
 
