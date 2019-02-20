@@ -70,7 +70,7 @@ exports.printThumbnail = async function(fileName) {
 }
 
 printImage = function(filePath, comment="") {    
-    console.log("printing" + filePath)
+    console.log("printing ", filePath)
     shellExec('lp -d 58mmThermal -o portrait -o fit-to-page ' + filePath)
     if(comment!="")
     {
