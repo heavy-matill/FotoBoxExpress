@@ -8,9 +8,10 @@ var tq = require('task-queue');
 var nconf = require('nconf');
 var sharp = require('sharp');
 var path = require("path")
+var printerController = require('./printerController')
 
 
-var queue = tq.Queue({capacity: 10, concurrency: 1});
+var queue = tq.Queue({capacity: 100, concurrency: 1});
 
 
 exports.stringsFiles = [];
@@ -57,6 +58,9 @@ exports.stopQueue = function(){
 exports.startQueue = function(){
 	queue.start();
 };
+exports.enqueuePrintJob = function(fileName) {
+	queue.enqueue(printerController.printThumbnail, {args: [fileName]});
+}
 
 
 function refreshFiles(){	

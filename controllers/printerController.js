@@ -42,6 +42,7 @@ var nconf = require('nconf')
 var path = require('path')
 var shellExec = require('shell-exec')
 var util = require('util')
+var fotoBoxController = require('./fotoBoxController')
 
 function convertImage(thumbnailImage, grayscaleOptions, grayscaleImage, callback) {    
     im.convert([thumbnailImage, grayscaleOptions, grayscaleImage],
@@ -68,8 +69,7 @@ exports.printThumbnail = async function(fileName) {
         })
 }
 
-printImage = function(filePath, comment="") {
-    
+printImage = function(filePath, comment="") {    
     console.log("printing" + filePath)
     shellExec('lp -d 58mmThermal -o portrait -o fit-to-page ' + filePath)
     if(comment!="")
@@ -83,7 +83,8 @@ getGrayscaleImagePath = async function(fileName) {
     let thumbnailPath = nconf.get("Paths:localThumbnails")
     let thumbnailImage = path.join(thumbnailPath, fileName)
     if (!fs.existsSync(thumbnailImage)) {
-        throw "Thumbnail does not exist"
+        console.log("Thumbnail for " + fileName + " does not exist! Enqueuing the print job.")
+        fotoBoxController.enqueuePrintJob(fileName)
     }
 
     // check if greyscale folder exists
