@@ -184,6 +184,10 @@ exports.downloadNewFoto = function(imageUrl){
 };
 
 exports.createThumbnail = function(file){
-	sharp(nconf.get("Paths:localFotos")+'/'+file).resize(300).toFile(nconf.get("Paths:localThumbnails")+'/'+file);
-};
+	let localSourceImage = nconf.get("Paths:localFotos")+'/'+file
+	let localThumbImage = nconf.get("Paths:localThumbnails")+'/'+file
+	if(!fs.existsSync(localThumbImage)) {
+		sharp(localSourceImage).resize(300).toFile(localThumbImage)
+	}
+}
 

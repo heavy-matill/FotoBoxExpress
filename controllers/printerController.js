@@ -82,9 +82,9 @@ getGrayscaleImagePath = async function(fileName) {
     // check if thumbnail exists
     let thumbnailPath = nconf.get("Paths:localThumbnails")
     let thumbnailImage = path.join(thumbnailPath, fileName)
-    if (!fs.existsSync(thumbnailImage)) {
-        console.log("Thumbnail for " + fileName + " does not exist! Enqueuing the print job.")
+    if (!fs.existsSync(thumbnailImage)) {        
         fotoBoxController.enqueuePrintJob(fileName)
+        throw "Thumbnail for " + fileName + " does not exist! Enqueuing the print job."
     }
 
     // check if greyscale folder exists
