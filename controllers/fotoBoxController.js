@@ -154,9 +154,8 @@ exports.addNewFoto = function(file){
 	exports.stopQueue();
   	//add to random queue
   	exports.stringsFiles.push(file)
-		//get creation timestamp ... to be exported to model
-	let imagePath = nconf.get("Paths:localFotos") + '/' + file
-	fs.stat(imagePath, function(err, stats){      
+    //get creation timestamp ... to be exported to model
+	fs.stat(nconf.get("Paths:localFotos") + '/' + file, function(err, stats){      
 		//insert to MongoDB
 		fotosdb.insert({
 			name: file, 
@@ -166,7 +165,7 @@ exports.addNewFoto = function(file){
 		});
 	});
 	console.log('File', file, 'has been added');
-	queue.enqueue(exports.createThumbnail, {args: [imagePath]});
+	queue.enqueue(exports.createThumbnail, {args: [file]});
 };
 
 exports.downloadNewFoto = function(imageUrl){
@@ -180,10 +179,7 @@ exports.downloadNewFoto = function(imageUrl){
 	});
 };
 
-exports.createThumbnail = function(imagePath){
-	let thumbnailPath = imagePath.split("/")
-	thumbnailPath[0] = "thumbnails"
-	thumbnailPath = thumbnailPath.join("/")
-	sharp(imagePath).resize(300).toFile(thumbnailPath);
+exports.createThumbnail = function(file){
+	sharp(nconf.get("Paths:localFotos")+'/'+file).resize(300).toFile(nconf.get("Paths:localThumbnails")+'/'+file);
 };
 
