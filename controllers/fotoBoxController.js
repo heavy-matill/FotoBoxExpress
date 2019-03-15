@@ -17,15 +17,13 @@ var queue = tq.Queue({capacity: 100, concurrency: 1});
 exports.stringsFiles = [];
 exports.intervalNextFoto;
 
-// initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
-
 var db = monk(nconf.get("Mongo:URL"));
 db.create(nconf.get("Mongo:Collection"), function(err){
 	console.log(err);
 });
 var fotosdb = db.get(nconf.get("Mongo:Collection"));
-fotosdb.createIndex({name: 1, ctime: 1}, {unique:true})
 
+// initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
 exports.init = function(){	
 	console.log(nconf.get("Mongo:Collection"));
 	// initialize MongoDB connection
@@ -44,12 +42,12 @@ exports.init = function(){
 	}
 
 	clearInterval(exports.intervalNextFoto);
-	this.stopQueue();
+	exports.stopQueue();
 	
 	refreshFiles();
 
 	exports.intervalNextFoto = setInterval(exports.displayNextFoto,nconf.get("FotoBox:tOutNextSlide"))
-	this.startQueue();
+	exports.startQueue();
 }
 
 exports.stopQueue = function(){
@@ -62,6 +60,34 @@ exports.enqueuePrintJob = function(fileName) {
 	queue.enqueue(printerController.printThumbnail, {args: [fileName]});
 }
 
+function markReadyThumbnail(fileName) {
+	fotosdb.find({"name": fileName}, function(err, docList){
+		fotosdb.update({"name": fileName}, { $set: {"readyThumb": true} })
+	})
+}
+
+exports.markReadyPrint = function(fileName) {	
+	var requestedPrint = false
+	fotosdb.find({"name": fileName}, function(err, docList){
+		fotosdb.update({"name": fileName}, { $set: {"readyPrint": true} })
+		requestedPrint = docList[0].requestedPrint
+	})
+	return requestedPrint
+}
+
+exports.getReadyPrint = function(fileName) {	
+	var readyPrint = false
+	fotosdb.find({"name": fileName}, function(err, docList){
+		readyPrint = docList[0].readyPrint
+	})
+	return readyPrint
+}
+
+exports.markRequestedPrint = function(fileName) {	
+	fotosdb.find({"name": fileName}, function(err, docList){
+		fotosdb.update({"name": fileName}, { $set: {"requestedPrint": true} })
+	})
+}
 
 function refreshFiles(){	
 	exports.stringsFiles = [];
@@ -164,7 +190,10 @@ exports.addNewFoto = function(file){
 		fotosdb.insert({
 			name: file, 
 			timestamp: stats.ctime, 
-			likes: [], 
+			likes: [],
+			readyThumb: false,
+			readyPrint: false,
+			requestedPrint: false,			 
 			available: true,
 		});
 	});
@@ -187,7 +216,9 @@ exports.createThumbnail = function(file){
 	let localSourceImage = nconf.get("Paths:localFotos")+'/'+file
 	let localThumbImage = nconf.get("Paths:localThumbnails")+'/'+file
 	if(!fs.existsSync(localThumbImage)) {
-		sharp(localSourceImage).resize(300).toFile(localThumbImage)
+		sharp(localSourceImage).resize(300).toFile(localThumbImage).then(
+			markReadyThumbnail(file),
+			printerController.createGrayscale(file)
+		)
 	}
 }
-

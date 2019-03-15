@@ -9,18 +9,18 @@ nconf.argv().env().file({ file: 'config.json' });
 var app = require('../app');
 var debug = require('debug')('fotoboxexpress:server');
 var http = require('http');
-// MongoDB connection
 var settingsController = require('../controllers/settingsController');
 var printerController = require('../controllers/printerController');
-
-var db = require('monk')(nconf.get("Mongo:URL"))
-
-var fotosCollection = db.get(nconf.get("Mongo:Collection"))
-
 // Run scripts in shell
 const shellExec = require('shell-exec')
+var monk = require('monk')
 
-
+exports.init = function(){	
+	// initialize MongoDB connection
+	var db = monk(nconf.get("Mongo:URL"));
+	var fotosCollection = db.get(nconf.get("Mongo:Collection"));
+}
+exports.init()
 
 /**
  * Get port from environment and store in Express.

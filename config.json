@@ -1,6 +1,6 @@
 {
   "Event": {
-    "Name": "1",
+    "Name": "12",
     "Date": "1"
   },
   "FotoBox": {
@@ -15,17 +15,17 @@
     "grayscaleOptions": "-equalize"
   },
   "Paths": {
-    "localFotos": "public/fotos/1_1",
-    "localThumbnails": "public/thumbnails/1_1",
-    "publicFotos": "fotos/1_1",
-    "publicThumbnails": "thumbnails/1_1",
-    "strUnique": "1_1"
+    "localFotos": "public/fotos/1_12",
+    "localThumbnails": "public/thumbnails/1_12",
+    "publicFotos": "fotos/1_12",
+    "publicThumbnails": "thumbnails/1_12",
+    "strUnique": "1_12"
   },
   "Mongo": {
     "Server": "localhost",
     "Port": "27017",
     "DB": "FotoBox",
-    "Collection": "1_1",
+    "Collection": "1_12",
     "URL": "mongodb://localhost:27017/FotoBox"
   }
 }

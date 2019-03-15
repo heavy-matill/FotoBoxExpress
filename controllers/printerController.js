@@ -44,29 +44,50 @@ var shellExec = require('shell-exec')
 var util = require('util')
 var fotoBoxController = require('./fotoBoxController')
 
-function convertImage(thumbnailImage, grayscaleOptions, grayscaleImage, callback) {    
-    im.convert([thumbnailImage, grayscaleOptions, grayscaleImage],
-        function(res) {            
-            callback(res)
-        }
-    )
-}
-const asyncConvert = util.promisify(convertImage);
+exports.createGrayscale = async function(fileName) {
+    // check if thumbnail exists
+    let thumbnailPath = nconf.get("Paths:localThumbnails")
+    let thumbnailImage = path.join(thumbnailPath, fileName)
+    if (!fs.existsSync(thumbnailImage)) {        
+        //fotoBoxController.enqueuePrintJob(fileName)
+        throw "Thumbnail for " + fileName + " does not exist! Enqueuing the print job."
+    }
 
-exports.printThumbnail = async function(fileName) {
-    [thumbnailImage, grayscaleImage] = await getGrayscaleImagePath(fileName)
+    // check if greyscale folder exists
+    let grayscalePath = path.join(thumbnailPath, "grayscales")
+    if (!fs.existsSync(grayscalePath)) {
+        // create path if necessary
+        await fs.mkdir(grayscalePath)
+    }   
+
+    // generate geryscale thumbnail with contrast settings
+    let grayscaleImage = path.join(grayscalePath, fileName)
+    
     let grayscaleOptions = nconf.get("Printer:grayscaleOptions")
-    //await asyncConvert(thumbnailImage, grayscaleOptions, grayscaleImage, console.log)
     im.convert([thumbnailImage, grayscaleOptions, grayscaleImage], 
         function(err, stdout){
             if (err) {
                 throw err;
             }
             console.log('stdout:', stdout);
-            let comment = ""
+            //let comment = ""
             //comment = fileName + '\n' + grayscaleOptions
-            printImage(grayscaleImage, comment)
+            //printImage(grayscaleImage, comment)
+
+            // print if printing was marked
+            if (fotoBoxController.markReadyPrint(fileName)) {
+                exports.printGrayscale(fileName)
+            }
         })
+}
+
+exports.printGrayscale = async function(fileName) {    
+    let thumbnailPath = nconf.get("Paths:localThumbnails")
+    let grayscalePath = path.join(thumbnailPath, "grayscales")
+    let grayscaleImage = path.join(grayscalePath, fileName)
+    if (fs.existsSync(grayscaleImage)) {
+        printImage(grayscaleImage)
+    }
 }
 
 printImage = function(filePath, comment="") {    
@@ -78,25 +99,13 @@ printImage = function(filePath, comment="") {
     }
 }
 
-getGrayscaleImagePath = async function(fileName) {
-    // check if thumbnail exists
-    let thumbnailPath = nconf.get("Paths:localThumbnails")
-    let thumbnailImage = path.join(thumbnailPath, fileName)
-    if (!fs.existsSync(thumbnailImage)) {        
-        fotoBoxController.enqueuePrintJob(fileName)
-        throw "Thumbnail for " + fileName + " does not exist! Enqueuing the print job."
-    }
 
-    // check if greyscale folder exists
-    let grayscalePath = path.join(thumbnailPath, "grayscales")
-    if (!fs.existsSync(grayscalePath)) {
-        // create path if necessary
-        await fs.mkdir(grayscalePath)
+exports.printThumbnail = function(fileName) {
+    if(fotoBoxController.getReadyPrint(fileName)) {
+        exports.printGrayscale(fileName)
+    } else {
+        fotoBoxController.markPrint(fileName)
     }
-
-    // generate geryscale thumbnail with contrast settings
-    let grayscaleImage = path.join(grayscalePath, fileName)
-    return [thumbnailImage, grayscaleImage]
 }
 
 exports.deleteAllGrayscales = function() {
