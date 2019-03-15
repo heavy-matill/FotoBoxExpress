@@ -56,9 +56,6 @@ exports.stopQueue = function(){
 exports.startQueue = function(){
 	queue.start();
 };
-exports.enqueuePrintJob = function(fileName) {
-	queue.enqueue(printerController.printThumbnail, {args: [fileName]});
-}
 
 function markReadyThumbnail(fileName) {
 	fotosdb.find({"name": fileName}, function(err, docList){
@@ -216,9 +213,9 @@ exports.createThumbnail = function(file){
 	let localSourceImage = nconf.get("Paths:localFotos")+'/'+file
 	let localThumbImage = nconf.get("Paths:localThumbnails")+'/'+file
 	if(!fs.existsSync(localThumbImage)) {
-		sharp(localSourceImage).resize(300).toFile(localThumbImage).then(
-			markReadyThumbnail(file),
-			printerController.createGrayscale(file)
-		)
+		sharp(localSourceImage).resize(300).toFile(localThumbImage).then(function() {
+				markReadyThumbnail(file)
+				printerController.createGrayscale(file)
+		})
 	}
 }

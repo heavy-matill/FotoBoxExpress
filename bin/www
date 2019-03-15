@@ -17,10 +17,12 @@ var monk = require('monk')
 
 exports.init = function(){	
 	// initialize MongoDB connection
-	var db = monk(nconf.get("Mongo:URL"));
-	var fotosCollection = db.get(nconf.get("Mongo:Collection"));
+	db = monk(nconf.get("Mongo:URL"));
+	fotosCollection = db.get(nconf.get("Mongo:Collection"));
 }
-exports.init()
+
+var db = monk(nconf.get("Mongo:URL"));
+var fotosCollection = db.get(nconf.get("Mongo:Collection"));
 
 /**
  * Get port from environment and store in Express.

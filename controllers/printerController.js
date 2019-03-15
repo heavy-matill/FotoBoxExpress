@@ -104,7 +104,7 @@ exports.printThumbnail = function(fileName) {
     if(fotoBoxController.getReadyPrint(fileName)) {
         exports.printGrayscale(fileName)
     } else {
-        fotoBoxController.markPrint(fileName)
+        fotoBoxController.markRequestedPrint(fileName)
     }
 }
 
