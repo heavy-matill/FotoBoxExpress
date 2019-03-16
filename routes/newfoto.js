@@ -6,7 +6,8 @@ var router = express.Router();
 router.post('/', function(req, res, next) {	
 	const body = req.body;
 	let imageUrl = Object.keys(body)[0]
-	fotoBoxController.downloadNewFoto(imageUrl);
+	console.log(imageUrl)
+	fotoBoxController.downloadNewFoto(imageUrl)
 	res.end()
 });
 

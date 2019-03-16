@@ -1,7 +1,7 @@
 {
   "Event": {
-    "Name": "12",
-    "Date": "1"
+    "Name": "12222",
+    "Date": "122"
   },
   "FotoBox": {
     "tOutStartSlideShow": "15000",
@@ -15,17 +15,17 @@
     "grayscaleOptions": "-equalize"
   },
   "Paths": {
-    "localFotos": "public/fotos/1_12",
-    "localThumbnails": "public/thumbnails/1_12",
-    "publicFotos": "fotos/1_12",
-    "publicThumbnails": "thumbnails/1_12",
-    "strUnique": "1_12"
+    "localFotos": "public/fotos/122_12222",
+    "localThumbnails": "public/thumbnails/122_12222",
+    "publicFotos": "fotos/122_12222",
+    "publicThumbnails": "thumbnails/122_12222",
+    "strUnique": "122_12222"
   },
   "Mongo": {
     "Server": "localhost",
     "Port": "27017",
     "DB": "FotoBox",
-    "Collection": "1_12",
+    "Collection": "122_12222",
     "URL": "mongodb://localhost:27017/FotoBox"
   }
 }

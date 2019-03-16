@@ -1,7 +1,6 @@
 local folder    = "DCIM"         -- What folder to upload files from
-local server    = "192.168.1.1"     -- The FTP server's IP
 local url 		= "http://192.168.1.1:8000/newfoto/"
---local url 		= "http://192.168.178.104:8000/newfoto/"
+--local url 		= "http://192.168.178.123:8000/newfoto/"
 
 local newestSubFolder = ""
 local newestFile = ""
@@ -22,5 +21,12 @@ for file in lfs.dir(folder .. "/" .. newestSubFolder) do
 		newestFile = file
 	end
 end
-print("The newest file is: " .. newestSubFolder .. "/" .. newestFile)
-fa.request(url .. newestSubFolder .. "/" .. newestFile)
+-- get current ip https://flashair-developers.com/en/documents/api/lua/#ip
+ip, mask, gw = fa.ip()
+
+local request_body = "http://" .. ip .. "/" .. folder .. "/" .. newestSubFolder .. "/" .. newestFile
+fa.request{url = "http://192.168.1.1:8000/newfoto/", 
+ headers = {["Content-Type"] = "application/x-www-form-urlencoded", ["Content-Length"] = string.len(request_body)}, 
+ method="POST",
+ body = request_body
+ }

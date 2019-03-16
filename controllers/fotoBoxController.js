@@ -1,4 +1,4 @@
-var http = require("http");
+var https = require("https");
 var socketApi = require('../socketApi');
 var io = socketApi.io;
 var fs = require('fs');
@@ -9,6 +9,7 @@ var nconf = require('nconf');
 var sharp = require('sharp');
 var path = require("path")
 var printerController = require('./printerController')
+var dbController = require('./dbController')
 
 
 var queue = tq.Queue({capacity: 100, concurrency: 1});
@@ -17,22 +18,8 @@ var queue = tq.Queue({capacity: 100, concurrency: 1});
 exports.stringsFiles = [];
 exports.intervalNextFoto;
 
-var db = monk(nconf.get("Mongo:URL"));
-db.create(nconf.get("Mongo:Collection"), function(err){
-	console.log(err);
-});
-var fotosdb = db.get(nconf.get("Mongo:Collection"));
-
 // initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
 exports.init = function(){	
-	console.log(nconf.get("Mongo:Collection"));
-	// initialize MongoDB connection
-	var db = monk(nconf.get("Mongo:URL"));
-	db.create(nconf.get("Mongo:Collection"), function(err){
-		console.log(err);
-	});
-	var fotosdb = db.get(nconf.get("Mongo:Collection"));
-	fotosdb.createIndex({name: 1, ctime: 1}, {unique:true})
 	// create folders
 	if (!fs.existsSync(nconf.get("Paths:localFotos"))) {
 		fs.mkdirSync(nconf.get("Paths:localFotos"));
@@ -51,108 +38,57 @@ exports.init = function(){
 }
 
 exports.stopQueue = function(){
-	queue.stop();
-};
+	queue.stop()
+}
 exports.startQueue = function(){
-	queue.start();
-};
-
-function markReadyThumbnail(fileName) {
-	fotosdb.find({"name": fileName}, function(err, docList){
-		fotosdb.update({"name": fileName}, { $set: {"readyThumb": true} })
-	})
-}
-
-exports.markReadyPrint = function(fileName) {	
-	var requestedPrint = false
-	fotosdb.find({"name": fileName}, function(err, docList){
-		fotosdb.update({"name": fileName}, { $set: {"readyPrint": true} })
-		requestedPrint = docList[0].requestedPrint
-	})
-	return requestedPrint
-}
-
-exports.getReadyPrint = function(fileName) {	
-	var readyPrint = false
-	fotosdb.find({"name": fileName}, function(err, docList){
-		readyPrint = docList[0].readyPrint
-	})
-	return readyPrint
-}
-
-exports.markRequestedPrint = function(fileName) {	
-	fotosdb.find({"name": fileName}, function(err, docList){
-		fotosdb.update({"name": fileName}, { $set: {"requestedPrint": true} })
-	})
+	queue.start()
 }
 
 function refreshFiles(){	
-	exports.stringsFiles = [];
-	deactivateAllFotos();
+	exports.stringsFiles = []
+	dbController.deactivateAllFotos()
 	fs.readdir(nconf.get("Paths:localFotos"), function(err, files){
 		if (err){
-			return console.error(err);
+			return console.error(err)
 		}
 		files.forEach( function (file){
-			if(!fotosdb.count({"name": file})){				
-				this.addNewFoto(file);
+			if(dbController.exists(file)){				
+				this.addNewFoto(file)
 			}
 			else{		
-				reactivateFoto(file);
+				dbController.reactivateFoto(file)
 			}
-			exports.stringsFiles.push(file);
-		});
-	});
-};
+			exports.stringsFiles.push(file)
+		})
+	})
+}
 
 function refreshDatabase(){
 	//deactivate
-	var imageDataStruct = fotosdb.find({active: true},{"name": 1});
+	var imageDataStruct = dbController.getFotos({active: true}, {"name": 1})
     imageDataStruct.each((entry, {close, pause, resume}) => {    
 		var indexFiles = exports.stringsFiles.indexOf(entry.name);
 		if (indexFiles < 0){
-			deactivateFoto(entry.name);
+			dbController.deactivateFoto(entry.name);
 		}
-	});
+	})
 	//reactivate
-	var imageDataStruct = fotosdb.find({active: false},{"name": 1});
+	var imageDataStruct = dbController.getFotos({active: false}, {"name": 1});
     imageDataStruct.each((entry, {close, pause, resume}) => {    
 		var indexFiles = exports.stringsFiles.indexOf(entry.name);
 		if (indexFiles > -1){
-			reactivateFoto(entry.name);
+			dbController.reactivateFoto(entry.name);
 		}
-	});
+	})
+}
+
+exports.displayFoto = function(fileName){    
+	io.emit('displayFoto', nconf.get("Paths:publicFotos")+'/'+fileName);
+	console.log('Displaying '+fileName);
 };
 
-function deactivateFoto(name){
-	fotosdb.update(
-		{ "name":name },
-		{ $set: {"available": false }});
-	console.log("deactivated " + name);
-};
-
-function deactivateAllFotos(){
-	fotosdb.update(
-		{ },
-		{ $set: {"available": false }},
-		{ multi: true});
-	console.log("deactivated all");
-};
-
-function reactivateFoto(name){
-	fotosdb.update(
-		{ "name": name },
-		{ $set: {"available": true }});
-	console.log("reactivated " + name);
-};
-
-exports.displayFoto = function(file){    
-	io.emit('displayFoto', nconf.get("Paths:publicFotos")+'/'+file);
-	console.log('Displaying '+file);
-};
-
-exports.displayNewFoto = function(file){  
-	exports.displayFoto(file);  
+exports.displayNewFoto = function(fileName){  
+	exports.displayFoto(fileName);  
 	clearTimeout(exports.intervalNextFoto);
 	exports.intervalNextFoto = setTimeout(exports.displaySlideShow, nconf.get("FotoBox:tOutStartSlideShow"));	
 };
@@ -176,46 +112,42 @@ exports.displayNextFoto = function(){
 	}
 };
 
-exports.addNewFoto = function(file){
+exports.addNewFoto = function(fileName){
 	//stop generating thumbnails
 	exports.stopQueue();
   	//add to random queue
-  	exports.stringsFiles.push(file)
+  	exports.stringsFiles.push(fileName)
     //get creation timestamp ... to be exported to model
-	fs.stat(nconf.get("Paths:localFotos") + '/' + file, function(err, stats){      
+	fs.stat(nconf.get("Paths:localFotos") + '/' + fileName, function(err, stats){      
 		//insert to MongoDB
-		fotosdb.insert({
-			name: file, 
-			timestamp: stats.ctime, 
-			likes: [],
-			readyThumb: false,
-			readyPrint: false,
-			requestedPrint: false,			 
-			available: true,
-		});
+		dbController.createEntry(fileName, stats.ctime)
 	});
-	console.log('File', file, 'has been added');
-	queue.enqueue(exports.createThumbnail, {args: [file]});
+	console.log('File', fileName, 'has been added');
+	queue.enqueue(exports.createThumbnail, {args: [fileName]});
 };
 
 exports.downloadNewFoto = function(imageUrl){
-	let file = path.basename(imageUrl)	
-	http.get(imageUrl, function(res) {
-  		var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + file));
-  		stream.on('finish', function () {
-				exports.displayNewFoto(file);
-				exports.addNewFoto(file);
-  		});
-	});
-};
+	let fileName = path.basename(imageUrl)	
+	const request = https.get(imageUrl, function(res) {
+  		var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + fileName));
+  		stream.on('finish', function () {		
+				exports.displayNewFoto(fileName)
+				exports.addNewFoto(fileName)
+  		})
+	}).on('error', (e) => {
+		console.error(`Got error: ${e.message}`)
+	})
+}
 
-exports.createThumbnail = function(file){
-	let localSourceImage = nconf.get("Paths:localFotos")+'/'+file
-	let localThumbImage = nconf.get("Paths:localThumbnails")+'/'+file
+exports.createThumbnail = function(fileName){
+	let localSourceImage = nconf.get("Paths:localFotos")+'/'+fileName
+	let localThumbImage = nconf.get("Paths:localThumbnails")+'/'+fileName
 	if(!fs.existsSync(localThumbImage)) {
 		sharp(localSourceImage).resize(300).toFile(localThumbImage).then(function() {
-				markReadyThumbnail(file)
-				printerController.createGrayscale(file)
+				dbController.markReadyThumbnail(fileName)
+				printerController.createGrayscale(fileName)
 		})
 	}
 }
+
+exports.init()

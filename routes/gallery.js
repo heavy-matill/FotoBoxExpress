@@ -3,18 +3,9 @@ var router = express.Router()
 var path_module = require('path')
 var fs = require('fs')
 var nconf = require('nconf');
-var db = require('monk')(nconf.get("Mongo:URL"))
-
-var fotosdb = db.get(nconf.get("Mongo:Collection"))
+var dbController = require('../controllers/dbController');
 var url = require('url');
 //setup cookies parsing
-exports.init = function(){
-	var nconf = require('nconf');
-	nconf.argv().env().file({ file: 'config.json' });
-	var db = require('monk')(nconf.get("Mongo:URL"));
-	var fotosdb = db.get(nconf.get("Mongo:Collection"));
-	console.log(nconf.get("Mongo:Collection"));
-}
 /* set path variables */
 var publicImagesPath = nconf.get("Paths:publicFotos")
 var publicThumbnailsPath = nconf.get("Paths:publicThumbnails")
@@ -22,14 +13,6 @@ var localImagesPath = nconf.get("Paths:localFotos")
 var localThumbnailsPath = nconf.get("Paths:localThumbnails")
 var numberImagesShow = 16
 var strUnique = nconf.get("Paths:strUnique")
-
-/* initialize variables */
-/*var urlMongo = "mongodb://localhost:27017/FotoBox"
-MongoClient.connect(urlMongo, function(err, db) {
-  if (err) throw err;
-  console.log("Database created!");
-  db.close();
-});*/
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -69,10 +52,10 @@ router.get('/', function(req, res, next) {
 
 	//get files from mongodb
 	var imageList = [];
-	var imageFilter = {"available": true};
+	var imageFilter = {"available": true, "readyThumb": true};
 	var numberImagesMax = 0;
 
-	var imageDataStruct = fotosdb.find(imageFilter, {"skip": numberImagesShow*numberPage, "limit" : numberImagesShow, "sort" : {"name": -1}});
+	var imageDataStruct = dbController.getFotos(imageFilter, {"skip": numberImagesShow*numberPage, "limit" : numberImagesShow, "sort" : {"name": -1}});
 	imageDataStruct.each((entry, {close, pause, resume}) => {
 		var nameParts = entry.name.split(".");
 		imageList.push({
@@ -83,7 +66,7 @@ router.get('/', function(req, res, next) {
 			likeCounter: entry.likes.length
 		});
 	}).then(function () {
-		fotosdb.count(imageFilter, function (error, count) { 
+		dbController.count(imageFilter, function (error, count) { 
 			console.log(error, count);
 			numberImagesMax = count;
 			var numberPagesMax = Math.ceil(numberImagesMax / numberImagesShow);

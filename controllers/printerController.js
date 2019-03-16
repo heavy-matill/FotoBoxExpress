@@ -42,7 +42,7 @@ var nconf = require('nconf')
 var path = require('path')
 var shellExec = require('shell-exec')
 var util = require('util')
-var fotoBoxController = require('./fotoBoxController')
+var dbController = require('./dbController')
 
 exports.createGrayscale = async function(fileName) {
     // check if thumbnail exists
@@ -75,7 +75,7 @@ exports.createGrayscale = async function(fileName) {
             //printImage(grayscaleImage, comment)
 
             // print if printing was marked
-            if (fotoBoxController.markReadyPrint(fileName)) {
+            if (dbController.markReadyPrint(fileName)) {
                 exports.printGrayscale(fileName)
             }
         })
@@ -101,10 +101,10 @@ printImage = function(filePath, comment="") {
 
 
 exports.printThumbnail = function(fileName) {
-    if(fotoBoxController.getReadyPrint(fileName)) {
+    if(dbController.getReadyPrint(fileName)) {
         exports.printGrayscale(fileName)
     } else {
-        fotoBoxController.markRequestedPrint(fileName)
+        dbController.markRequestedPrint(fileName)
     }
 }
 
