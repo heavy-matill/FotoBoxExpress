@@ -87,6 +87,8 @@ exports.printGrayscale = async function(fileName) {
     let grayscaleImage = path.join(grayscalePath, fileName)
     if (fs.existsSync(grayscaleImage)) {
         printImage(grayscaleImage)
+    } else {
+        console.log("Attempted to print " + fileName + " but grayscale was not found." )
     }
 }
 
