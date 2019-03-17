@@ -82,9 +82,10 @@ exports.count = function(filter, callback) {
 exports.getReadyPrint = function(fileName) {	
 	var readyPrint = false
 	fotosdb.find({"name": fileName}, function(err, docList){
+		console.log(docList)
 		readyPrint = docList[0].readyPrint
+		return readyPrint
 	})
-	return readyPrint
 }
 
 exports.markRequestedPrint = function(fileName) {	
