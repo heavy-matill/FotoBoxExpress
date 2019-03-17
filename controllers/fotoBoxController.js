@@ -1,4 +1,5 @@
 var https = require("https");
+var http = require("http");
 var socketApi = require('../socketApi');
 var io = socketApi.io;
 var fs = require('fs');
@@ -127,16 +128,28 @@ exports.addNewFoto = function(fileName){
 };
 
 exports.downloadNewFoto = function(imageUrl){
-	let fileName = path.basename(imageUrl)	
-	const request = https.get(imageUrl, function(res) {
-  		var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + fileName));
-  		stream.on('finish', function () {		
+	let fileName = path.basename(imageUrl)
+	if (imageUrl[4] === "s") {
+		const request = https.get(imageUrl, function(res) {
+				var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + fileName));
+				stream.on('finish', function () {		
+					exports.displayNewFoto(fileName)
+					exports.addNewFoto(fileName)
+				})
+		}).on('error', (e) => {
+			console.error(`Got error: ${e.message}`)
+		})
+	} else {
+		const request = http.get(imageUrl, function(res) {
+			var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + fileName));
+			stream.on('finish', function () {		
 				exports.displayNewFoto(fileName)
 				exports.addNewFoto(fileName)
-  		})
+			})
 	}).on('error', (e) => {
 		console.error(`Got error: ${e.message}`)
 	})
+	}
 }
 
 exports.createThumbnail = function(fileName){
