@@ -30,45 +30,16 @@ Foto.createIndexes()
 
 
 exports.markReadyThumbnail = async function(fileName) {
-	/*fotosdb.find({"name": fileName}, function(err, docList){
-		fotosdb.update({"name": fileName}, { $set: {"readyThumb": true} })
-	})*/
 	console.log("markReadyThumbnail ", fileName)
 	await Foto.findOneAndUpdate({"name": fileName}, {"readyThumb": true})
 }
 
 exports.markReadyPrint = async function(fileName) {	
-	/*var requestedPrint = false
-	fotosdb.find({"name": fileName}, function(err, docList){
-		fotosdb.update({"name": fileName}, { $set: {"readyPrint": true} })
-		requestedPrint = docList[0].requestedPrint
-	})
-	return requestedPrint*/	
 	console.log("markReadyPrint ", fileName)
 	await Foto.findOneAndUpdate({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"readyPrint": true})
 }
 
-exports.getMarkedPrint = async function(fileName) {	
-	/*var requestedPrint = false
-	fotosdb.find({"name": fileName}, function(err, docList){
-		fotosdb.update({"name": fileName}, { $set: {"readyPrint": true} })
-		requestedPrint = docList[0].requestedPrint
-	})
-	return requestedPrint*/	
-	console.log("getMarkedPrint ", fileName)
-	return await Foto.findOne({"name": fileName, "event": nconf.get("Mongo:Collection")}).requestedPrint
-}
-
 exports.createEntry = async function(fileName) {
-	/*fotosdb.insert({
-		name: fileName, 
-		timestamp: timestamp, 
-		likes: [],
-		readyThumb: false,
-		readyPrint: false,
-		requestedPrint: false,			 
-		available: true,
-	});*/
 	console.log("createEntry ", fileName)
 	await Foto.create({"name": fileName, "event": nconf.get("Mongo:Collection")}, function (err, foto_instance) {
 		if (err) return console.log(err)
@@ -76,60 +47,37 @@ exports.createEntry = async function(fileName) {
 }
 
 exports.deactivateFoto = async function(fileName) {
-	/*fotosdb.update(
-		{ "name":fileName , "event": nconf.get("Mongo:Collection")},
-		{ $set: {"available": false }})
-	console.log("deactivated " + fileName)*/
 	await Foto.findOneAndUpdate({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"available": false})
 }
 
 exports.deactivateAllFotos = async function() {
-	/*fotosdb.update(
-		{ },
-		{ $set: {"available": false }},
-		{ multi: true});
-	console.log("deactivated all")*/
 	await Foto.updateMany({"event": nconf.get("Mongo:Collection")}, {"available": false})
 }
 
 exports.reactivateFoto = async function(fileName){
-	/*fotosdb.update(
-		{ "name": fileName },
-		{ $set: {"available": true }});
-	console.log("reactivated " + fileName)*/
+	console.log("reactivated " + fileName)
 	await Foto.findOneAndUpdate({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"available": true})
 }
 
-exports.getFotos = async function(filter, sort) {
+exports.getFotos = function(filter, sort) {
 	filter.event = nconf.get("Mongo:Collection")
-	return await Foto.find(filter).sort(sort)
+	console.log(filter)
+	return Foto.find(filter, null, sort)
 }
 
-exports.exists = async function(fileName) {
-	return await Foto.countDocuments({"name": fileName, "event": nconf.get("Mongo:Collection")})>0
+exports.exists = function(fileName, callback) {
+	Foto.countDocuments({"name": fileName, "event": nconf.get("Mongo:Collection")}, callback)
 }
 
-exports.count = function(filter, callback) { // no async?
+exports.count = function(filter, callback) {
 	filter.event = nconf.get("Mongo:Collection")
-	return fotosdb.countDocuments(filter, callback)
+	Foto.countDocuments(filter, callback)
 }
 
-exports.getReadyPrint = async function(fileName) {	
-	/*var test = await fotosdb.findOne()
-	console.log(test)
-	await fotosdb.find({"name": fileName}, function(err,data) {
-		
-		console.log("data: " + data)	
-		var readyPrint = data.readyPrint
-		console.log("ready: " + readyPrint)
-	})
-	return readyPrint*/
-	return await Foto.find({"name": fileName, "event": nconf.get("Mongo:Collection")}).readyPrint
+exports.get = function(fileName, callback) {
+	return Foto.findOne({"name": fileName, "event": nconf.get("Mongo:Collection")}, callback)
 }
 
-exports.markRequestedPrint = async function(fileName) {	
-	/*fotosdb.find({"name": fileName}, function(err, docList){
-		fotosdb.update({"name": fileName}, { $set: {"requestedPrint": true} })
-	})*/
+exports.markRequestedPrint = async function(fileName) {
 	await Foto.findOneAndUpdate({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"requestedPrint": true})
 }

@@ -82,6 +82,7 @@ exports.printGrayscale = async function(fileName) {
     let grayscalePath = path.join(thumbnailPath, "grayscales")
     let grayscaleImage = path.join(grayscalePath, fileName)
     if (fs.existsSync(grayscaleImage)) {
+        console.log("printGrayscale", fileName)
         printImage(grayscaleImage)
     } else {
         console.log("Attempted to print " + fileName + " but grayscale was not found." )
@@ -97,14 +98,14 @@ printImage = function(filePath, comment="") {
     }
 }
 
-
 exports.printThumbnail = async function(fileName) {
-    var readyPrint = await dbController.getReadyPrint(fileName)
-    if(readyPrint) {
-        exports.printGrayscale(fileName)
-    } else {
-        dbController.markRequestedPrint(fileName)
-    }
+    dbController.get(fileName, function(err, foto) {
+        if(foto.readyPrint) {
+            exports.printGrayscale(fileName)
+        } else {
+            dbController.markRequestedPrint(fileName)
+        }
+    })
 }
 
 exports.deleteAllGrayscales = function() {

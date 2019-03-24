@@ -45,21 +45,27 @@ exports.startQueue = function(){
 	queue.start()
 }
 
-function refreshFiles(){	
+function refreshFiles() {	
 	exports.stringsFiles = []
 	dbController.deactivateAllFotos()
 	fs.readdir(nconf.get("Paths:localFotos"), function(err, files){
-		if (err){
+		if (err) {
 			return console.error(err)
 		}
-		files.forEach( function (file){
-			if(!dbController.exists(file)){				
-				exports.addNewFoto(file)
-			}
-			else{		
-				dbController.reactivateFoto(file)
-			}
-			exports.stringsFiles.push(file)
+		files.forEach(function(file) {
+			dbController.exists(file, function(error, count) {
+				if(count < 1)	{		
+					exports.addNewFoto(file)
+				} else {
+					dbController.reactivateFoto(file)
+					dbController.get(file, function(err, foto) {
+						if(!foto.readyThumb) {
+							queue.enqueue(exports.createThumbnail, {args: [file]})
+						}
+					})
+				}
+				exports.stringsFiles.push(file)
+			})
 		})
 	})
 }
@@ -68,17 +74,17 @@ function refreshDatabase(){
 	//deactivate
 	var imageDataStruct = dbController.getFotos({active: true}, {"name": 1})
     imageDataStruct.each((entry, {close, pause, resume}) => {    
-		var indexFiles = exports.stringsFiles.indexOf(entry.name);
-		if (indexFiles < 0){
-			dbController.deactivateFoto(entry.name);
+		var indexFiles = exports.stringsFiles.indexOf(entry.name)
+		if (indexFiles < 0) {
+			dbController.deactivateFoto(entry.name)
 		}
 	})
 	//reactivate
-	var imageDataStruct = dbController.getFotos({active: false}, {"name": 1});
+	var imageDataStruct = dbController.getFotos({active: false}, {"name": 1})
     imageDataStruct.each((entry, {close, pause, resume}) => {    
-		var indexFiles = exports.stringsFiles.indexOf(entry.name);
+		var indexFiles = exports.stringsFiles.indexOf(entry.name)
 		if (indexFiles > -1){
-			dbController.reactivateFoto(entry.name);
+			dbController.reactivateFoto(entry.name)
 		}
 	})
 }

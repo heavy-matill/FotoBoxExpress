@@ -1,7 +1,7 @@
 {
   "Event": {
-    "Name": "12222",
-    "Date": "122"
+    "Name": "RudiRockt",
+    "Date": "2019-03-29"
   },
   "FotoBox": {
     "tOutStartSlideShow": "15000",
@@ -15,17 +15,17 @@
     "grayscaleOptions": "-equalize"
   },
   "Paths": {
-    "localFotos": "public/fotos/122_12222",
-    "localThumbnails": "public/thumbnails/122_12222",
-    "publicFotos": "fotos/122_12222",
-    "publicThumbnails": "thumbnails/122_12222",
-    "strUnique": "122_12222"
+    "localFotos": "public/fotos/2019-03-29_RudiRockt",
+    "localThumbnails": "public/thumbnails/2019-03-29_RudiRockt",
+    "publicFotos": "fotos/2019-03-29_RudiRockt",
+    "publicThumbnails": "thumbnails/2019-03-29_RudiRockt",
+    "strUnique": "2019-03-29_RudiRockt"
   },
   "Mongo": {
     "Server": "localhost",
     "Port": "27017",
     "DB": "FotoBox",
-    "Collection": "122_12222",
+    "Collection": "2019-03-29_RudiRockt",
     "URL": "mongodb://localhost:27017/FotoBox"
   }
 }
