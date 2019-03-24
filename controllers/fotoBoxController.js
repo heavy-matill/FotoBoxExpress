@@ -131,6 +131,7 @@ exports.addNewFoto = async function(fileName){
 
 exports.downloadNewFoto = function(imageUrl){
 	let fileName = path.basename(imageUrl)
+	// https vs http request
 	if (imageUrl[4] === "s") {
 		const request = https.get(imageUrl, function(res) {
 				var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + fileName));

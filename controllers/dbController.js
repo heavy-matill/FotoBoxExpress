@@ -56,7 +56,7 @@ exports.deactivateAllFotos = async function() {
 
 exports.reactivateFoto = async function(fileName){
 	console.log("reactivated " + fileName)
-	await Foto.findOneAndUpdate({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"available": true})
+	await Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"available": true})
 }
 
 exports.getFotos = function(filter, sort) {
@@ -79,5 +79,13 @@ exports.get = function(fileName, callback) {
 }
 
 exports.markRequestedPrint = async function(fileName) {
-	await Foto.findOneAndUpdate({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"requestedPrint": true})
+	await Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"requestedPrint": true})
+}
+
+exports.dislike = async function(fileName, sessionId) {
+	Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {$pull: {"likes": sessionId}})
+}
+
+exports.like = async function(fileName, sessionId) {
+	Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {$addToSet: {"likes": sessionId}})
 }

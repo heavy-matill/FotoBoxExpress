@@ -11,18 +11,10 @@ var debug = require('debug')('fotoboxexpress:server');
 var http = require('http');
 var settingsController = require('../controllers/settingsController');
 var printerController = require('../controllers/printerController');
+var dbController = require('../controllers/dbController');
 // Run scripts in shell
 const shellExec = require('shell-exec')
-var monk = require('monk')
 
-exports.init = function(){	
-	// initialize MongoDB connection
-	db = monk(nconf.get("Mongo:URL"));
-	fotosCollection = db.get(nconf.get("Mongo:Collection"));
-}
-
-var db = monk(nconf.get("Mongo:URL"));
-var fotosCollection = db.get(nconf.get("Mongo:Collection"));
 
 /**
  * Get port from environment and store in Express.
@@ -56,23 +48,10 @@ io.on('connection', function(client) {
       log(data);
   });
   client.on('requestDislike', function(data) {
-    fotosCollection.find({"name": data.fileName}, function(err, docList){
-      if(docList[0].likes.indexOf(data.sessionId) !== -1) {
-        fotosCollection.update({"name": data.fileName}, {$pull : {"likes": data.sessionId}});
-      }   
-    });
-    //console.log(data.sessionId+" disliked "+data.imageName);
-    //client.emit('dislikeConfirmed', data);
+    dbController.dislike(data.fileName, data.sessionId)  
   });
   client.on('requestLike', function(data) {
-    //console.log("like requested for " + data.fileName);
-    fotosCollection.find({"name": data.fileName}, function(err, docList){
-      if(docList[0].likes.indexOf(data.sessionId) == -1) {
-        fotosCollection.update({"name": data.fileName}, {$push : {"likes": data.sessionId}});
-      }   
-    });
-    //console.log(data.sessionId+" liked "+data.imageName);
-    //client.emit('likeConfirmed', data);
+    dbController.like(data.fileName, data.sessionId)  
   });
   client.on('saveSettings', function(data) {
     log(data);
