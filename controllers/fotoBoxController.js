@@ -53,8 +53,8 @@ function refreshFiles(){
 			return console.error(err)
 		}
 		files.forEach( function (file){
-			if(dbController.exists(file)){				
-				this.addNewFoto(file)
+			if(!dbController.exists(file)){				
+				exports.addNewFoto(file)
 			}
 			else{		
 				dbController.reactivateFoto(file)
@@ -113,19 +113,15 @@ exports.displayNextFoto = function(){
 	}
 };
 
-exports.addNewFoto = function(fileName){
+exports.addNewFoto = async function(fileName){
 	//stop generating thumbnails
 	exports.stopQueue();
-  	//add to random queue
-  	exports.stringsFiles.push(fileName)
-    //get creation timestamp ... to be exported to model
-	fs.stat(nconf.get("Paths:localFotos") + '/' + fileName, function(err, stats){      
-		//insert to MongoDB
-		dbController.createEntry(fileName, stats.ctime)
-	});
+  //add to random queue
+	exports.stringsFiles.push(fileName)
+	await	dbController.createEntry(fileName)
 	console.log('File', fileName, 'has been added');
 	queue.enqueue(exports.createThumbnail, {args: [fileName]});
-};
+}
 
 exports.downloadNewFoto = function(imageUrl){
 	let fileName = path.basename(imageUrl)
@@ -152,15 +148,15 @@ exports.downloadNewFoto = function(imageUrl){
 	}
 }
 
-exports.createThumbnail = function(fileName){
+exports.createThumbnail = async function(fileName){
+	console.log("createThumbnail", fileName)
 	let localSourceImage = nconf.get("Paths:localFotos")+'/'+fileName
 	let localThumbImage = nconf.get("Paths:localThumbnails")+'/'+fileName
 	if(!fs.existsSync(localThumbImage)) {
-		sharp(localSourceImage).resize(300).toFile(localThumbImage).then(function() {
-				dbController.markReadyThumbnail(fileName)
-				printerController.createGrayscale(fileName)
-		})
+		await sharp(localSourceImage).resize(300).toFile(localThumbImage)
 	}
+	await dbController.markReadyThumbnail(fileName)
+	await printerController.createGrayscale(fileName)
 }
 
 exports.init()

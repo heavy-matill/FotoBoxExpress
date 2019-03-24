@@ -65,17 +65,13 @@ exports.createGrayscale = async function(fileName) {
     
     let grayscaleOptions = nconf.get("Printer:grayscaleOptions")
     im.convert([thumbnailImage, grayscaleOptions, grayscaleImage], 
-        function(err, stdout){
+        async function(err, stdout){
             if (err) {
                 throw err;
             }
-            console.log('stdout:', stdout);
-            //let comment = ""
-            //comment = fileName + '\n' + grayscaleOptions
-            //printImage(grayscaleImage, comment)
-
             // print if printing was marked
-            if (dbController.markReadyPrint(fileName)) {
+            await dbController.markReadyPrint(fileName)
+            if (dbController.getMarkedPrint(fileName)) {
                 exports.printGrayscale(fileName)
             }
         })
@@ -102,8 +98,9 @@ printImage = function(filePath, comment="") {
 }
 
 
-exports.printThumbnail = function(fileName) {
-    if(dbController.getReadyPrint(fileName)) {
+exports.printThumbnail = async function(fileName) {
+    var readyPrint = await dbController.getReadyPrint(fileName)
+    if(readyPrint) {
         exports.printGrayscale(fileName)
     } else {
         dbController.markRequestedPrint(fileName)

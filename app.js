@@ -66,6 +66,7 @@ var gallery = require('./routes/gallery');
 var cookies = require('./routes/cookies');
 var newfoto = require('./routes/newfoto');	
 var login = require('./routes/login');	
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/admin/settings', settings);
@@ -74,6 +75,9 @@ app.use('/gallery', gallery);
 app.use('/cookies', cookies);
 app.use('/newfoto', newfoto);
 app.use('/login', login);
+
+var fotoRouter = require('./routes/foto')
+app.use('/foto', fotoRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
