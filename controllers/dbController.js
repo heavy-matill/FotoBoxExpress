@@ -59,10 +59,10 @@ exports.reactivateFoto = async function(fileName){
 	await Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"available": true})
 }
 
-exports.getFotos = function(filter, sort) {
+exports.getFotos = async function(filter, sort) {
 	filter.event = nconf.get("Mongo:Collection")
 	console.log(filter)
-	return Foto.find(filter, null, sort)
+	return await Foto.find(filter, null, sort)
 }
 
 exports.exists = function(fileName, callback) {

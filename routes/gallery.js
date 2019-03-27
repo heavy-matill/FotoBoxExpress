@@ -52,7 +52,8 @@ router.get('/', function(req, res, next) {
 	var imageFilter = {"available": true, "readyThumb": true};
 	var numberImagesMax = 0;
 
-	dbController.getFotos(imageFilter, {"skip": numberImagesShow*numberPage, "limit" : numberImagesShow, "sort" : {"name": -1}}).stream()
+	dbController.getFotos(imageFilter, {"skip": numberImagesShow*numberPage, "limit" : numberImagesShow, "sort" : {"name": -1}})
+	.stream()
 	.on('data', function(entry){
 	  // handle doc	
 		console.log(entry)
