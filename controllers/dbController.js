@@ -83,9 +83,11 @@ exports.markRequestedPrint = async function(fileName) {
 }
 
 exports.dislike = async function(fileName, sessionId) {
-	Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {$pull: {"likes": sessionId}})
+	console.log("dislike", fileName, sessionId)
+	await Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {$pull: {"likes": sessionId}})
 }
 
 exports.like = async function(fileName, sessionId) {
-	Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {$addToSet: {"likes": sessionId}})
+	console.log("like", fileName, sessionId)
+	await Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {$addToSet: {"likes": sessionId}}) //addToSet
 }
