@@ -15,7 +15,7 @@ var numberImagesShow = 16
 var strUnique = nconf.get("Paths:strUnique")
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
 	console.log(strUnique)
 	var filter = parseInt(req.query.filter) || 0	
 	var orderBy = parseInt(req.query.orderBy) || 1
@@ -51,45 +51,39 @@ router.get('/', function(req, res, next) {
 	var imageList = [];
 	var imageFilter = {"available": true, "readyThumb": true};
 	var numberImagesMax = 0;
-
-	dbController.getFotos(imageFilter, {"skip": numberImagesShow*numberPage, "limit" : numberImagesShow, "sort" : {"name": -1}})
-	.stream()
-	.on('data', function(entry){
-	  // handle doc	
-		console.log(entry)
-		var nameParts = entry.name.split(".");
-		imageList.push({
-			file: nameParts[0], 
-			extension: nameParts[1],
-			timestamp:  entry.createdAt.toISOString().replace(/T/, ' ').replace(/\..+/, ''),      // replace T with a space
-			likedBool: entry.likes.indexOf(sessionId) > -1,
-			likeCounter: entry.likes.length
-		})
-	})
-	.on('error', function(err){
-	  // handle error
-	  console.log("ERROR:", err)
-	})
-	.on('end', function(){
-	  // final callbackconsole.log("imageList", imageList)
-		dbController.count(imageFilter, function (error, count) {
-			numberImagesMax = count
-			var numberPagesMax = Math.ceil(numberImagesMax / numberImagesShow)
-			console.log("strUnqie", strUnique)
-			res.render("gallery", 
-				{ 
-					"FotoBox": nconf.get("FotoBox"), 
-					"Printer": nconf.get("Printer"), 
-					"Event": nconf.get("Event"), 
-					"number": numberPage, 
-					"imageList": imageList, 
-					"thisUrl": thisUrl, 
-					"user": user, 
-					"sessionId": sessionId, 
-					"numberPagesMax": numberPagesMax, 
-					"strUnique": strUnique});
-		})
-	})
+	
+	query = dbController.getFotos(imageFilter, {"skip": numberImagesShow*numberPage, "limit" : numberImagesShow, "sort" : {"name": -1}}
+	,(err, entries) => {
+		console.log(entries)
+		for (entry of entries) {
+			var nameParts = entry.name.split(".");
+			imageList.push({
+				file: nameParts[0], 
+				extension: nameParts[1],
+				//timestamp:  entry.createdAt.toISOString().replace(/T/, ' ').replace(/\..+/, ''),      // replace T with a space
+				likedBool: entry.likes.indexOf(sessionId) > -1,
+				likeCounter: entry.likes.length
+			})
+		}
+	  }).then(
+	dbController.count(imageFilter, function (error, count) { 
+		console.log(error, count);
+		numberImagesMax = count;
+		console.log(imageList)
+		var numberPagesMax = Math.ceil(numberImagesMax / numberImagesShow);
+		res.render("gallery", 
+			{ 
+				"FotoBox": nconf.get("FotoBox"), 
+				"Printer": nconf.get("Printer"), 
+				"Event": nconf.get("Event"), 
+				"number": numberPage, 
+				"imageList": imageList, 
+				"thisUrl": thisUrl, 
+				"user": user, 
+				"sessionId": sessionId, 
+				"numberPagesMax": numberPagesMax, 
+				"strUnique": strUnique});
+	}));
 	
 	//first filter
 
