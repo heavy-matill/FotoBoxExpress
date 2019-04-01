@@ -26,7 +26,7 @@ mongoose.connect(mongoDB, {useNewUrlParser: true})
 var db = mongoose.connection
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-Foto.createIndexes()
+Foto.ensureIndexes()
 
 
 exports.markReadyThumbnail = async function(fileName) {
@@ -66,12 +66,12 @@ exports.getFotos = function(filter, sort, callback) {
 }
 
 exports.exists = function(fileName, callback) {
-	Foto.countDocuments({"name": fileName, "event": nconf.get("Mongo:Collection")}, callback)
+	Foto.count({"name": fileName, "event": nconf.get("Mongo:Collection")}, callback)
 }
 
 exports.count = function(filter, callback) {
 	filter.event = nconf.get("Mongo:Collection")
-	Foto.countDocuments(filter, callback)
+	Foto.count(filter, callback)
 }
 
 exports.get = function(fileName, callback) {
