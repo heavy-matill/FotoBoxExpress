@@ -53,8 +53,7 @@ router.get('/', async function(req, res, next) {
 	var numberImagesMax = 0;
 	
 	query = dbController.getFotos(imageFilter, {"skip": numberImagesShow*numberPage, "limit" : numberImagesShow, "sort" : {"name": -1}}
-	,(err, entries) => {
-		console.log(entries)
+	, (err, entries) => {
 		for (entry of entries) {
 			var nameParts = entry.name.split(".");
 			imageList.push({
@@ -65,73 +64,23 @@ router.get('/', async function(req, res, next) {
 				likeCounter: entry.likes.length
 			})
 		}
-	  }).then(
-	dbController.count(imageFilter, function (error, count) { 
-		console.log(error, count);
-		numberImagesMax = count;
-		console.log(imageList)
-		var numberPagesMax = Math.ceil(numberImagesMax / numberImagesShow);
-		res.render("gallery", 
-			{ 
-				"FotoBox": nconf.get("FotoBox"), 
-				"Printer": nconf.get("Printer"), 
-				"Event": nconf.get("Event"), 
-				"number": numberPage, 
-				"imageList": imageList, 
-				"thisUrl": thisUrl, 
-				"user": user, 
-				"sessionId": sessionId, 
-				"numberPagesMax": numberPagesMax, 
-				"strUnique": strUnique});
-	}));
-	
-	//first filter
-
-	//orderby
-
-	//reverse order
-	/*if(!order)
-	{
-		files=files.reverse();
-	}*/
-	//select from starting idx
-
-
-});
-/*router.get('/:start_index', function(req, res, next) {	
-	var indexStart
-	try{
-		indexStart = parseInt(req.params.start_index)
-	}
-	catch(err)
-	{
-		console.log(err)
-		indexStart = 0
-	}
-	var files = []
-	fs.readdirSync(localImagesPath+'/').forEach(file => {
-				files.push(path_module.parse(file).name)  
-				//files.push(file.split('/').pop().split('.')[0])
+		dbController.count(imageFilter, function (err, count) { 
+			numberImagesMax = count;
+			var numberPagesMax = Math.ceil(numberImagesMax / numberImagesShow);
+			res.render("gallery", 
+				{ 
+					"FotoBox": nconf.get("FotoBox"), 
+					"Printer": nconf.get("Printer"), 
+					"Event": nconf.get("Event"), 
+					"number": numberPage, 
+					"imageList": imageList, 
+					"thisUrl": thisUrl, 
+					"user": user, 
+					"sessionId": sessionId, 
+					"numberPagesMax": numberPagesMax, 
+					"strUnique": strUnique})
 		})
-	var numberFullPages = (files.length-(files.length%indexMax))/indexMax
-	var selectedFiles = []
-	if(!numberFullPages){
-		selectedFiles = files.reverse();
-	}
-	else{
-		if (indexStart<numberFullPages){
-			var iStart = files.length-req.params.start_index*indexMax-1
-			console.log("b")
-		}
-		else{
-			console.log("a")
-			var iStart = indexMax-1
-		}
-		for(var i = iStart; i > iStart-indexMax; i--)
-			selectedFiles.push(files[i])
-	}
-	res.render('gallery', { title: 'Gallery', number: req.params.start_index, files: selectedFiles});
-});*/
+	})
+})
 
-
-module.exports = router;
+module.exports = router
