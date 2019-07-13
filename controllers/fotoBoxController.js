@@ -23,10 +23,10 @@ exports.intervalNextFoto;
 exports.init = function(){	
 	// create folders
 	if (!fs.existsSync(nconf.get("Paths:localFotos"))) {
-		fs.mkdirSync(nconf.get("Paths:localFotos"));
+		fs.mkdirSync(nconf.get("Paths:localFotos"), {recursive: true});
 	}
 	if (!fs.existsSync(nconf.get("Paths:localThumbnails"))) {
-		fs.mkdirSync(nconf.get("Paths:localThumbnails"));
+		fs.mkdirSync(nconf.get("Paths:localThumbnails"), {recursive: true});
 	}
 
 	clearInterval(exports.intervalNextFoto);
