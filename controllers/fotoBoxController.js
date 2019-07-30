@@ -160,7 +160,7 @@ exports.createThumbnail = async function(fileName){
 	let localSourceImage = nconf.get("Paths:localFotos")+'/'+fileName
 	let localThumbImage = nconf.get("Paths:localThumbnails")+'/'+fileName
 	if(!fs.existsSync(localThumbImage)) {
-		await sharp(localSourceImage).resize(300).toFile(localThumbImage)
+		await sharp(localSourceImage).resize(null, 384).toFile(localThumbImage)
 	}
 	await dbController.markReadyThumbnail(fileName)
 	await printerController.createGrayscale(fileName)
