@@ -71,9 +71,14 @@ exports.createGrayscale = async function(fileName) {
             }
             // print if printing was marked
             await dbController.markReadyPrint(fileName)
-            if (dbController.getMarkedPrint(fileName)) {
+            /*if (dbController.getMarkedPrint(fileName)) {
                 exports.printGrayscale(fileName)
-            }
+            }*/
+            dbController.get(fileName, function(err, foto) {
+                if(foto.requestedPrint) {
+                    exports.printGrayscale(fileName)
+                }
+            })
         })
 }
 
