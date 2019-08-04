@@ -77,6 +77,7 @@ exports.createGrayscale = async function(fileName) {
             dbController.get(fileName, function(err, foto) {
                 if(foto.requestedPrint) {
                     exports.printGrayscale(fileName)
+                    console.log("requested Print is true")
                 }
             })
         })

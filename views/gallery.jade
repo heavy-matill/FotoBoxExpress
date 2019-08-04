@@ -116,9 +116,9 @@ block content
 						ul(class="flex-container align-center")
 							li 
 								if image.likedBool
-									img(id="likeImg-#{image.file}" src="../images/ic_favorite_white_24dp_2x.png" onclick="dislikeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")
+									img(id="likeImg-#{image.file}" src="../images/baseline_favorite_white_48dp.png" onclick="dislikeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")
 								else
-									img(id="likeImg-#{image.file}" src="../images/ic_favorite_border_white_24dp_2x.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")								
+									img(id="likeImg-#{image.file}" src="../images/baseline_favorite_border_white_48dp.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")								
 							li(id="likeCounter-#{image.file}") (#{image.likeCounter}) 
 							//- li
 							//- 	img(id="commentImg-#{image.file}" src="../images/ic_message_white_24dp_2x.png" onclick="commentImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="commentButton")
@@ -126,10 +126,10 @@ block content
 							
 							if Printer.bEnable	
 								li
-									img(id="commentImg-#{image.file}" src="../images/baseline_print_white_24dp.png" onclick="printImage('#{sessionId}', '#{image.file}.#{image.extension}');" class="getNameButton")							
+									img(id="commentImg-#{image.file}" src="../images/baseline_print_white_48dp.png" onclick="printImage('#{sessionId}', '#{image.file}.#{image.extension}');"  class="imageButton")							
 						li
 							a(href="../fotos/#{strUnique}/#{image.file}.#{image.extension}" id="download-#{image.file}") 
-								img(src="../images/ic_get_app_white_24dp_2x.png" class="imageButton")
+								img(src="../images/baseline_get_app_white_48dp.png" class="imageButton")
 	div(class="clearfix")
 	div(class="routing") 
 		- for (var n = 1; n <= numberPagesMax; n++)

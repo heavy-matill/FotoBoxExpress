@@ -19,7 +19,7 @@ div.gallery:hover {
 @media (pointer:fine) 
 {
     .imageButton {
-        width: 24px;
+        width: 36px;
         height: auto;
     }
 }
@@ -27,7 +27,7 @@ div.gallery:hover {
 @media (pointer:coarse) 
 {
     .imageButton {
-        width: 100%;
+        width: 48px;
         height: auto;
     }
 }
@@ -66,13 +66,13 @@ div.gallery:hover {
         margin: 2px 0;
 }
 
-@media only screen and (min-width: 500px){
+@media only screen and (min-width: 721px){
     .responsive {
         width: 49.99999%;
     }
 }
 
-@media only screen and (min-width: 1000px){
+@media only screen and (min-width: 1200px){
     .responsive {
         width: 24.99999%;
     }
