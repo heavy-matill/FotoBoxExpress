@@ -1,17 +1,19 @@
 const Gpio = require('pigpio').Gpio; //https://www.npmjs.com/package/pigpio
-var fotoBoxController = require('./fotoBoxController');
-
-// trigger attached to pin 3
-const button = new Gpio(3, {
+//var fotoBoxController = require('./fotoBoxController');
+var cameraController = require('./cameraController');
+// TBD condigurable either edge or just down
+// trigger attached to pin 4
+const button = new Gpio(4, {
   mode: Gpio.INPUT,
   pullUpDown: Gpio.PUD_UP,
   edge: Gpio.EITHER_EDGE
 });
-// Level must be stable for 10 ms before an alert event is emitted.
-button.glitchFilter(10000);
+// Level must be stable for 100 ms before an alert event is emitted.
+button.glitchFilter(100000);
  
 button.on('interrupt', (level) => {
   console.log('triggered ' + level);
+  cameraController.takePicture();
 });
 
 /*gpioShooting.on("change", function(val) {

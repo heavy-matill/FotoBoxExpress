@@ -7,12 +7,12 @@ var nconf = require('nconf');
 
 
 // Negative value or undefined will disable logging, levels 0-4 enable it.
-GPhoto.setLogLevel(4);
+GPhoto.setLogLevel(1);
 GPhoto.on('log', function (level, domain, message) {
     console.log(domain, message);
 });
 var fileName = nconf.get('Paths:localFotos') + '/picture.jpg'
-async function takePicture() {
+exports.takePicture = async function () {
     // List cameras / assign list item to variable to use below options
     GPhoto.list(function (list) {
         if (list.length === 0) return;
@@ -34,16 +34,17 @@ async function takePicture() {
             targetPath: '/tmp/foo.XXXXXX'
         }, function (er, tmpname) {
             fs.renameSync(tmpname, fileName);
+            
+            console.log('File available: ' + fileName);
+            //fotoBoxController.displayNewFoto(fileName)
+	        //fotoBoxController.addNewFoto(fileName)
         });
     });
-    await waitOn({
+    /*await waitOn({
         resources: [
             fileName,]
         , timeout: 3000
-    })
-    console.log('File available: ' + fileName);
-    //fotoBoxController.displayNewFoto(fileName)
-	//fotoBoxController.addNewFoto(fileName)
+    })*/
 }
 
 takePicture();
