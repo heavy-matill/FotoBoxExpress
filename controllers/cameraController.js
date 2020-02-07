@@ -5,11 +5,15 @@ var waitOn = require('wait-on');
 var nconf = require('nconf');
 
 var fileName = nconf.get('Paths:localFotos') + '/picture2.jpg'
+exports.ready = true;
+
 exports.takePicture = async function () {
-    exec('gphoto2 --capture-image-and-download --force-overwrite --filename="'+ fileName +'"', function callback(error, stdout, stderr) {
+    exports.ready = false;
+    exec('gphoto2 --capture-image-and-download --force-overwrite --filename="' + fileName + '"', function callback(error, stdout, stderr) {
         //fs.renameSync(tmpname, fileName);
 
-        console.log('File available: ' + fileName);
+        console.log('Camera ready');
+        exports.ready = true;
         //fotoBoxController.displayNewFoto(fileName)
         //fotoBoxController.addNewFoto(fileName)
     });
