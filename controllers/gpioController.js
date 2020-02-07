@@ -6,12 +6,13 @@ var cameraController = require('./cameraController');
 const button = new Gpio(4, {
   mode: Gpio.INPUT,
   pullUpDown: Gpio.PUD_UP,
-  edge: Gpio.EITHER_EDGE
+  edge: Gpio.EITHER_EDGE,
+  alert: true
 });
 // Level must be stable for 100 ms before an alert event is emitted.
-button.glitchFilter(100000);
+button.glitchFilter(10000);
  
-button.on('interrupt', (level) => {
+button.on('alert', (level) => {
   console.log('triggered ' + level);
   cameraController.takePicture();
 });
