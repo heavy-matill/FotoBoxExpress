@@ -1,5 +1,6 @@
 var fs = require('fs');
-var gphoto2 = require('gphoto2');
+//var gphoto2 = require('gphoto2');
+var exec = require('child_process').exec;
 var waitOn = require('wait-on');
 var GPhoto = new gphoto2.GPhoto2();
 
@@ -11,35 +12,16 @@ GPhoto.setLogLevel(1);
 GPhoto.on('log', function (level, domain, message) {
     console.log(domain, message);
 });
-var fileName = nconf.get('Paths:localFotos') + '/picture.jpg'
+var fileName = nconf.get('Paths:localFotos') + '/picture2.jpg'
 exports.takePicture = async function () {
-    // List cameras / assign list item to variable to use below options
-    GPhoto.list(function (list) {
-        if (list.length === 0) return;
-        var camera = list[0];
-        console.log('Found', camera.model);
+    exec('gphoto2 --capture-image-and-download --filename="'+ fileName +'"', function callback(error, stdout, stderr) {
+        //fs.renameSync(tmpname, fileName);
 
-        /*// get configuration tree
-        camera.getConfig(function (er, settings) {
-          console.log(settings);
-        });*/
-
-        /*// Set configuration values
-        camera.setConfigValue('capturetarget', 1, function (er) {
-          //...
-        });*/
-        
-        // Take picture and download it to filesystem
-        camera.takePicture({
-            targetPath: '/tmp/foo.XXXXXX'
-        }, function (er, tmpname) {
-            fs.renameSync(tmpname, fileName);
-            
-            console.log('File available: ' + fileName);
-            //fotoBoxController.displayNewFoto(fileName)
-	        //fotoBoxController.addNewFoto(fileName)
-        });
+        console.log('File available: ' + fileName);
+        //fotoBoxController.displayNewFoto(fileName)
+        //fotoBoxController.addNewFoto(fileName)
     });
+
     /*await waitOn({
         resources: [
             fileName,]
