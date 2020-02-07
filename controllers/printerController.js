@@ -43,6 +43,7 @@ var path = require('path')
 var shellExec = require('shell-exec')
 var util = require('util')
 var dbController = require('./dbController')
+var sharp = require('sharp')
 
 exports.createGrayscale = async function(fileName) {
     // check if thumbnail exists
@@ -63,7 +64,7 @@ exports.createGrayscale = async function(fileName) {
     // generate geryscale thumbnail with contrast settings
     let grayscaleImage = path.join(grayscalePath, fileName)
     
-    let grayscaleOptions = nconf.get("Printer:grayscaleOptions")
+    /*let grayscaleOptions = nconf.get("Printer:grayscaleOptions")
     im.convert([thumbnailImage, grayscaleOptions, grayscaleImage], 
         async function(err, stdout){
             if (err) {
@@ -74,13 +75,72 @@ exports.createGrayscale = async function(fileName) {
             /*if (dbController.getMarkedPrint(fileName)) {
                 exports.printGrayscale(fileName)
             }*/
-            dbController.get(fileName, function(err, foto) {
+            /*dbController.get(fileName, function(err, foto) {
                 if(foto.requestedPrint) {
                     exports.printGrayscale(fileName)
                     console.log("requested Print is true")
                 }
             })
-        })
+        })*/
+    
+    // convert to grayscale    
+    sharpFile = await sharp(thumbnailImage)
+	metadata = await sharpFile.metadata()
+	const strDate = '2019-08-05'
+	const strEvent = 'Geburtstag'
+	const imWidth = metadata.width
+	const imHeight = metadata.height
+	const svgTextWidth = 20
+	const svgWidth = imWidth + svgTextWidth*2 
+	const svgHeight = imHeight
+	console.log(metadata)
+	var textSVG = new Buffer('<svg height="'
+		+svgHeight
+		+'" width="'
+		+svgWidth
+		+'">'
+		+'<text x="'
+			+(svgWidth-0.25*svgTextWidth)
+			+'" y="'
+			+svgHeight
+			+'" transform="rotate(-90,'
+			+(svgWidth-0.25*svgTextWidth)
+			+','
+			+svgHeight
+			+')" font-size="16" fill="#000">'
+			+strDate
+		+'</text>'
+		+'<text x="'
+			+(svgWidth-0.25*svgTextWidth)
+			+'" y="'
+			+0
+			+'" transform="rotate(-90,'
+			+(svgWidth-0.25*svgTextWidth)
+			+','
+			+0
+			+')" font-size="16" fill="#000" text-anchor="end" >'
+			+inFile
+		+'</text>'
+		+'<text x="'
+			+(svgTextWidth*0.75)
+			+'" y="'
+			+svgHeight
+			+'" transform="rotate(-90,'
+			+(svgTextWidth*0.75)
+			+','
+			+svgHeight
+			+')" font-size="16" fill="#000">'
+			+strEvent
+		+'</text>'
+		+'</svg>');
+	await sharpFile.greyscale().extend({top: 0,bottom: 0,left: svgTextWidth, right: svgTextWidth,  background: { r: 255, g: 255, b: 255, alpha: 1.0 }  }).overlayWith(textSVG, {gravity: 'center'}).toFile(grayscaleImage)
+    // print if printing was marked 
+    dbController.get(fileName, function(err, foto) {
+        if(foto.requestedPrint) {
+            exports.printGrayscale(fileName)
+            console.log("requested Print is true")
+        }
+    })
 }
 
 exports.printGrayscale = async function(fileName) {    
