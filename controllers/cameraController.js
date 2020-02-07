@@ -1,7 +1,6 @@
 var fs = require('fs');
 var exec = require('child_process').exec;
 var waitOn = require('wait-on');
-var GPhoto = new gphoto2.GPhoto2();
 
 var nconf = require('nconf');
 
