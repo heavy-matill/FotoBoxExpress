@@ -6,7 +6,7 @@ var nconf = require('nconf');
 
 var fileName = nconf.get('Paths:localFotos') + '/picture2.jpg'
 exports.takePicture = async function () {
-    exec('gphoto2 --capture-image-and-download --filename="'+ fileName +'"', function callback(error, stdout, stderr) {
+    exec('gphoto2 --capture-image-and-download --force-overwrite --filename="'+ fileName +'"', function callback(error, stdout, stderr) {
         //fs.renameSync(tmpname, fileName);
 
         console.log('File available: ' + fileName);
@@ -14,9 +14,10 @@ exports.takePicture = async function () {
         //fotoBoxController.addNewFoto(fileName)
     });
 
-    /*await waitOn({
+    await waitOn({
         resources: [
             fileName,]
-        , timeout: 3000
-    })*/
+        , timeout: 5000
+    })
+    console.log('File available without callback: ' + fileName);
 }
