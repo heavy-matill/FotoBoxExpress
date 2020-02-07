@@ -46,5 +46,3 @@ exports.takePicture = async function () {
         , timeout: 3000
     })*/
 }
-
-takePicture();
