@@ -6,6 +6,19 @@ var nconf = require('nconf');
 var i = 0
 exports.ready = true;
 
+// Negative value or undefined will disable logging, levels 0-4 enable it.
+GPhoto.setLogLevel(1);
+GPhoto.on('log', function (level, domain, message) {
+    console.log(domain, message);
+});
+
+// List cameras / assign list item to variable to use below options
+GPhoto.list(function (list) {
+    if (list.length === 0) return;
+    camera = list[0];
+    console.log('Found', camera.model);
+});
+
 exports.takePicture = async function () {
     var fileName = nconf.get('Paths:localFotos') + '/picture' + i++ + '.jpg';
     exports.ready = false;
