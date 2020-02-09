@@ -36,7 +36,9 @@ exports.takePicture = async function () {
     var fileName = nconf.get('Paths:localFotos') + '/picture' + i++ + '.jpg';
     exports.ready = false;
     try {
-        await camera.takePicture({ download: true }, function (error, data) {
+        await camera.takePicture({
+            targetPath: fileName
+          }, function (error, tmpname) {
             switch (error) {
                 case -52:
                     // USB Device not available
@@ -52,9 +54,9 @@ exports.takePicture = async function () {
     
                 default:
                     if (error) throw (error)
+                    //fs.renameSync(tmpname, fileName);
                     break;        
                 }
-            fs.writeFileSync(fileName, data);
         });
     } catch (error) {
     }
