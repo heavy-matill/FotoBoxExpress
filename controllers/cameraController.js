@@ -22,10 +22,10 @@ getCamera = async function () {
         camera = list[0];
     });
     let promise = new Promise((resolve, reject) => {
-        setTimeout(() => resolve('Connected to ', camera.model), 2000)
+        setTimeout(() => resolve('Connected'), 2000)
     });
     let result = await promise; // wait until the promise resolves (*)
-    console.log(result, camera.model);
+    console.log(result, 'to', camera.model);
 }
 
 exports.takePicture = async function () {
