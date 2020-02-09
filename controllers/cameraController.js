@@ -18,10 +18,15 @@ exports.takePicture = async function () {
         //fotoBoxController.addNewFoto(fileName)
     });
 
-    await waitOn({
-        resources: [
-            fileName,]
-        , timeout: 5000
-    })
-    console.log('File available without callback: ' + fileName);
+    try {
+        await waitOn({
+            resources: [
+                fileName,]
+            , timeout: 5000
+        })
+        console.log('File available without callback: ' + fileName);
+    } catch (err) {
+        // kill gphoto2 because possibly stuck
+       await exec('killall -9 gphoto2');
+    }
 }
