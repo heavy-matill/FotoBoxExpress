@@ -3,11 +3,11 @@ var exec = require('child_process').exec;
 var waitOn = require('wait-on');
 
 var nconf = require('nconf');
-
-var fileName = nconf.get('Paths:localFotos') + '/picture2.jpg'
+var i = 0
 exports.ready = true;
 
 exports.takePicture = async function () {
+    var fileName = nconf.get('Paths:localFotos') + '/picture' + i++ + '.jpg';
     exports.ready = false;
     exec('gphoto2 --capture-image-and-download --force-overwrite --filename="' + fileName + '"', function callback(error, stdout, stderr) {
         //fs.renameSync(tmpname, fileName);
@@ -27,6 +27,6 @@ exports.takePicture = async function () {
         console.log('File available without callback: ' + fileName);
     } catch (err) {
         // kill gphoto2 because possibly stuck
-       await exec('killall -9 gphoto2');
+        await exec('killall -9 gphoto2');
     }
 }
