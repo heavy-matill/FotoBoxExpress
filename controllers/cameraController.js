@@ -9,14 +9,19 @@ exports.ready = true;
 exports.takePicture = async function () {
     var fileName = nconf.get('Paths:localFotos') + '/picture' + i++ + '.jpg';
     exports.ready = false;
-    exec('gphoto2 --capture-image-and-download --force-overwrite --filename="' + fileName + '"', function callback(error, stdout, stderr) {
-        //fs.renameSync(tmpname, fileName);
+    try {
+        camera.takePicture({ download: true }, function (er, data) {
+            fs.writeFileSync(fileName, data);
+        });
+    } catch (error) {
 
-        console.log('Camera ready');
-        exports.ready = true;
-        //fotoBoxController.displayNewFoto(fileName)
-        //fotoBoxController.addNewFoto(fileName)
-    });
+        console.log(error);
+    }
+
+    console.log('Camera ready');
+    exports.ready = true;
+    //fotoBoxController.displayNewFoto(fileName)
+    //fotoBoxController.addNewFoto(fileName)
 
     try {
         await waitOn({
@@ -25,8 +30,8 @@ exports.takePicture = async function () {
             , timeout: 5000
         })
         console.log('File available without callback: ' + fileName);
-    } catch (err) {
+    } catch (error) {
         // kill gphoto2 because possibly stuck
-        await exec('killall -9 gphoto2');
+        console.log('Stuck :(')
     }
 }
