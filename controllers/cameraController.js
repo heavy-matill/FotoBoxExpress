@@ -39,15 +39,13 @@ exports.takePicture = async function () {
                 case '-52':
                     // USB Device not available
                     console.log('USB Device not available. Reconnecting')
-                    await getCamera();
-                    await exports.takePicture();
+                    init(fileName);
                     break;
     
                 case '-7':
                     // USB Device not available
                     console.log('USB Device not available. Reconnecting')
-                    await getCamera();
-                    await exports.takePicture();
+                    init(fileName);
                     break;
     
                 default:
@@ -77,9 +75,11 @@ exports.takePicture = async function () {
     }
 }
 
-async function init() {
+async function init(fileName) {
     await getCamera();
-    //await takePicture();
+    if (fileName) {
+        await takePicture();
+    }
 }
 
 init();
