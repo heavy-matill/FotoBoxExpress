@@ -1,9 +1,14 @@
 var fs = require('fs');
 var gphoto2 = require('gphoto2');
 var GPhoto = new gphoto2.GPhoto2();
+var waitOn = require('wait-on');
+var sleep = require('sleep');
 
+var nconf = require('nconf');
+var i = 0
 var camera = null;
-exports.ready = false;
+//exports.ready = true;
+
 // Negative value or undefined will disable logging, levels 0-4 enable it.
 GPhoto.setLogLevel(1);
 GPhoto.on('log', function (level, domain, message) {
@@ -11,30 +16,53 @@ GPhoto.on('log', function (level, domain, message) {
 });
 
 // List cameras / assign list item to variable to use below options
-GPhoto.list(function (list) {
-    if (list.length === 0) return;
-    camera = list[0];
-    console.log('Found', camera.model);
-});
 
-// Take picture without downloading immediately
+getCamera = async function () {
+    GPhoto.list(function (list) {
+        if (list.length === 0) throw ('No camera available for connection');
+        camera = list[0];
+    });
+    let promise = new Promise((resolve, reject) => {
+        setTimeout(() => resolve('Connected to ', camera.model), 2000)
+    });
 
+    let result = await promise; // wait until the promise resolves (*)
+    console.log(result);
+}
 
-
-
-exports.takePicture = async function () {
-    exports.ready = false;
+/*exports.*/takePicture = async function () {
+    // Pass filename to this function
+    var fileName = nconf.get('Paths:localFotos') + '/picture' + i++ + '.jpg';
+    //exports.ready = false;
     try {
-        camera.takePicture({ download: false }, function (er, path) {
-            console.log(path);
+        await camera.takePicture({ download: true }, function (error, data) {
+            if (error) throw (error);
+            fs.writeFileSync(fileName, data);
         });
     } catch (error) {
+        switch (error) {
+            case '-52':
+                // USB Device not available
+                console.log('USB Device not available. Reconnecting')
+                await getCamera();
+                await takePicture();
+                break;
 
-        console.log(error);
+            case '-7':
+                // USB Device not available
+                console.log('USB Device not available. Reconnecting')
+                await getCamera();
+                await takePicture();
+                break;
+
+            default:
+                throw (error)
+                break;
+        }
     }
 
     console.log('Camera ready');
-    exports.ready = true;
+    //exports.ready = true;
     //fotoBoxController.displayNewFoto(fileName)
     //fotoBoxController.addNewFoto(fileName)
 
@@ -50,3 +78,10 @@ exports.takePicture = async function () {
         console.log('Stuck :(')
     }
 }
+
+async function init() {
+    await getCamera();
+    //await takePicture();
+}
+
+init();
