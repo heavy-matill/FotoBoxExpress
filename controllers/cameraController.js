@@ -22,6 +22,7 @@ getCamera = async function () {
         camera = list[0];
     });
     let promise = new Promise((resolve, reject) => {
+        // wait 2 seconds
         setTimeout(() => resolve('Connected'), 2000)
     });
     let result = await promise; // wait until the promise resolves (*)
@@ -34,29 +35,28 @@ exports.takePicture = async function () {
     exports.ready = false;
     try {
         await camera.takePicture({ download: true }, function (error, data) {
-            if (error) throw (error);
+            switch (error) {
+                case '-52':
+                    // USB Device not available
+                    console.log('USB Device not available. Reconnecting')
+                    await getCamera();
+                    await exports.takePicture();
+                    break;
+    
+                case '-7':
+                    // USB Device not available
+                    console.log('USB Device not available. Reconnecting')
+                    await getCamera();
+                    await exports.takePicture();
+                    break;
+    
+                default:
+                    throw (error)
+                    break;        
+                }
             fs.writeFileSync(fileName, data);
         });
     } catch (error) {
-        switch (error) {
-            case '-52':
-                // USB Device not available
-                console.log('USB Device not available. Reconnecting')
-                await getCamera();
-                await exports.takePicture();
-                break;
-
-            case '-7':
-                // USB Device not available
-                console.log('USB Device not available. Reconnecting')
-                await getCamera();
-                await exports.takePicture();
-                break;
-
-            default:
-                throw (error)
-                break;
-        }
     }
 
     console.log('Camera ready');
