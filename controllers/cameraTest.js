@@ -1,23 +1,25 @@
 var fs = require('fs');
 var gphoto2 = require('gphoto2');
-var GPhoto = new gphoto2.GPhoto2();
 var waitOn = require('wait-on');
 var sleep = require('sleep');
 
 var nconf = require('nconf');
 var i = 0
 var camera = null;
+var GPhoto = null;
 //exports.ready = true;
 
-// Negative value or undefined will disable logging, levels 0-4 enable it.
-GPhoto.setLogLevel(1);
-GPhoto.on('log', function (level, domain, message) {
-    console.log(domain, message);
-});
 
-// List cameras / assign list item to variable to use below options
 
 getCamera = async function () {
+    GPhoto = new gphoto2.GPhoto2();
+    // Negative value or undefined will disable logging, levels 0-4 enable it.
+    GPhoto.setLogLevel(1);
+    GPhoto.on('log', function (level, domain, message) {
+        console.log(domain, message);
+    });
+
+    // List cameras / assign list item to variable to use below options
     GPhoto.list(function (list) {
         if (list.length === 0) throw ('No camera available for connection');
         camera = list[0];
@@ -36,29 +38,27 @@ getCamera = async function () {
     //exports.ready = false;
     try {
         await camera.takePicture({ download: true }, function (error, data) {
-            if (error) throw (error);
-            fs.writeFileSync(fileName, data);
+            switch (error) {
+                case -52:
+                    // USB Device not available
+                    console.log('USB Device not available. Reconnecting')
+                    init();
+                    break;
+
+                case -7:
+                    // USB Device not available
+                    console.log('USB Device not available. Reconnecting')
+                    init();
+                    break;
+
+                default:
+                    if (error) throw (error)
+                    fs.writeFileSync(fileName, data);
+                    break;
+            }
         });
     } catch (error) {
-        switch (error) {
-            case '-52':
-                // USB Device not available
-                console.log('USB Device not available. Reconnecting')
-                await getCamera();
-                await takePicture();
-                break;
 
-            case '-7':
-                // USB Device not available
-                console.log('USB Device not available. Reconnecting')
-                await getCamera();
-                await takePicture();
-                break;
-
-            default:
-                throw (error)
-                break;
-        }
     }
 
     console.log('Camera ready');
@@ -81,7 +81,7 @@ getCamera = async function () {
 
 async function init() {
     await getCamera();
-    //await takePicture();
+    await takePicture();
 }
 
 init();

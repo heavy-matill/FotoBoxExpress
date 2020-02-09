@@ -1,22 +1,24 @@
 var fs = require('fs');
 var gphoto2 = require('gphoto2');
-var GPhoto = new gphoto2.GPhoto2();
 var waitOn = require('wait-on');
 
 var nconf = require('nconf');
 var i = 0
 var camera = null;
+var GPhoto = null;
 exports.ready = true;
-
-// Negative value or undefined will disable logging, levels 0-4 enable it.
-GPhoto.setLogLevel(1);
-GPhoto.on('log', function (level, domain, message) {
-    console.log(domain, message);
-});
 
 // List cameras / assign list item to variable to use below options
 
 getCamera = async function () {
+    GPhoto = new gphoto2.GPhoto2();
+    // Negative value or undefined will disable logging, levels 0-4 enable it.
+    GPhoto.setLogLevel(1);
+    GPhoto.on('log', function (level, domain, message) {
+        console.log(domain, message);
+    });
+
+    
     GPhoto.list(function (list) {
         if (list.length === 0) throw ('No camera available for connection');
         camera = list[0];
@@ -36,20 +38,20 @@ exports.takePicture = async function () {
     try {
         await camera.takePicture({ download: true }, function (error, data) {
             switch (error) {
-                case '-52':
+                case -52:
                     // USB Device not available
                     console.log('USB Device not available. Reconnecting')
                     init(fileName);
                     break;
     
-                case '-7':
+                case -7:
                     // USB Device not available
                     console.log('USB Device not available. Reconnecting')
                     init(fileName);
                     break;
     
                 default:
-                    throw (error)
+                    if (error) throw (error)
                     break;        
                 }
             fs.writeFileSync(fileName, data);
