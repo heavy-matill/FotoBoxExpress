@@ -116,7 +116,7 @@ exports.createGrayscale = async function (fileName) {
         + ','
         + 0
         + ')" font-size="16" fill="#000" text-anchor="end" >'
-        + inFile
+        + grayscaleImage
         + '</text>'
         + '<text x="'
         + (svgTextWidth * 0.75)
