@@ -1,12 +1,14 @@
 var fs = require('fs');
 var gphoto2 = require('gphoto2');
 var waitOn = require('wait-on');
+var fotoBoxController = require('./fotoBoxController');
 
 var nconf = require('nconf');
 var i = 0
 var camera = null;
 var GPhoto = null;
 exports.ready = true;
+
 
 // List cameras / assign list item to variable to use below options
 
@@ -71,13 +73,14 @@ exports.takePicture = async function () {
                 filePath,]
             , timeout: 5000
         })
-        console.log('File available without callback: ' + fileName);
-        fotoBoxController.displayNewFoto(fileName)
-        fotoBoxController.addNewFoto(fileName)
+        console.log('File available without callback: ' + filePath);
     } catch (error) {
         // kill gphoto2 because possibly stuck
+        console.log(error)
         console.log('Stuck :(')
-    }
+    }    
+    fotoBoxController.displayNewFoto(fileName)
+    fotoBoxController.addNewFoto(fileName)
 }
 
 async function init(fileName) {
