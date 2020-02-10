@@ -82,8 +82,8 @@ exports.createGrayscale = async function (fileName) {
     } //im.convert([thumbnailImage, grayscaleOptions, grayscaleImage], (err, stdout) => {if (err) throw err})
         
 
-    // convert to grayscale    
-    sharpFile = await sharp(thumbnailImage)
+    // add text to grayscale
+    sharpFile = await sharp(grayscaleImage)
     metadata = await sharpFile.metadata()
     const strDate = nconf.get("Event:Date");
     const strEvent = nconf.get("Event:Name");
@@ -132,7 +132,7 @@ exports.createGrayscale = async function (fileName) {
         + strEvent
         + '</text>'
         + '</svg>');
-    await sharpFile.greyscale().extend({ top: 0, bottom: 0, left: svgTextWidth, right: svgTextWidth, background: { r: 255, g: 255, b: 255, alpha: 1.0 } }).overlayWith(textSVG, { gravity: 'center' }).toFile(grayscaleImage)
+    await sharpFile.extend({ top: 0, bottom: 0, left: svgTextWidth, right: svgTextWidth, background: { r: 255, g: 255, b: 255, alpha: 1.0 } }).overlayWith(textSVG, { gravity: 'center' }).toFile(grayscaleImage)
     // print if printing was marked 
     dbController.get(fileName, function (err, foto) {
         if (foto.requestedPrint) {
