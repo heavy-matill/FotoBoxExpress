@@ -2,7 +2,6 @@ var fs = require('fs');
 var gphoto2 = require('gphoto2');
 var waitOn = require('wait-on');
 var fotoBoxController = require('./fotoBoxController');
-var date = require('date-and-time');
 var path = require("path");
 
 var nconf = require('nconf');

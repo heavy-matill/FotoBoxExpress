@@ -1,6 +1,7 @@
 const Gpio = require('pigpio').Gpio; //https://www.npmjs.com/package/pigpio
 //var fotoBoxController = require('./fotoBoxController');
 var cameraController = require('./cameraController');
+var date = require('date-and-time');
 // TBD condigurable either edge or just down
 // trigger attached to pin 4
 const button = new Gpio(4, {
