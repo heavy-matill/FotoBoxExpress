@@ -134,7 +134,8 @@ exports.createGrayscale = async function (fileName) {
         + '</svg>');
     await sharpFile.extend({ top: 0, bottom: 0, left: svgTextWidth, right: svgTextWidth, background: { r: 255, g: 255, b: 255, alpha: 1.0 } }).overlayWith(textSVG, { gravity: 'center' }).toFile(grayscaleImage+'temp');
     fs.renameSync(grayscaleImage+'temp', grayscaleImage);
-    // print if printing was marked 
+    // print if printing was marked     
+	await dbController.markReadyPrint(fileName)
     dbController.get(fileName, function (err, foto) {
         if (foto.requestedPrint) {
             exports.printGrayscale(fileName)
