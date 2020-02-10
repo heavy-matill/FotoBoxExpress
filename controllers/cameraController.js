@@ -20,7 +20,7 @@ getCamera = async function () {
 
     
     GPhoto.list(function (list) {
-        if (list.length === 0) throw ('No camera available for connection');
+        if (list.length === 0)  ('No camera available for connection');
         camera = list[0];
     });
     let promise = new Promise((resolve, reject) => {
@@ -71,6 +71,8 @@ exports.takePicture = async function () {
             , timeout: 5000
         })
         console.log('File available without callback: ' + fileName);
+        fotoBoxController.displayNewFoto(fileName)
+        fotoBoxController.addNewFoto(fileName)
     } catch (error) {
         // kill gphoto2 because possibly stuck
         console.log('Stuck :(')
