@@ -33,7 +33,8 @@ getCamera = async function () {
 
 exports.takePicture = async function () {
     // Pass filename to this function
-    var fileName = nconf.get('Paths:localFotos') + '/picture' + i++ + '.jpg';
+    var fileName = '/picture' + i++ + '.jpg';
+    var filePath = nconf.get('Paths:localFotos') + fileName;
     exports.ready = false;
     try {
         await camera.takePicture({ download: true }, function (error, data) {
@@ -41,20 +42,20 @@ exports.takePicture = async function () {
                 case -52:
                     // USB Device not available
                     console.log('USB Device not available. Reconnecting')
-                    init(fileName);
+                    init(filePath);
                     break;
     
                 case -7:
                     // USB Device not available
                     console.log('USB Device not available. Reconnecting')
-                    init(fileName);
+                    init(filePath);
                     break;
     
                 default:
                     if (error) throw (error)
                     break;        
                 }
-            fs.writeFileSync(fileName, data);
+            fs.writeFileSync(filePath, data);
         });
     } catch (error) {
     }
@@ -67,7 +68,7 @@ exports.takePicture = async function () {
     try {
         await waitOn({
             resources: [
-                fileName,]
+                filePath,]
             , timeout: 5000
         })
         console.log('File available without callback: ' + fileName);
