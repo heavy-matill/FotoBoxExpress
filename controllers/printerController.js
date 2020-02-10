@@ -44,12 +44,10 @@ optimal for group portraits
 //var magick = require('magick-cli')
 // TODO: check if magick native or client are faster, especially reagrding downloading the image and processing it right away...
 
-var im = require('imagemagick')
 var fs = require('fs')
-var nconf = require('nconf')
 var path = require('path')
 var shellExec = require('shell-exec')
-var util = require('util')
+var nconf = require('nconf')
 var dbController = require('./dbController')
 var sharp = require('sharp')
 
@@ -71,20 +69,24 @@ exports.createGrayscale = async function (fileName) {
 
     // generate geryscale thumbnail with contrast settings
     let grayscaleImage = path.join(grayscalePath, fileName)
-
+    /*
+    var thumbnailImage = 'public/thumbnails/2019-03-29_RudiRockt/2020-02-10_20-43-41.jpg'
+    var grayscaleImage = 'public/thumbnails/2019-03-29_RudiRockt/grayscales/2020-02-10_20-43-41.jpg'
+    */
     let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4'//nconf.get("Printer:grayscaleOptions")
-    im.convert([thumbnailImage, grayscaleOptions, grayscaleImage],
-        async function (err, stdout) {
-            if (err) {
-                throw err;
-            }
-        })
+    try {
+        let cmd = ['sudo','magick', thumbnailImage, grayscaleOptions, grayscaleImage].join(' ');
+        await shellExec(cmd);
+    } catch (error) {
+        
+    } //im.convert([thumbnailImage, grayscaleOptions, grayscaleImage], (err, stdout) => {if (err) throw err})
+        
 
     // convert to grayscale    
     sharpFile = await sharp(thumbnailImage)
     metadata = await sharpFile.metadata()
-    const strDate = '2019-08-05'
-    const strEvent = 'Geburtstag'
+    const strDate = nconf.get("Event:Date");
+    const strEvent = nconf.get("Event:Name");
     const imWidth = metadata.width
     const imHeight = metadata.height
     const svgTextWidth = 20
@@ -116,7 +118,7 @@ exports.createGrayscale = async function (fileName) {
         + ','
         + 0
         + ')" font-size="16" fill="#000" text-anchor="end" >'
-        + grayscaleImage
+        + fileName
         + '</text>'
         + '<text x="'
         + (svgTextWidth * 0.75)
