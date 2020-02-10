@@ -76,7 +76,7 @@ exports.createGrayscale = async function (fileName) {
     let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4'//nconf.get("Printer:grayscaleOptions")
     try {
         let cmd = ['sudo','magick', thumbnailImage, grayscaleOptions, grayscaleImage].join(' ');
-        await exec(cmd);
+        console.log(await exec(cmd));
     } catch (error) {
         
     } //im.convert([thumbnailImage, grayscaleOptions, grayscaleImage], (err, stdout) => {if (err) throw err})
@@ -85,7 +85,7 @@ exports.createGrayscale = async function (fileName) {
     // add text to grayscale
     sharpFile = await sharp(grayscaleImage)
     metadata = await sharpFile.metadata()
-    const strDate = nconf.get("Event:Date");
+    const strDate = ''//nconf.get("Event:Date");
     const strEvent = nconf.get("Event:Name");
     const imWidth = metadata.width
     const imHeight = metadata.height
