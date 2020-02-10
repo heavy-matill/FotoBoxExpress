@@ -66,7 +66,7 @@ exports.createGrayscale = async function (fileName) {
     let grayscalePath = path.join(thumbnailPath, "grayscales")
     if (!fs.existsSync(grayscalePath)) {
         // create path if necessary
-        await fs.mkdir(grayscalePath)
+        fs.mkdirSync(grayscalePath)
     }
 
     // generate geryscale thumbnail with contrast settings
