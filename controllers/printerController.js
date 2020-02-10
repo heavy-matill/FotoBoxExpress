@@ -20,7 +20,7 @@ enabe uart hardware
 
 /*
 print
-lp- d 58mmThermal -o portrait -o fit-to-page imagexy.jpg
+lp -d 58mmThermal -o portrait -o fit-to-page imagexy.jpg
 echo "filename" | lp -d 58mmThermal
 */
 /*
@@ -31,6 +31,14 @@ queue until thumbnail exists
 http://www.imagemagick.org/Usage/color_mods/#normalize
     convert src.jpg -colorspace gray dest.jpg
   convert gray_range.jpg  -contrast-stretch 10%  stretch_gray.jpg
+
+https://www.tecmint.com/install-imagemagick-on-debian-ubuntu/
+  CLAHE is supported as of ImageMagick 7.0.8-24 with the -clahe option:
+-clahe widthxheight{%}{+}number-bins{+}clip-limit{!}
+magick mountains.jpg -clahe 25x25%+128+3 mountains-clahe.jpg
+
+optimal for group portraits
+-normalize -colorspace Gray -clahe 12.5x12.5%+128+4
 */
 
 //var magick = require('magick-cli')
@@ -45,11 +53,11 @@ var util = require('util')
 var dbController = require('./dbController')
 var sharp = require('sharp')
 
-exports.createGrayscale = async function(fileName) {
+exports.createGrayscale = async function (fileName) {
     // check if thumbnail exists
     let thumbnailPath = nconf.get("Paths:localThumbnails")
     let thumbnailImage = path.join(thumbnailPath, fileName)
-    if (!fs.existsSync(thumbnailImage)) {        
+    if (!fs.existsSync(thumbnailImage)) {
         //fotoBoxController.enqueuePrintJob(fileName)
         throw "Thumbnail for " + fileName + " does not exist! Enqueuing the print job."
     }
@@ -59,91 +67,80 @@ exports.createGrayscale = async function(fileName) {
     if (!fs.existsSync(grayscalePath)) {
         // create path if necessary
         await fs.mkdir(grayscalePath)
-    }   
+    }
 
     // generate geryscale thumbnail with contrast settings
     let grayscaleImage = path.join(grayscalePath, fileName)
-    
-    /*let grayscaleOptions = nconf.get("Printer:grayscaleOptions")
-    im.convert([thumbnailImage, grayscaleOptions, grayscaleImage], 
-        async function(err, stdout){
+
+    let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4'//nconf.get("Printer:grayscaleOptions")
+    im.convert([thumbnailImage, grayscaleOptions, grayscaleImage],
+        async function (err, stdout) {
             if (err) {
                 throw err;
             }
-            // print if printing was marked
-            await dbController.markReadyPrint(fileName)
-            /*if (dbController.getMarkedPrint(fileName)) {
-                exports.printGrayscale(fileName)
-            }*/
-            /*dbController.get(fileName, function(err, foto) {
-                if(foto.requestedPrint) {
-                    exports.printGrayscale(fileName)
-                    console.log("requested Print is true")
-                }
-            })
-        })*/
-    
+        })
+
     // convert to grayscale    
     sharpFile = await sharp(thumbnailImage)
-	metadata = await sharpFile.metadata()
-	const strDate = '2019-08-05'
-	const strEvent = 'Geburtstag'
-	const imWidth = metadata.width
-	const imHeight = metadata.height
-	const svgTextWidth = 20
-	const svgWidth = imWidth + svgTextWidth*2 
-	const svgHeight = imHeight
-	console.log(metadata)
-	var textSVG = new Buffer('<svg height="'
-		+svgHeight
-		+'" width="'
-		+svgWidth
-		+'">'
-		+'<text x="'
-			+(svgWidth-0.25*svgTextWidth)
-			+'" y="'
-			+svgHeight
-			+'" transform="rotate(-90,'
-			+(svgWidth-0.25*svgTextWidth)
-			+','
-			+svgHeight
-			+')" font-size="16" fill="#000">'
-			+strDate
-		+'</text>'
-		+'<text x="'
-			+(svgWidth-0.25*svgTextWidth)
-			+'" y="'
-			+0
-			+'" transform="rotate(-90,'
-			+(svgWidth-0.25*svgTextWidth)
-			+','
-			+0
-			+')" font-size="16" fill="#000" text-anchor="end" >'
-			+inFile
-		+'</text>'
-		+'<text x="'
-			+(svgTextWidth*0.75)
-			+'" y="'
-			+svgHeight
-			+'" transform="rotate(-90,'
-			+(svgTextWidth*0.75)
-			+','
-			+svgHeight
-			+')" font-size="16" fill="#000">'
-			+strEvent
-		+'</text>'
-		+'</svg>');
-	await sharpFile.greyscale().extend({top: 0,bottom: 0,left: svgTextWidth, right: svgTextWidth,  background: { r: 255, g: 255, b: 255, alpha: 1.0 }  }).overlayWith(textSVG, {gravity: 'center'}).toFile(grayscaleImage)
+    metadata = await sharpFile.metadata()
+    const strDate = '2019-08-05'
+    const strEvent = 'Geburtstag'
+    const imWidth = metadata.width
+    const imHeight = metadata.height
+    const svgTextWidth = 20
+    const svgWidth = imWidth + svgTextWidth * 2
+    const svgHeight = imHeight
+    console.log(metadata)
+    var textSVG = new Buffer('<svg height="'
+        + svgHeight
+        + '" width="'
+        + svgWidth
+        + '">'
+        + '<text x="'
+        + (svgWidth - 0.25 * svgTextWidth)
+        + '" y="'
+        + svgHeight
+        + '" transform="rotate(-90,'
+        + (svgWidth - 0.25 * svgTextWidth)
+        + ','
+        + svgHeight
+        + ')" font-size="16" fill="#000">'
+        + strDate
+        + '</text>'
+        + '<text x="'
+        + (svgWidth - 0.25 * svgTextWidth)
+        + '" y="'
+        + 0
+        + '" transform="rotate(-90,'
+        + (svgWidth - 0.25 * svgTextWidth)
+        + ','
+        + 0
+        + ')" font-size="16" fill="#000" text-anchor="end" >'
+        + inFile
+        + '</text>'
+        + '<text x="'
+        + (svgTextWidth * 0.75)
+        + '" y="'
+        + svgHeight
+        + '" transform="rotate(-90,'
+        + (svgTextWidth * 0.75)
+        + ','
+        + svgHeight
+        + ')" font-size="16" fill="#000">'
+        + strEvent
+        + '</text>'
+        + '</svg>');
+    await sharpFile.greyscale().extend({ top: 0, bottom: 0, left: svgTextWidth, right: svgTextWidth, background: { r: 255, g: 255, b: 255, alpha: 1.0 } }).overlayWith(textSVG, { gravity: 'center' }).toFile(grayscaleImage)
     // print if printing was marked 
-    dbController.get(fileName, function(err, foto) {
-        if(foto.requestedPrint) {
+    dbController.get(fileName, function (err, foto) {
+        if (foto.requestedPrint) {
             exports.printGrayscale(fileName)
             console.log("requested Print is true")
         }
     })
 }
 
-exports.printGrayscale = async function(fileName) {    
+exports.printGrayscale = async function (fileName) {
     let thumbnailPath = nconf.get("Paths:localThumbnails")
     let grayscalePath = path.join(thumbnailPath, "grayscales")
     let grayscaleImage = path.join(grayscalePath, fileName)
@@ -151,22 +148,21 @@ exports.printGrayscale = async function(fileName) {
         console.log("printGrayscale", fileName)
         printImage(grayscaleImage)
     } else {
-        console.log("Attempted to print " + fileName + " but grayscale was not found." )
+        console.log("Attempted to print " + fileName + " but grayscale was not found.")
     }
 }
 
-printImage = function(filePath, comment="") {    
+printImage = function (filePath, comment = "") {
     console.log("printing ", filePath)
     shellExec('lp -d 58mmThermal -o portrait -o fit-to-page ' + filePath)
-    if(comment!="")
-    {
+    if (comment != "") {
         shellExec('echo "' + comment + '" | lp -d 58mmThermal')
     }
 }
 
-exports.printThumbnail = async function(fileName) {
-    dbController.get(fileName, function(err, foto) {
-        if(foto.readyPrint) {
+exports.printThumbnail = async function (fileName) {
+    dbController.get(fileName, function (err, foto) {
+        if (foto.readyPrint) {
             exports.printGrayscale(fileName)
         } else {
             dbController.markRequestedPrint(fileName)
@@ -174,6 +170,6 @@ exports.printThumbnail = async function(fileName) {
     })
 }
 
-exports.deleteAllGrayscales = function() {
+exports.deleteAllGrayscales = function () {
     // delete all grayscale images after settings were changed (ask for option)
 }
