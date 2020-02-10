@@ -15,7 +15,10 @@ button.glitchFilter(10000);
 button.on('alert', (level) => {
 	console.log('triggered ' + level);
 	if (cameraController.ready) {
-		cameraController.takePicture();
+		
+		const now = new Date();
+		fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
+		cameraController.takePicture(fileName);
 	} else {
 		console.log("camera not ready!");
 	}

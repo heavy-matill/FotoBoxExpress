@@ -8,7 +8,7 @@ var thumb = require('node-thumbnail').thumb;
 var tq = require('task-queue');
 var nconf = require('nconf');
 var sharp = require('sharp');
-var path = require("path")
+var path = require("path");
 var printerController = require('./printerController')
 var dbController = require('./dbController')
 
@@ -90,7 +90,7 @@ function refreshDatabase(){
 }
 
 exports.displayFoto = function(fileName){    
-	io.emit('displayFoto', nconf.get("Paths:publicFotos")+'/'+fileName);
+	io.emit('displayFoto', path.join(nconf.get("Paths:publicFotos"),fileName));
 	console.log('Displaying '+fileName);
 };
 
@@ -134,7 +134,7 @@ exports.downloadNewFoto = function(imageUrl){
 	// https vs http request
 	if (imageUrl[4] === "s") {
 		const request = https.get(imageUrl, function(res) {
-				var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + fileName));
+				var stream = res.pipe(fs.createWriteStream(path.join(nconf.get("Paths:localFotos"), fileName)));
 				stream.on('finish', function () {		
 					exports.displayNewFoto(fileName)
 					exports.addNewFoto(fileName)
@@ -144,7 +144,7 @@ exports.downloadNewFoto = function(imageUrl){
 		})
 	} else {
 		const request = http.get(imageUrl, function(res) {
-			var stream = res.pipe(fs.createWriteStream(nconf.get("Paths:localFotos") + '/' + fileName));
+			var stream = res.pipe(fs.createWriteStream(path.join(nconf.get("Paths:localFotos"), fileName)));
 			stream.on('finish', function () {		
 				exports.displayNewFoto(fileName)
 				exports.addNewFoto(fileName)
@@ -157,8 +157,8 @@ exports.downloadNewFoto = function(imageUrl){
 
 exports.createThumbnail = async function(fileName){
 	console.log("createThumbnail", fileName)
-	let localSourceImage = nconf.get("Paths:localFotos")+'/'+fileName
-	let localThumbImage = nconf.get("Paths:localThumbnails")+'/'+fileName
+	let localSourceImage = path.join(nconf.get("Paths:localFotos"), fileName)
+	let localThumbImage = path.join(nconf.get("Paths:localThumbnails"), fileName)
 	if(!fs.existsSync(localThumbImage)) {
 		await sharp(localSourceImage).resize(null, 384).toFile(localThumbImage)
 	}

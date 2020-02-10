@@ -2,6 +2,8 @@ var fs = require('fs');
 var gphoto2 = require('gphoto2');
 var waitOn = require('wait-on');
 var fotoBoxController = require('./fotoBoxController');
+var date = require('date-and-time');
+var path = require("path");
 
 var nconf = require('nconf');
 var i = 0
@@ -33,10 +35,8 @@ getCamera = async function () {
     console.log(result, 'to', camera.model);
 }
 
-exports.takePicture = async function () {
-    // Pass filename to this function
-    var fileName = '/picture' + i++ + '.jpg';
-    var filePath = nconf.get('Paths:localFotos') + fileName;
+exports.takePicture = async function (fileName) {
+    var filePath = path.join(nconf.get('Paths:localFotos'),fileName);
     exports.ready = false;
     try {
         await camera.takePicture({ download: true }, function (error, data) {
@@ -86,7 +86,7 @@ exports.takePicture = async function () {
 async function init(fileName) {
     await getCamera();
     if (fileName) {
-        await takePicture();
+        await takePicture(fileName);
     }
 }
 
