@@ -46,7 +46,7 @@ optimal for group portraits
 
 var fs = require('fs')
 var path = require('path')
-var shellExec = require('shell-exec')
+var exec = require('await-exec')
 var nconf = require('nconf')
 var dbController = require('./dbController')
 var sharp = require('sharp')
@@ -76,7 +76,7 @@ exports.createGrayscale = async function (fileName) {
     let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4'//nconf.get("Printer:grayscaleOptions")
     try {
         let cmd = ['sudo','magick', thumbnailImage, grayscaleOptions, grayscaleImage].join(' ');
-        await shellExec(cmd);
+        await exec(cmd);
     } catch (error) {
         
     } //im.convert([thumbnailImage, grayscaleOptions, grayscaleImage], (err, stdout) => {if (err) throw err})
@@ -154,11 +154,11 @@ exports.printGrayscale = async function (fileName) {
     }
 }
 
-printImage = function (filePath, comment = "") {
+printImage = async function (filePath, comment = "") {
     console.log("printing ", filePath)
-    shellExec('lp -d 58mmThermal -o portrait -o fit-to-page ' + filePath)
+    await exec('lp -d 58mmThermal -o portrait -o fit-to-page ' + filePath)
     if (comment != "") {
-        shellExec('echo "' + comment + '" | lp -d 58mmThermal')
+        await exec('echo "' + comment + '" | lp -d 58mmThermal')
     }
 }
 
