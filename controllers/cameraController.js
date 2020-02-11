@@ -57,6 +57,7 @@ exports.takePicture = async function (fileName) {
                     break;        
                 }
             fs.writeFileSync(filePath, data);
+            fotoBoxController.startQueue();
         });
     } catch (error) {
     }
