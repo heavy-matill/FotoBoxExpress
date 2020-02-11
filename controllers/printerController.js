@@ -74,68 +74,16 @@ exports.createGrayscale = async function (fileName) {
     var grayscaleImage = 'public/thumbnails/2019-03-29_RudiRockt/grayscales/2020-02-10_20-43-41.jpg'
     */
     let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4'//nconf.get("Printer:grayscaleOptions")
+    let labelOptions = '-rotate 90 -background White label:"' + fileName + '" -gravity east -append -background White label:"' + nconf.get("Event:Name") + '" -gravity Center +swap -append -rotate 270'
     try {
-        let cmd = ['sudo','magick', thumbnailImage, grayscaleOptions, grayscaleImage].join(' ');
+        let cmd = ['sudo', 'magick', thumbnailImage, grayscaleOptions, labelOptions ,grayscaleImage].join(' ');
         console.log(await exec(cmd));
     } catch (error) {
-        
-    } //im.convert([thumbnailImage, grayscaleOptions, grayscaleImage], (err, stdout) => {if (err) throw err})
-        
 
-    // add text to grayscale
-    sharpFile = await sharp(grayscaleImage)
-    metadata = await sharpFile.metadata()
-    const strDate = ''//nconf.get("Event:Date");
-    const strEvent = nconf.get("Event:Name");
-    const imWidth = metadata.width
-    const imHeight = metadata.height
-    const svgTextWidth = 20
-    const svgWidth = imWidth + svgTextWidth * 2
-    const svgHeight = imHeight
-    console.log(metadata)
-    var textSVG = new Buffer('<svg height="'
-        + svgHeight
-        + '" width="'
-        + svgWidth
-        + '">'
-        + '<text x="'
-        + (svgWidth - 0.25 * svgTextWidth)
-        + '" y="'
-        + svgHeight
-        + '" transform="rotate(-90,'
-        + (svgWidth - 0.25 * svgTextWidth)
-        + ','
-        + svgHeight
-        + ')" font-size="16" fill="#000">'
-        + strDate
-        + '</text>'
-        + '<text x="'
-        + (svgWidth - 0.25 * svgTextWidth)
-        + '" y="'
-        + 0
-        + '" transform="rotate(-90,'
-        + (svgWidth - 0.25 * svgTextWidth)
-        + ','
-        + 0
-        + ')" font-size="16" fill="#000" text-anchor="end" >'
-        + fileName
-        + '</text>'
-        + '<text x="'
-        + (svgTextWidth * 0.75)
-        + '" y="'
-        + svgHeight
-        + '" transform="rotate(-90,'
-        + (svgTextWidth * 0.75)
-        + ','
-        + svgHeight
-        + ')" font-size="16" fill="#000">'
-        + strEvent
-        + '</text>'
-        + '</svg>');
-    await sharpFile.extend({ top: 0, bottom: 0, left: svgTextWidth, right: svgTextWidth, background: { r: 255, g: 255, b: 255, alpha: 1.0 } }).overlayWith(textSVG, { gravity: 'center' }).toFile(grayscaleImage+'temp');
-    fs.renameSync(grayscaleImage+'temp', grayscaleImage);
+    } 
+    
     // print if printing was marked     
-	await dbController.markReadyPrint(fileName)
+    await dbController.markReadyPrint(fileName)
     dbController.get(fileName, function (err, foto) {
         if (foto.requestedPrint) {
             exports.printGrayscale(fileName)
