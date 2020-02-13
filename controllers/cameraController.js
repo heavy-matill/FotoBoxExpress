@@ -56,10 +56,14 @@ exports.takePicture = async function (fileName) {
                     if (error) throw (error)
                     break;        
                 }
-            fs.writeFileSync(filePath, data);
-            fotoBoxController.startQueue();
+                if(typeof data === 'undefined') {
+                    alert('Error getting Foto from camera.');
+                } else {
+                    fs.writeFileSync(filePath, data);
+                }
         });
     } catch (error) {
+        log(error);
     }
 
     console.log('Camera ready');
@@ -74,13 +78,13 @@ exports.takePicture = async function (fileName) {
             , timeout: 5000
         })
         console.log('File available without callback: ' + filePath);
+        fotoBoxController.displayNewFoto(fileName)
+        fotoBoxController.addNewFoto(fileName)
     } catch (error) {
         // kill gphoto2 because possibly stuck
         console.log(error)
         console.log('Stuck :(')
     }    
-    fotoBoxController.displayNewFoto(fileName)
-    fotoBoxController.addNewFoto(fileName)
 }
 
 async function init(fileName) {
