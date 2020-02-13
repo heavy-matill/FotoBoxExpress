@@ -57,7 +57,7 @@ exports.takePicture = async function (fileName) {
                     break;        
                 }
                 if(typeof data === 'undefined') {
-                    alert('Error getting Foto from camera.');
+                    console.log('Error getting Foto from camera.');
                 } else {
                     fs.writeFileSync(filePath, data);
                 }
