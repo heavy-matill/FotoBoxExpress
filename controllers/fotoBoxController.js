@@ -11,7 +11,7 @@ var sharp = require('sharp');
 var path = require("path");
 var printerController = require('./printerController')
 var dbController = require('./dbController')
-const perf = require('execution-time')();
+//const perf = require('execution-time')();
 
 
 var queue = tq.Queue({capacity: 100, concurrency: 1});
@@ -161,10 +161,10 @@ exports.createThumbnail = async function(fileName){
 	let localSourceImage = path.join(nconf.get("Paths:localFotos"), fileName)
 	let localThumbImage = path.join(nconf.get("Paths:localThumbnails"), fileName)
 	if(!fs.existsSync(localThumbImage)) {
-		perf.start(fileName);
+		//perf.start(fileName);
 		await sharp(localSourceImage).resize(null, 384).toFile(localThumbImage)
-		const results = perf.stop(fileName);
-		console.log(results.time);  // in milliseconds
+		//const results = perf.stop(fileName);
+		//console.log(results.time);  // in milliseconds
 	}
 	await dbController.markReadyThumbnail(fileName)
 	await printerController.createGrayscale(fileName)
