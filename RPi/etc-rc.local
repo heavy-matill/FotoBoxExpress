@@ -21,4 +21,6 @@ fi
 export PATH=/sbin:/usr/sbin:$PATH
 #add sbin to path so you can run shutdown command from anywhere
 /etc/init.d/FotoBoxExpress start
+iptables-restore < /etc/iptables.ipv4.nat
+#nodogsplash # for captive portal
 exit 0

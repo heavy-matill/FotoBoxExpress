@@ -7,16 +7,13 @@ block content
         var socket = io.connect(window.location.search.split("/")[0]);
 
         function login(ref){
-            window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + "Passphrase=" + document.getElementById("Passphrase").value + "&ref=" + ref         
+            window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + "Passphrase=" + document.getElementById("password").value + "&ref=" + ref         
         }
     link(rel='stylesheet', href='/stylesheets/settings.css')
     h1 Login
     table
         tr
-            td Passphrase
-            td
-                input(id="Passphrase" type="text", value="Secret")
-        tr
-            td
-            td
+            form(id='loginForm' action='signedIn.xxx' method='post')
+                input(id="username" type="text", value="admin")
+                input(id="password" type="password", value="")
                 input(type="button" value="Login" onclick="login('#{ref}');")
