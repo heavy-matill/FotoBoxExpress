@@ -16,7 +16,7 @@ It can be modified by editing `libgphoto2-X.X.X/camlibs/ptp2/library.c`:
 sudo nano camlibs/ptp2/library.c
 ```
 searching for:
-```
+```c
 	/* 30 seconds are maximum capture time currently, so use 30 seconds + 5 seconds image saving at most. */
 	} while (time_since (event_start) < 35000);
 ```
