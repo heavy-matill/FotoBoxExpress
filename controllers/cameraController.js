@@ -1,10 +1,10 @@
-var fs = require('fs');
-var fotoBoxController = require('./fotoBoxController');
-var path = require("path");
+const fotoBoxController = require('./fotoBoxController');
+const path = require("path");
+const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-var nconf = require('nconf');
-var i = 0
+const nconf = require('nconf');
+
 exports.ready = true;
 
 exports.takePicture = async function (fileName) {
