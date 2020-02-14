@@ -3,7 +3,7 @@
 ## Third party tool instructions
 
 ### Make and install libgphoto2 and gphoto2
-These isntructions are necessary only if you want to modify the libgphoto library. 
+These instructions are only necessary if you need the newest builds or want to modify the libgphoto library. 
 It was necessary to reduce waiting-for-file-time from 35s to 5s in case my Sony Alpha 7III did not catch a focus. 
 Tested on my RPi 4b.
 
