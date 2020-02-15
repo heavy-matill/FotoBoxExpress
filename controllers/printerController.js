@@ -46,6 +46,7 @@ optimal for group portraits
 
 var fs = require('fs')
 var path = require('path')
+var util = require('util')
 const exec = util.promisify(require('child_process').exec);
 var nconf = require('nconf')
 var dbController = require('./dbController')
