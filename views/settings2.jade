@@ -5,7 +5,11 @@ block content
     script.
         //var socket = io.connect('http://localhost:8000');		
         var socket = io.connect(window.location.search.split("/")[0]);
-
+        function saveSettings2(){
+            var nodes = document.querySelectorAll(":input[type=text]:not([readonly])");
+            for (var i=0; i<nodes.length; i++)
+                console.log(nodes[i].value)
+        }
         function saveSettings(){
             var strUnique = (document.getElementById("Event-Date").value + "_" + document.getElementById("Event-Name").value).replace(/[^a-zA-Z0-9\-]+/g,"_");
 
@@ -52,11 +56,11 @@ block content
         tr
             td Name
             td
-                input(id="Event-Name" type="text" value="#{Event.Name}")
+                input(id="Event:Name" type="text" value="#{settings.Event.Name}")
         tr
             td Date
             td
-                input(id="Event-Date" type="text" value="#{Event.Date}")
+                input(id="Event:Date" type="text" value="#{settings.Event.Date}")
 
         tr
             td
@@ -64,16 +68,16 @@ block content
         tr
             td Resume slide show delay
             td
-                input(id="FotoBox-tOutStartSlideShow" type="text" value="#{FotoBox.tOutStartSlideShow}")
+                input(id="FotoBox:tOutStartSlideShow" type="text" value="#{settings.FotoBox.tOutStartSlideShow}")
         tr
             td Next slide delay
             td
-                input(id="FotoBox-tOutNextSlide" type="text" value="#{FotoBox.tOutNextSlide}")
+                input(id="FotoBox:tOutNextSlide" type="text" value="#{settings.FotoBox.tOutNextSlide}")
 
         tr
             td Delay to trigger camera
             td
-                input(id="FotoBox-tTriggerDelay" type="text" value="#{FotoBox.tTriggerDelay}")
+                input(id="FotoBox:tTriggerDelay" type="text" value="#{settings.FotoBox.tTriggerDelay}")
 
         tr
             td
@@ -81,7 +85,7 @@ block content
         tr
             td Camera IP
             td
-                input(id="Camera-IP" type="text" value="#{Camera.IP}")
+                input(id="Camera:IP" type="text" value="#{settings.Camera.IP}")
 
         tr
             td
@@ -89,43 +93,30 @@ block content
         tr
             td Enable printing
             td
-                -if(Printer.bEnable)
-                    input(id="Printer-bEnable" type="checkbox" checked)
+                input(id="Printer:bEnable" type="text" value="#{settings.Printer.bEnable}" hidden)
+                -if(settings.Printer.bEnable)
+                    input(id="cbPrinterEnable" type="checkbox" checked)
                 -else
-                    input(id="Printer-bEnable" type="checkbox")
-        tr
-            td Grayscale options for imagemagick
-            td
-                input(id="Printer-grayscaleOptions" type="text" value="#{Printer.grayscaleOptions}")
-        tr  
-            td -equalize
-            td every color same intensity
-        tr  
-            td -colorspace Gray
-            td convert to gray
-        tr  
-            td -contrast-stretch 10%x15%
-            td clips 10% darkest tones and 15% lightest tones
-
+                    input(id="cbPrinterEnable" type="checkbox")
         tr
             td
                 h2 MongoDB
         tr
             td Server
             td
-                input(id="Mongo-Server" type="text" value="#{Mongo.Server}")
+                input(id="Mongo:Server" type="text" value="#{settings.Mongo.Server}")
         tr
             td Port
             td
-                input(id="Mongo-Port" type="text" value="#{Mongo.Port}")
+                input(id="Mongo:Port" type="text" value="#{settings.Mongo.Port}")
         tr
             td Database
             td
-                input(id="Mongo-DB" type="text" value="#{Mongo.DB}")
+                input(id="Mongo:DB" type="text" value="#{settings.Mongo.DB}")
         tr
             td Collection
             td
-                input(id="Mongo-Collection" type="text" value="#{Mongo.Collection}" readonly)
+                input(id="Mongo:Collection" type="text" value="#{settings.Mongo.Collection}" readonly)
 
         tr
             td
@@ -133,19 +124,19 @@ block content
         tr
             td Fotos local
             td
-                input(type="text" value="#{Paths.localFotos}" readonly)
+                input(type="text" value="#{settings.Paths.localFotos}" readonly)
         tr
             td Fotos public
             td
-                input(type="text" value="#{Paths.publicFotos}" readonly)
+                input(type="text" value="#{settings.Paths.publicFotos}" readonly)
         tr
             td Thumbnails local
             td
-                input(type="text" value="#{Paths.localThumbnails}" readonly)
+                input(type="text" value="#{settings.Paths.localThumbnails}" readonly)
         tr
             td Thumbnails public
             td
-                input(type="text" value="#{Paths.publicThumbnails}" readonly)
+                input(type="text" value="#{settings.Paths.publicThumbnails}" readonly)
 
 
         tr

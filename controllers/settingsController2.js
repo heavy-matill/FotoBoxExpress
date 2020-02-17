@@ -19,6 +19,8 @@ exports.get = function (key) {
 		// Camera
 
 		// Printer
+		case "Printer:bEnable":
+			return Boolean(nconf.get("Printer:bEnable"))
 
 		// Paths
 		case "Paths:localFotos":
