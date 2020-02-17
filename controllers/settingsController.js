@@ -70,11 +70,12 @@ exports.getMongoURL = function(){
 	return "mongodb://" + nconf.get("Mongo:Server") + ":" + nconf.get("Mongo:Port") + "/" + nconf.get("Mongo:DB");
 };
 
-exports.tOutStartSlideShow = 15000;
-exports.tOutNextSlide = 5000;
-exports.setFotoBoxSettings = function(tOutStartSlideShow, tOutNextSlide){
+exports.tOutStartSlideShow = int(nconf.get("FotoBox:tOutStartSlideShow"));
+exports.tOutNextSlide = int(nconf.get("FotoBox:tOutNextSlide"));;
+exports.setFotoBoxSettings = function(tOutStartSlideShow, tOutNextSlide, tTriggerDelay){
 	this.tOutStartSlideShow = tOutStartSlideShow;
     this.tOutNextSlide = tOutNextSlide;
+    this.tTriggerDelay = tTriggerDelay;
 };
 
 exports.setPrinterSettings = function(bEnable=false, grayscaleOptions='-equalize -colorspace Gray -contrast-stretch 5%x10%'){

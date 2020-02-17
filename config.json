@@ -5,7 +5,8 @@
   },
   "FotoBox": {
     "tOutStartSlideShow": "15000",
-    "tOutNextSlide": "5000"
+    "tOutNextSlide": "5000",
+    "tTriggerDelay": "2000"
   },
   "Camera": {
     "IP": "192.168.178.27"
