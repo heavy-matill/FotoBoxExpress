@@ -70,8 +70,8 @@ exports.getMongoURL = function(){
 	return "mongodb://" + nconf.get("Mongo:Server") + ":" + nconf.get("Mongo:Port") + "/" + nconf.get("Mongo:DB");
 };
 
-exports.tOutStartSlideShow = int(nconf.get("FotoBox:tOutStartSlideShow"));
-exports.tOutNextSlide = int(nconf.get("FotoBox:tOutNextSlide"));;
+exports.tOutStartSlideShow = Number(nconf.get("FotoBox:tOutStartSlideShow"));
+exports.tOutNextSlide = Number(nconf.get("FotoBox:tOutNextSlide"));;
 exports.setFotoBoxSettings = function(tOutStartSlideShow, tOutNextSlide, tTriggerDelay){
 	this.tOutStartSlideShow = tOutStartSlideShow;
     this.tOutNextSlide = tOutNextSlide;
