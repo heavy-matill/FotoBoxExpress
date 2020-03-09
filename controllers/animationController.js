@@ -1,5 +1,6 @@
-const fotoBoxController = require('./fotoBoxController');
+const cameraController = require('./cameraController');
 const exec = require('child_process').exec;
+var date = require('date-and-time');
 
 
 const SerialPort = require('serialport');
@@ -9,7 +10,7 @@ const pathById = '/dev/serial/by-id/';
 var pathSerialDev = '';
 var serialport;
 
-exec("dir /dev/serial/by-id/", (error, stdout, stderr) => {
+exec("sudo dir /dev/serial/by-id/", (error, stdout, stderr) => {
     if (error) {
         console.log(`error: ${error.message}`);
         return;
@@ -20,7 +21,21 @@ exec("dir /dev/serial/by-id/", (error, stdout, stderr) => {
     }
     pathSerialDev = pathById + stdout.slice(0,-1);    
     serialport = new SerialPort(pathSerialDev);
+    const Readline = SerialPort.parsers.Readline
+    const parser = new Readline()
+    serialport.pipe(parser)
+    parser.on('data', triggerCamera)
 });
+
+triggerCamera = function(bStart) {
+    if (cameraController.ready) {		
+		const now = new Date();
+		fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
+		cameraController.takePicture(fileName);
+	} else {
+		console.log("camera not ready!");
+	}
+}
 
 exports.animate = function(tiDelay) {    
     serialport.write(String(tiDelay)+' ');
