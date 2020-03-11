@@ -28,6 +28,7 @@ exec("sudo dir /dev/serial/by-id/", (error, stdout, stderr) => {
 });
 
 triggerCamera = function(bStart) {
+    console.log("received trigger "+ String(bStart) +" via UART");
     if (cameraController.ready) {		
 		const now = new Date();
 		fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
@@ -38,5 +39,6 @@ triggerCamera = function(bStart) {
 }
 
 exports.animate = function(tiDelay) {    
+    console.log("sending animation requeset with delay " + String(tiDelay) + " via UART");
     serialport.write(String(tiDelay)+' ');
 }
