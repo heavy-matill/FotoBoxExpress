@@ -12,7 +12,7 @@ var serialport;
 
 
 triggerCamera = function(data) {
-    console.log("received trigger "+ String(data) +" via UART");
+    console.log("received trigger %s via UART", data);
     if (cameraController.ready) {		
 		const now = new Date();
 		fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
@@ -38,6 +38,7 @@ exec("sudo dir /dev/serial/by-id/", (error, stdout, stderr) => {
     }
     pathSerialDev = pathById + stdout.slice(0,-1);    
     serialport = new SerialPort(pathSerialDev);
+    console.log("Found serialport: %s", serialport);
     const Readline = SerialPort.parsers.Readline
     const parser = new Readline()
     serialport.pipe(parser)
