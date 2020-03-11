@@ -27,20 +27,24 @@ exports.animate = function(tiDelay) {
     serialport.write(String(tiDelay)+' ');
 }
 
-exec("sudo dir /dev/serial/by-id/", (error, stdout, stderr) => {
-    if (error) {
-        console.log(`error: ${error.message}`);
-        return;
-    }
-    if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return;
-    }
-    pathSerialDev = pathById + stdout.slice(0,-1);    
-    serialport = new SerialPort(pathSerialDev);
-    console.log("Found serialport: %s", serialport);
-    const Readline = SerialPort.parsers.Readline
-    const parser = new Readline()
-    serialport.pipe(parser)
-    parser.on('data', triggerCamera)
-});
+assignSerialPort = function() {
+    exec("sudo dir /dev/serial/by-id/", (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        pathSerialDev = pathById + stdout.slice(0,-1);    
+        serialport = new SerialPort(pathSerialDev);
+        console.log("Found serialport: %s", serialport);
+        const Readline = SerialPort.parsers.Readline
+        const parser = new Readline()
+        serialport.pipe(parser)
+        parser.on('data', triggerCamera)
+    });
+}
+
+setTimeout(assignSerialPort,3000);
