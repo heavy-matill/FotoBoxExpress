@@ -10,6 +10,23 @@ const pathById = '/dev/serial/by-id/';
 var pathSerialDev = '';
 var serialport;
 
+
+triggerCamera = function(data) {
+    console.log("received trigger "+ String(data) +" via UART");
+    if (cameraController.ready) {		
+		const now = new Date();
+		fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
+		cameraController.takePicture(fileName);
+	} else {
+		console.log("camera not ready!");
+	}
+}
+
+exports.animate = function(tiDelay) {    
+    console.log("sending animation requeset with delay " + String(tiDelay) + " via UART");
+    serialport.write(String(tiDelay)+' ');
+}
+
 exec("sudo dir /dev/serial/by-id/", (error, stdout, stderr) => {
     if (error) {
         console.log(`error: ${error.message}`);
@@ -26,19 +43,3 @@ exec("sudo dir /dev/serial/by-id/", (error, stdout, stderr) => {
     serialport.pipe(parser)
     parser.on('data', triggerCamera)
 });
-
-triggerCamera = function(bStart) {
-    console.log("received trigger "+ String(bStart) +" via UART");
-    if (cameraController.ready) {		
-		const now = new Date();
-		fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
-		cameraController.takePicture(fileName);
-	} else {
-		console.log("camera not ready!");
-	}
-}
-
-exports.animate = function(tiDelay) {    
-    console.log("sending animation requeset with delay " + String(tiDelay) + " via UART");
-    serialport.write(String(tiDelay)+' ');
-}
