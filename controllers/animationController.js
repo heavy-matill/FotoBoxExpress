@@ -39,7 +39,7 @@ assignSerialPort = function() {
         }
         pathSerialDev = pathById + stdout.slice(0,-1);    
         serialport = new SerialPort(pathSerialDev);
-        console.log("Found serialport: %s", serialport);
+        console.log("Found serialport: %s", pathSerialDev);
         const Readline = SerialPort.parsers.Readline
         const parser = new Readline()
         serialport.pipe(parser)
