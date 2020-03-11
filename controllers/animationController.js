@@ -12,7 +12,7 @@ var serialport;
 
 
 triggerCamera = function(data) {
-    console.log("received trigger %s via UART", data);
+    console.log(`received trigger via UART: ${data}`);
     if (cameraController.ready) {		
 		const now = new Date();
 		fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
@@ -23,7 +23,7 @@ triggerCamera = function(data) {
 }
 
 exports.animate = function(tiDelay) {    
-    console.log("sending animation requeset with delay " + String(tiDelay) + " via UART");
+    console.log(`sending animation requeset with delay ${tiDelay} via UART`);
     serialport.write(String(tiDelay)+' ');
 }
 
