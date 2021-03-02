@@ -15,7 +15,7 @@ var app = express();
 
 
 var fotoBoxController = require('./controllers/fotoBoxController');
-var gpioController = require('./controllers/gpioController');
+//var gpioController = require('./controllers/gpioController');
 var animationController = require('./controllers/animationController');
 var nconf = require('nconf');
 // Further commands done in "www"
