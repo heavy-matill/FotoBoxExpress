@@ -22,23 +22,23 @@ uint8_t pinsRGB[3] = {pinR, pinG, pinB};
 CRGB colShutter[3] = {CRGB::Red, CRGB::Yellow, CRGB::Green};
 
 void cmd_test(MyCommandParser::Argument *args, char *response) {
-  Serial.print("test string: "); Serial.println(args[0].asString);
+  Serial.print("tested "); Serial.println(args[0].asString);
 }
 
 void cmd_count(MyCommandParser::Argument *args, char *response) {
   tAnim = (uint32) args[0].asUInt64;
   tAnimStart = millis();
   state = 2;
-  Serial.print("countdown time in ms: "); Serial.println(tAnim);
+  Serial.print("counting "); Serial.println(tAnim);
 }
 void cmd_stdby(MyCommandParser::Argument *args, char *response) { 
   state = 1; 
-  Serial.println("switched to standby");
+  Serial.println("standby");
 }
 
 void cmd_off(MyCommandParser::Argument *args, char *response) {
   state = 0;
-  Serial.println("switched off");
+  Serial.println("off");
 }
 
 void paintLed(CRGB col) {
@@ -129,6 +129,6 @@ void proc_count() {
 }
 
 ICACHE_RAM_ATTR void triggerButton() {
-  Serial.print("TRIGGER ");
+  Serial.print("trigger ");
   Serial.println(digitalRead(interruptPin));
 }
