@@ -80,7 +80,7 @@ void proc_cmd() {
 
     char response[MyCommandParser::MAX_RESPONSE_SIZE];
     parser.processCommand(line, response);
-    Serial.println(response);
+    //Serial.println(response);
   }
 }
 
@@ -113,6 +113,7 @@ void proc_count() {
   //uint8_t numLed = map(tLeft, 0, tAnim, 0, 2);
   uint8_t numLed = 2-tLeft*3/tAnim;
   paintLed(colShutter[numLed]);
+  uint32_t progressAnim = (tLeft*3%tAnim)*255/tAnim;
   //Serial.print(tLeft); Serial.print(" "); Serial.println(numLed);
   /*for(int col = 0; col < (sizeof(colShutter)/sizeof(colShutter[0])); col++) { 
     fill_solid(leds, NUM_LEDS, CRGB::Black);   

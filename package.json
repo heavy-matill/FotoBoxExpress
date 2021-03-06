@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "await-exec": "^0.1.2",
+    "chai": "^4.3.3",
     "chokidar": "^2.0.3",
     "connect-mongo": "^2.0.1",
     "cookie-parser": "~1.4.3",
@@ -24,6 +25,7 @@
     "jade": "^1.11.0",
     "kue": "^0.11.6",
     "mocha": "^5.2.0",
+    "mocha-sinon": "^2.1.2",
     "mongodb": "~1.4.1",
     "mongoose": "^5.11.18",
     "monk": "^6.0.5",
@@ -35,6 +37,7 @@
     "serve-favicon": "~2.4.5",
     "sharp": "^0.27.2",
     "shell-exec": "^1.0.2",
+    "sinon": "^9.2.4",
     "socket.io": "^2.0.4",
     "task-queue": "^1.0.2",
     "wait-on": "^4.0.0"
