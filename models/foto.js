@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+var mongoose = require('mongoose')
      
 const fotoSchema = mongoose.Schema({
   name: {
@@ -29,9 +29,9 @@ const fotoSchema = mongoose.Schema({
     default: true
   },
 },
-{timestamps: true})
+{autoCreate: true, timestamps: true})
 
 fotoSchema.index({ name: 1, event: 1}, { unique: true , dropDups: true })
 
-// Export foto model
-var Foto = module.exports = mongoose.model('foto', fotoSchema)
+// Export foto model 
+module.exports = mongoose.model('foto', fotoSchema)

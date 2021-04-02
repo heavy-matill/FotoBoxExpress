@@ -1,4 +1,3 @@
-
 //var server = require('../bin/www');
 var expect = require('chai').expect;
 var sinon = require('sinon');
@@ -6,15 +5,15 @@ var serialController = require('../controllers/serialController');
 
 function sleep(ms) {
     return new Promise((resolve) => {
-      setTimeout(resolve, ms);
+        setTimeout(resolve, ms);
     });
-  }  
+}
 
 describe('Send commands', async function () {
     let tiDelay = 1500;
     this.timeout(tiDelay + 100);
     it('Send test command and receive response', async function () {
-        
+
         const spyLog = sinon.spy(console, 'log')
         strTest = "zufaelliger_Teststring"
         serialController.testCommand(strTest);
@@ -56,4 +55,3 @@ describe('Send commands', async function () {
         spyLog.restore();
     });
 });
-

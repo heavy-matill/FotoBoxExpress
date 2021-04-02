@@ -1,93 +1,165 @@
-var nconf = require('nconf')
-var monk = require('monk')
-//https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/mongoose
-var db = monk(nconf.get("Mongo:URL"))
-db.create(nconf.get("Mongo:Collection"), function(err){
-	console.log(err);
-})
-var fotosdb = db.get(nconf.get("Mongo:Collection"))
 var Foto = require('../models/foto')
-
-exports.init = function(){	
-	/*db = monk(nconf.get("Mongo:URL"))
-	console.log(nconf.get("Mongo:Collection"))
-	// initialize MongoDB connection
-	db.create(nconf.get("Mongo:Collection"), function(err){
-		console.log(err)
-	})
-	fotosdb = db.get(nconf.get("Mongo:Collection"))
-    fotosdb.createIndex({name: 1, ctime: 1}, {unique:true})*/
-}
-/* mongoose */
 var mongoose = require('mongoose')
-var mongoDB = nconf.get("Mongo:URL")
-mongoose.connect(mongoDB, {useNewUrlParser: true})
-//Get the default connection
-var db = mongoose.connection
-//Bind connection to error event (to get notification of connection errors)
-db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-Foto.ensureIndexes()
+var conn = mongoose.connection
+//var collection = "fotos";
+var strEvent = "new_event"
 
+exports.init = async function (strDB) {
+	var mongoURL = "mongodb://localhost:27017/" + strDB; // mydatabase is the name of db 
 
-exports.markReadyThumbnail = async function(fileName) {
+	conn.on('error', console.error.bind(console, 'MongoDB connection error:'))
+	conn.once('open', function callback() {
+		console.log('Connected to MongoDB');
+		Foto.createCollection()
+		Foto.ensureIndexes()
+	})
+	await mongoose.connect(mongoURL, {
+		useNewUrlParser: true
+	})
+}
+
+exports.disconnect = async function () {
+	await mongoose.disconnect();
+}
+exports.close = async function () {
+	await conn.close();
+}
+
+exports.readyState = function () {
+	return conn.readyState;
+}
+
+exports.markReadyThumbnail = async function (fileName) {
 	console.log("markReadyThumbnail ", fileName)
-	await Foto.findOneAndUpdate({"name": fileName}, {"readyThumb": true})
+	await Foto.findOneAndUpdate({
+		"name": fileName
+	}, {
+		"readyThumb": true
+	})
 }
 
-exports.markReadyPrint = async function(fileName) {	
+exports.markReadyPrint = async function (fileName) {
 	console.log("markReadyPrint ", fileName)
-	await Foto.findOneAndUpdate({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"readyPrint": true})
+	await Foto.findOneAndUpdate({
+		"name": fileName,
+		"event": strEvent
+	}, {
+		"readyPrint": true
+	})
 }
 
-exports.createEntry = async function(fileName) {
+exports.createEntry = async function (fileName) {
 	console.log("createEntry ", fileName)
-	await Foto.create({"name": fileName, "event": nconf.get("Mongo:Collection")}, function (err, foto_instance) {
+	await Foto.create({
+		"name": fileName,
+		"event": strEvent
+	}, function (err, foto_instance) {
 		if (err) return console.log(err)
 	})
 }
 
-exports.deactivateFoto = async function(fileName) {
-	await Foto.findOneAndUpdate({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"available": false})
+exports.removeEntry = async function (fileName) {
+	console.log("removeEntry ", fileName)
+	await Foto.findOneAndRemove({
+		"name": fileName
+	}, function (err, foto_instance) {
+		if (err) return console.log(err)
+	})
+}
+exports.deleteMany = async function (query) {
+	console.log("deleteMany ", query)
+	await Foto.deleteMany(query
+		, function (err, foto_instance) {
+		if (err) return console.log(err)
+	})
 }
 
-exports.deactivateAllFotos = async function() {
-	await Foto.updateMany({"event": nconf.get("Mongo:Collection")}, {"available": false})
+exports.deactivateFoto = async function (fileName) {
+	await Foto.findOneAndUpdate({
+		"name": fileName,
+		"event": strEvent
+	}, {
+		"available": false
+	})
 }
 
-exports.reactivateFoto = async function(fileName){
+exports.deactivateAllFotos = async function () {
+	await Foto.updateMany({
+		"event": strEvent
+	}, {
+		"available": false
+	})
+}
+
+exports.reactivateFoto = async function (fileName) {
 	console.log("reactivated " + fileName)
-	await Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"available": true})
+	await Foto.update({
+		"name": fileName,
+		"event": strEvent
+	}, {
+		"available": true
+	})
 }
 
-exports.getFotos = function(filter, sort, callback) {
-	filter.event = nconf.get("Mongo:Collection")
+exports.getFotos = function (filter, sort, callback) {
+	filter.event = strEvent
 	console.log(filter)
 	return Foto.find(filter, null, sort, callback)
 }
 
-exports.exists = function(fileName, callback) {
-	Foto.count({"name": fileName, "event": nconf.get("Mongo:Collection")}, callback)
+exports.exists = function (fileName, callback) {
+	Foto.count({
+		"name": fileName,
+		"event": strEvent
+	}, callback)
 }
 
-exports.count = function(filter, callback) {
-	filter.event = nconf.get("Mongo:Collection")
-	Foto.count(filter, callback)
+exports.count = function (filter = {}, callback) {
+	filter.event = strEvent
+	return Foto.countDocuments(filter, callback)
 }
 
-exports.get = function(fileName, callback) {
-	return Foto.findOne({"name": fileName, "event": nconf.get("Mongo:Collection")}, callback)
+exports.countAsync = async function (filter = {}, callback) {
+	filter.event = strEvent
+	return await Foto.countDocuments(filter, callback).exec()
 }
 
-exports.markRequestedPrint = async function(fileName) {
-	await Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {"requestedPrint": true})
+exports.get = function (fileName, callback) {
+	return Foto.findOne({
+		"name": fileName,
+		"event": strEvent
+	}, callback)
 }
 
-exports.dislike = async function(fileName, sessionId) {
+exports.markRequestedPrint = async function (fileName) {
+	await Foto.update({
+		"name": fileName,
+		"event": strEvent
+	}, {
+		"requestedPrint": true
+	})
+}
+
+exports.dislike = async function (fileName, sessionId) {
 	console.log("dislike", fileName, sessionId)
-	await Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {$pull: {"likes": sessionId}})
+	await Foto.update({
+		"name": fileName,
+		"event": strEvent
+	}, {
+		$pull: {
+			"likes": sessionId
+		}
+	})
 }
 
-exports.like = async function(fileName, sessionId) {
+exports.like = async function (fileName, sessionId) {
 	console.log("like", fileName, sessionId)
-	await Foto.update({"name": fileName, "event": nconf.get("Mongo:Collection")}, {$addToSet: {"likes": sessionId}}) //addToSet
+	await Foto.update({
+		"name": fileName,
+		"event": strEvent
+	}, {
+		$addToSet: {
+			"likes": sessionId
+		}
+	}) //addToSet
 }
