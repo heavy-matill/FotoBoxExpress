@@ -93,7 +93,7 @@ exports.deactivateAllFotos = async function () {
 
 exports.reactivateFoto = async function (fileName) {
 	console.log("reactivated " + fileName)
-	await Foto.update({
+	await Foto.findOneAndUpdate({
 		"name": fileName,
 		"event": strEvent
 	}, {
@@ -132,7 +132,7 @@ exports.get = function (fileName, callback) {
 }
 
 exports.markRequestedPrint = async function (fileName) {
-	await Foto.update({
+	await Foto.findOneAndUpdate({
 		"name": fileName,
 		"event": strEvent
 	}, {
@@ -142,7 +142,7 @@ exports.markRequestedPrint = async function (fileName) {
 
 exports.dislike = async function (fileName, sessionId) {
 	console.log("dislike", fileName, sessionId)
-	await Foto.update({
+	await Foto.findOneAndUpdate({
 		"name": fileName,
 		"event": strEvent
 	}, {
@@ -154,12 +154,21 @@ exports.dislike = async function (fileName, sessionId) {
 
 exports.like = async function (fileName, sessionId) {
 	console.log("like", fileName, sessionId)
-	await Foto.update({
+	await Foto.findOneAndUpdate({
 		"name": fileName,
 		"event": strEvent
 	}, {
 		$addToSet: {
 			"likes": sessionId
 		}
-	}) //addToSet
+	})
+}
+
+exports.countLikes = async function (fileName) {
+	console.log("countLikes", fileName)
+	let doc = await Foto.findOne({
+		"name": fileName,
+		"event": strEvent
+	});
+	return doc.likes.length
 }
