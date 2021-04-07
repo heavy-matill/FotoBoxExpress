@@ -2,8 +2,9 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+
 //var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fs = require('fs');
@@ -12,6 +13,7 @@ var chokidar = require('chokidar');
 var path_module = require('path');
 
 var app = express();
+
 
 
 var fotoBoxController = require('./controllers/fotoBoxController');
@@ -39,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //cookieSession
 app.use(session({
   secret: ['my keys']  ,
-  store: new MongoStore({url: nconf.get("Mongo:URL")}),
+  store: MongoStore.create({mongoUrl: nconf.get("Mongo:URL")}),
   resave: true,
   saveUninitialized: true
 }));

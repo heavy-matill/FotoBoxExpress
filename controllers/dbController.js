@@ -1,21 +1,28 @@
 var Foto = require('../models/foto')
 var mongoose = require('mongoose')
 var conn = mongoose.connection
-//var collection = "fotos";
-var strEvent = "new_event"
+var strEvent = "uninitialized_event"
 
-exports.init = async function (strDB) {
-	var mongoURL = "mongodb://localhost:27017/" + strDB; // mydatabase is the name of db 
-
-	conn.on('error', console.error.bind(console, 'MongoDB connection error:'))
-	conn.once('open', function callback() {
-		console.log('Connected to MongoDB');
-		Foto.createCollection()
-		Foto.ensureIndexes()
-	})
+exports.init = async function (strDB, strNewEvent) {
+	exports.setEvent(strNewEvent);
+	var mongoURL = "mongodb://localhost:27017/" + strDB;
+	if (exports.readyState()) {
+		conn.useDb(strDB);
+	} else {
+		conn.on('error', console.error.bind(console, 'MongoDB connection error:'))
+		conn.once('open', function callback() {
+			console.log('Connected to MongoDB');
+			Foto.createCollection()
+			Foto.ensureIndexes()
+		})
+	}
 	await mongoose.connect(mongoURL, {
 		useNewUrlParser: true
 	})
+}
+
+exports.setEvent = function (strNewEvent) {
+	strEvent = strNewEvent;
 }
 
 exports.disconnect = async function () {
@@ -32,7 +39,8 @@ exports.readyState = function () {
 exports.markReadyThumbnail = async function (fileName) {
 	console.log("markReadyThumbnail ", fileName)
 	await Foto.findOneAndUpdate({
-		"name": fileName
+		"name": fileName,
+		"event": strEvent
 	}, {
 		"readyThumb": true
 	})
@@ -61,15 +69,16 @@ exports.createEntry = async function (fileName) {
 exports.removeEntry = async function (fileName) {
 	console.log("removeEntry ", fileName)
 	await Foto.findOneAndRemove({
-		"name": fileName
+		"name": fileName,
+		"event": strEvent
 	}, function (err, foto_instance) {
 		if (err) return console.log(err)
 	})
 }
 exports.deleteMany = async function (query) {
+	query.event = strEvent
 	console.log("deleteMany ", query)
-	await Foto.deleteMany(query
-		, function (err, foto_instance) {
+	await Foto.deleteMany(query, function (err, foto_instance) {
 		if (err) return console.log(err)
 	})
 }

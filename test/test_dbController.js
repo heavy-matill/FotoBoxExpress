@@ -11,12 +11,13 @@ function sleep(ms) {
 describe('Test MongoDB', function () {
     let fileName = "dummy.jpg"
     let fileName2 = "dummy2.jpg"
+    let fileName3 = "dummy3.jpg"
     this.timeout(2000);
     it('starts dissconnected', async function () {
         assert(dbController.readyState() == 0);
     });
     it('connects to localhost MongoDB', async function () {
-        await dbController.init("FotoBox_test");
+        await dbController.init("FotoBox_test", "test_event");
         assert(dbController.readyState() == 1);
     });
     it('is emtpy after clearance', async function () {
@@ -27,7 +28,6 @@ describe('Test MongoDB', function () {
     it('adds an element', async function () {
         await dbController.createEntry(fileName);
         let docCount = await dbController.countAsync({});
-        console.log(docCount)
         assert(docCount == 1)
     });    
     it('marks thumbnail ready', async function () {
@@ -61,8 +61,31 @@ describe('Test MongoDB', function () {
         docCount = await dbController.countAsync({"available": false});
         assert(docCount == 1)
     });
-    it('deactivates all fotos', async function () {
+    it('adds another foto', async function () {
         await dbController.createEntry(fileName2);
+        let docCount = await dbController.countAsync({});
+        assert(docCount == 2)
+    });
+    it('reinitializes with a different event name', async function () {
+        await dbController.init("FotoBox_test", "test_event_2");
+        assert(dbController.readyState() == 1);
+        let docCount = await dbController.countAsync({});
+        assert(docCount == 0)
+        await dbController.createEntry(fileName3);
+        await sleep(50);
+        docCount = await dbController.countAsync({});
+        assert(docCount == 1)
+        await dbController.deleteMany({})
+        docCount = await dbController.countAsync({});
+        assert(docCount == 0)
+    });
+    it('switches back to previous event name', async function () {
+        await dbController.init("FotoBox_test", "test_event");
+        assert(dbController.readyState() == 1);
+        let docCount = await dbController.countAsync({});
+        assert(docCount == 2)
+    });
+    it('activates/deactivates all fotos', async function () {
         await dbController.reactivateFoto(fileName2)
         await dbController.reactivateFoto(fileName)
         let docCount = await dbController.countAsync({"available": true});
@@ -99,7 +122,6 @@ describe('Test MongoDB', function () {
     it('removes an element', async function () {
         await dbController.removeEntry(fileName);
         let docCount = await dbController.countAsync({});
-        console.log(docCount)
         assert(docCount == 0)
     });
     it('is emtpy after removal', async function () {

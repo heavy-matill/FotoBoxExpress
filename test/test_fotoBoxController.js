@@ -2,14 +2,26 @@ var server = require('../bin/www');
 var assert = require('assert');
 var request = require('request');
 var fotoBoxController = require('../controllers/fotoBoxController');
+var settingsController = require('../controllers/settingsController');
 
 
 var nconf = require('nconf');
 
 var fs = require('fs');
 
-describe('set Ev', function(){
-
+describe('Setup', function(){
+    let fileName = "dummy.jpg"
+    let fileName2 = "dummy2.jpg"
+    let fileName3 = "dummy3.jpg"
+    let strUnique1 = "test_event_string1"
+    let strUnique2 = "test_event_string2"    
+    this.timeout(2000);
+    it('initializes', async function () {
+      settingsController.setStrUnique(strUnique1);
+    });
+    it('re-initializes', async function () {
+      settingsController.setStrUnique(strUnique2);
+    });
 });
 
 describe('addNewFoto', function(){

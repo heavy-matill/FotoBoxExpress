@@ -3,8 +3,6 @@ var http = require("http");
 var socketApi = require('../socketApi');
 var io = socketApi.io;
 var fs = require('fs');
-var monk = require('monk')
-var thumb = require('node-thumbnail').thumb;
 var tq = require('task-queue');
 var nconf = require('nconf');
 var sharp = require('sharp');
@@ -21,14 +19,15 @@ exports.stringsFiles = [];
 exports.intervalNextFoto;
 
 // initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
-exports.init = function(){	
+exports.init = async function(){	
 	// create folders
 	if (!fs.existsSync(nconf.get("Paths:localFotos"))) {
 		fs.mkdirSync(nconf.get("Paths:localFotos"), {recursive: true});
 	}
 	if (!fs.existsSync(nconf.get("Paths:localThumbnails"))) {
 		fs.mkdirSync(nconf.get("Paths:localThumbnails"), {recursive: true});
-	}
+	}	
+	await dbController.init("FotoBox",nconf.get("Paths:strUnique"));
 
 	clearInterval(exports.intervalNextFoto);
 	exports.stopQueue();

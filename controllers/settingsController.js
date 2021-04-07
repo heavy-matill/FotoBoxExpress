@@ -1,6 +1,5 @@
 var nconf = require('nconf')
 var fotoBoxController = require('./fotoBoxController')
-var dbController = require('./dbController')
 
 exports.strEvent = "Geburtstag_von_xyz"
 exports.strEventDate = "2018-03-26"
@@ -18,24 +17,13 @@ exports.setEventSettings = function(strEvent, strEventDate){
 exports.setEventName = function(strEventName, bSave=true){
 	nconf.set("Event:Name", strEventName);
 	var strEventDate = nconf.get("Event:Date");	
-	exports.setStrUnique(strUnique(strEventDate, strEventName, bSave=false));
-	exports.setStrUnique(strMongoCollection(strEventDate, strEventName, bSave=bSave));
+	exports.setStrUnique(strUnique(strEventDate, strEventName, bSave=bSave));
 };
 
 exports.setEventDate = function(strEventDate, bSave=true){
 	nconf.set("Event:Date", strEventName);
 	var strEventName = nconf.get("Event:Name");
 	exports.setStrUnique(strUnique(strEventDate, strEventName, bSave=false));
-	exports.setStrUnique(strMongoCollection(strEventDate, strEventName, bSave=bSave));
-};
-
-function strMongoCollection(strEventDate, strEventName){
-	return strEventDate + " " + strEventName;
-};
-exports.setStrMongoCollection = function(strMongoCollection, bSave=true){	
-	nconf.set("Mongo:Collection", strMongoCollection);
-	if(bSave)
-		exports.saveSettings();
 };
 
 function strUnique(strEventDate, strEventName){
@@ -118,5 +106,4 @@ exports.saveSettings = function(data){
 exports.saveInit = function(){
 	nconf.save()
 	fotoBoxController.init()
-	dbController.init()
 }
