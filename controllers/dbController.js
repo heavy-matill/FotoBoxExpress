@@ -122,7 +122,7 @@ exports.getFotos = function (filter, sort, callback) {
 }
 
 exports.exists = function (fileName, callback) {
-	Foto.countDocuments()({
+	Foto.countDocuments({
 		"name": fileName,
 		"event": strEvent
 	}, callback)
