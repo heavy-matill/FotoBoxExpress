@@ -29,14 +29,14 @@ exports.setEventDate = function(strEventDate, bSave=true){
 function strUnique(strEventDate, strEventName){
 	return (strEventDate + "_" + strEventName).replace(/[^a-zA-Z0-9\-]+/g,"_");
 };
-exports.setStrUnique = function(strUnique, bSave=true){
+exports.setStrUnique = async function(strUnique, bSave=true){
 	nconf.set("Paths:localFotos", "public/fotos/" + strUnique);
 	nconf.set("Paths:localThumbnails", "public/thumbnails/" + strUnique);
 	nconf.set("Paths:publicFotos", "fotos/" + strUnique);
 	nconf.set("Paths:publicThumbnails", "thumbnails/" + strUnique);
 	nconf.set("Paths:strUnique", strUnique);	
 	if(bSave)
-		exports.saveSettings();
+		await exports.saveSettings();
 }
 
 exports.setMongoServer = function(strMongoServer, bSave=true){	
@@ -94,16 +94,16 @@ exports.setMongoSettings = function(strMongoServer, strMongoPort, strMongoDB){
 	this.strMongoDB = strMongoDB;
 };
 
-exports.saveSettings = function(data){
+exports.saveSettings = async function(data){
 	nconf.set("Event", data.Event)
 	nconf.set("FotoBox", data.FotoBox)
 	nconf.set("Camera", data.Camera)
 	nconf.set("Printer", data.Printer)
 	nconf.set("Mongo", data.Mongo)
     nconf.set("Paths", data.Paths)
-	exports.saveInit()
+	await exports.saveInit()
 };
-exports.saveInit = function(){
-	nconf.save()
-	fotoBoxController.init()
+exports.saveInit = async function(){
+	await nconf.save()
+	await fotoBoxController.init()
 }
