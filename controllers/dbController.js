@@ -3,6 +3,11 @@ var mongoose = require('mongoose')
 var conn = mongoose.connection
 var strEvent = "uninitialized_event"
 
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+
 exports.init = async function (strDB, strNewEvent) {
 	exports.setEvent(strNewEvent);
 	var mongoURL = "mongodb://localhost:27017/" + strDB;
@@ -117,7 +122,7 @@ exports.getFotos = function (filter, sort, callback) {
 }
 
 exports.exists = function (fileName, callback) {
-	Foto.count({
+	Foto.countDocuments()({
 		"name": fileName,
 		"event": strEvent
 	}, callback)
