@@ -4,11 +4,11 @@ var socketApi = require('../socketApi');
 var io = socketApi.io;
 var fs = require('fs');
 var tq = require('task-queue');
-var nconf = require('nconf');
 var sharp = require('sharp');
 var path = require("path");
 var printerController = require('./printerController')
 var dbController = require('./dbController')
+var settingsController = require('./settingsController')
 //const perf = require('execution-time')();
 
 
@@ -21,20 +21,20 @@ exports.intervalNextFoto;
 // initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
 exports.init = async function(){	
 	// create folders
-	if (!fs.existsSync(nconf.get("Paths:localFotos"))) {
-		fs.mkdirSync(nconf.get("Paths:localFotos"), {recursive: true});
+	if (!fs.existsSync(settingsController.pathLocalFotos)) {
+		fs.mkdirSync(settingsController.pathLocalFotos, {recursive: true});
 	}
-	if (!fs.existsSync(nconf.get("Paths:localThumbnails"))) {
-		fs.mkdirSync(nconf.get("Paths:localThumbnails"), {recursive: true});
+	if (!fs.existsSync(settingsController.pathLocalThumbnails)) {
+		fs.mkdirSync(settingsController.pathLocalThumbnails, {recursive: true});
 	}	
-	await dbController.init("FotoBox",nconf.get("Paths:strUnique"));
+	await dbController.init("FotoBox",settingsController.strUnique);
 
 	clearInterval(exports.intervalNextFoto);
 	exports.stopQueue();
 	
 	refreshFiles();
 
-	exports.intervalNextFoto = setInterval(exports.displayNextFoto,nconf.get("FotoBox:tOutNextSlide"))
+	exports.intervalNextFoto = setInterval(exports.displayNextFoto,settingsController.tOutNextSlide)
 	exports.startQueue();
 }
 
@@ -48,7 +48,7 @@ exports.startQueue = function(){
 function refreshFiles() {	
 	exports.stringsFiles = []
 	dbController.deactivateAllFotos()
-	fs.readdir(nconf.get("Paths:localFotos"), function(err, files){
+	fs.readdir(settingsController.pathLocalFotos, function(err, files){
 		if (err) {
 			return console.error(err)
 		}
@@ -90,20 +90,20 @@ function refreshDatabase(){
 }
 
 exports.displayFoto = function(fileName){    
-	io.emit('displayFoto', path.join(nconf.get("Paths:publicFotos"),fileName));
+	io.emit('displayFoto', path.join(settingsController.pathPublicFotos,fileName));
 	console.log('Displaying '+fileName);
 };
 
 exports.displayNewFoto = function(fileName){  
 	exports.displayFoto(fileName);  
 	clearTimeout(exports.intervalNextFoto);
-	exports.intervalNextFoto = setTimeout(exports.displaySlideShow, nconf.get("FotoBox:tOutStartSlideShow"));	
+	exports.intervalNextFoto = setTimeout(exports.displaySlideShow, settingsController.tOutStartSlideShow);	
 };
 
 exports.displaySlideShow = function(){	
 	exports.startQueue();
 	clearTimeout(exports.intervalNextFoto);
-	exports.intervalNextFoto = setInterval(exports.displayNextFoto,nconf.get("FotoBox:tOutNextSlide"));	
+	exports.intervalNextFoto = setInterval(exports.displayNextFoto,settingsController.tOutNextSlide);	
 };
 
 exports.displayNextFoto = function(){	
@@ -134,7 +134,7 @@ exports.downloadNewFoto = function(imageUrl){
 	// https vs http request
 	if (imageUrl[4] === "s") {
 		const request = https.get(imageUrl, function(res) {
-				var stream = res.pipe(fs.createWriteStream(path.join(nconf.get("Paths:localFotos"), fileName)));
+				var stream = res.pipe(fs.createWriteStream(path.join(settingsController.pathLocalFotos, fileName)));
 				stream.on('finish', function () {		
 					exports.displayNewFoto(fileName)
 					exports.addNewFoto(fileName)
@@ -144,7 +144,7 @@ exports.downloadNewFoto = function(imageUrl){
 		})
 	} else {
 		const request = http.get(imageUrl, function(res) {
-			var stream = res.pipe(fs.createWriteStream(path.join(nconf.get("Paths:localFotos"), fileName)));
+			var stream = res.pipe(fs.createWriteStream(path.join(settingsController.pathLocalFotos, fileName)));
 			stream.on('finish', function () {		
 				exports.displayNewFoto(fileName)
 				exports.addNewFoto(fileName)
@@ -157,8 +157,8 @@ exports.downloadNewFoto = function(imageUrl){
 
 exports.createThumbnail = async function(fileName){
 	console.log("createThumbnail", fileName)
-	let localSourceImage = path.join(nconf.get("Paths:localFotos"), fileName)
-	let localThumbImage = path.join(nconf.get("Paths:localThumbnails"), fileName)
+	let localSourceImage = path.join(settingsController.pathLocalFotos, fileName)
+	let localThumbImage = path.join(settingsController.pathLocalThumbnails, fileName)
 	if(!fs.existsSync(localThumbImage)) {
 		//perf.start(fileName);
 		await sharp(localSourceImage).resize(null, 384).toFile(localThumbImage)

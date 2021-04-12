@@ -1,7 +1,8 @@
 {
   "Event": {
-    "Name": "RudiRockt",
-    "Date": "2019-03-29"
+    "Name": "event",
+    "Date": "test",
+    "strUnique": "manual_test_event"
   },
   "FotoBox": {
     "tOutStartSlideShow": "15000",
@@ -16,11 +17,11 @@
     "grayscaleOptions": "-equalize"
   },
   "Paths": {
-    "localFotos": "public/fotos/2019-03-29_RudiRockt",
-    "localThumbnails": "public/thumbnails/2019-03-29_RudiRockt",
-    "publicFotos": "fotos/2019-03-29_RudiRockt",
-    "publicThumbnails": "thumbnails/2019-03-29_RudiRockt",
-    "strUnique": "2019-03-29_RudiRockt"
+    "localFotos": "public/fotos/manual_test_event",
+    "localThumbnails": "public/thumbnails/manual_test_event",
+    "publicFotos": "fotos/manual_test_event",
+    "publicThumbnails": "thumbnails/manual_test_event",
+    "strUnique": "manual_test_event"
   },
   "Mongo": {
     "Server": "localhost",
