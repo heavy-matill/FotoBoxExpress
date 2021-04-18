@@ -3,9 +3,9 @@ var assert = require('assert');
 var request = require('request');
 var fs = require('fs');
 var path = require("path");
-
 var fotoBoxController = require('../controllers/fotoBoxController');
 var settingsController = require('../controllers/settingsController');
+
 const {
   settings
 } = require('cluster');
@@ -25,6 +25,8 @@ describe('Setup', function () {
   let strUnique1 = "test"
   let strUnique2 = "event"
   let strUnique = strUnique1 + "_" + strUnique2;
+
+  
   this.timeout(5000);
   it('initializes unique string', async function () {
     await settingsController.setEventDate(strUnique1);
@@ -53,7 +55,7 @@ describe('Setup', function () {
     assert(fotoBoxController.stringsFiles.length == 1)
   });
   it('generates thumbnail for found file if none existed before', async function () {
-    await sleep(100);
+    await sleep(1000);
     assert(fs.existsSync(path.join(settingsController.pathLocalThumbnails, fileFound)));
   });
   it('manually adds file', async function () {
