@@ -56,7 +56,7 @@ var osString = process.platform
 
 exports.createGrayscale = async function (fileName) {
     // check if thumbnail exists
-    let thumbnailPath = settingsController.pathLocalFotos;
+    let thumbnailPath = settingsController.pathLocalThumbnails;
     let thumbnailImage = path.join(thumbnailPath, fileName)
     if (!fs.existsSync(thumbnailImage)) {
         //fotoBoxController.enqueuePrintJob(fileName)
