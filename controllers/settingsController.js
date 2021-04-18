@@ -71,10 +71,10 @@ exports.urlMongoDB = function () {
 	await nconf.save()
 };*/
 exports.save = async function () {
-	await nconf.save();
+	nconf.save();
 };
 
 exports.saveInit = async function () {
-	await nconf.save()
+	nconf.save()
 	await fotoBoxController.init()
 }

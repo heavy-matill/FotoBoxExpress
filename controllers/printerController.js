@@ -54,6 +54,17 @@ var settingsController = require('./settingsController')
 var process = require('process')
 var osString = process.platform
 
+        exec('magick -version', (error, stdout, stderr) => {
+            if (error) {
+              console.error(`magick error: ${error}`);
+              return;
+            }
+            let strMagickVer = stdout.split(' ')[2]
+            if(parseInt(strMagickVer[0])<7)
+                console.log(`magick >7 may be required (https://www.tecmint.com/install-imagemagick-on-debian-ubuntu/ or https://imagemagick.org/script/download.php)`);
+            console.error(`magick error: ${stderr}`);
+          });
+
 exports.createGrayscale = async function (fileName) {
     // check if thumbnail exists
     let thumbnailPath = settingsController.pathLocalFotos;
