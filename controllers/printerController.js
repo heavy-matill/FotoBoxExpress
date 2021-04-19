@@ -87,6 +87,14 @@ exports.createGrayscale = async function (fileName) {
     var thumbnailImage = 'public/thumbnails/2019-03-29_RudiRockt/2020-02-10_20-43-41.jpg'
     var grayscaleImage = 'public/thumbnails/2019-03-29_RudiRockt/grayscales/2020-02-10_20-43-41.jpg'
     */
+    let sketchOptions = '( -clone 0 -colorspace gray )  ( -clone 1 -negate -blur 0x4 )  ( -clone 1 -clone 2 -compose color_dodge -composite -level 100% )  ( -clone 3 -alpha set -channel a -evaluate set 0% +channel )  ( -clone 3 -clone 4 -compose multiply -composite ) -delete 0-4'
+    /*magick ob.jpg ^
+    ( -clone 0 -colorspace gray ) ^
+    ( -clone 1 -negate -blur 0x4 ) ^
+    ( -clone 1 -clone 2 -compose color_dodge -composite -level 100% ) ^
+    ( -clone 3 -alpha set -channel a -evaluate set 0% +channel ) ^
+    ( -clone 3 -clone 4 -compose multiply -composite ) ^
+   -delete 0-4 ob1.jpg*/
     let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4'//nconf.get("Printer:grayscaleOptions")
     let labelOptions = '-pointsize 30 -rotate 90 -background White label:"' + fileName.split('.')[0] + '" -gravity east -append -background White label:"' + nconf.get("Event:Name") + '" -gravity Center +swap -append -rotate 270'
     let cmd = ['magick', thumbnailImage, grayscaleOptions, labelOptions, grayscaleImage].join(' ');
