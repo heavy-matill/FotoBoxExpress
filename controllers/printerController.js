@@ -90,9 +90,9 @@ exports.createGrayscale = async function (fileName) {
     let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4'//nconf.get("Printer:grayscaleOptions")
     let labelOptions = '-pointsize 30 -rotate 90 -background White label:"' + fileName.split('.')[0] + '" -gravity east -append -background White label:"' + nconf.get("Event:Name") + '" -gravity Center +swap -append -rotate 270'
     let cmd = ['magick', thumbnailImage, grayscaleOptions, labelOptions, grayscaleImage].join(' ');
-    if(!osString.startsWith("win")) {
+    /*if(!osString.startsWith("win")) {
         cmd = ['sudo', cmd].join(' ');
-    }
+    }*/
     var { stdout, stderr } = await exec(cmd);
     if (stderr) {
         console.log(stderr)
@@ -110,7 +110,7 @@ exports.createGrayscale = async function (fileName) {
 }
 
 exports.printGrayscale = async function (fileName) {
-    let thumbnailPath = nconf.get("Paths:localThumbnails")
+    let thumbnailPath = settingsController.pathLocalThumbnails;
     let grayscalePath = path.join(thumbnailPath, "grayscales")
     let grayscaleImage = path.join(grayscalePath, fileName)
     if (fs.existsSync(grayscaleImage)) {
@@ -123,7 +123,7 @@ exports.printGrayscale = async function (fileName) {
 
 printImage = async function (filePath, comment = "") {
     console.log("printing ", filePath)
-    await exec('lp -d 58mmThermal -o portrait -o fit-to-page ' + filePath)
+    await exec('sudo lp -d zj58 -o portrait -o fit-to-page ' + filePath)
     if (comment != "") {
         await exec('echo "' + comment + '" | lp -d 58mmThermal')
     }
