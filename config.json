@@ -13,7 +13,7 @@
     "IP": "192.168.178.27"
   },
   "Serial": {
-    "Id": "USB\\VID_10C4&PID_EA60\\0001"
+    "Id": "usb-1a86_USB2.0-Serial-if00-port0"
   },
   "Printer": {
     "bEnable": true,

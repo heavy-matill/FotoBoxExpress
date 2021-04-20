@@ -99,12 +99,6 @@ exports.createGrayscale = async function (fileName) {
     let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4' //nconf.get("Printer:grayscaleOptions")
     let labelOptions = '-pointsize 30 -rotate 90 -background White label:"' + fileName.split('.')[0] + '" -gravity east -append -background White label:"' + nconf.get("Event:Name") + '" -gravity Center +swap -append -rotate 270'
     let cmd = ['magick', thumbnailImage, grayscaleOptions, labelOptions, grayscaleImage].join(' ');
-<<<<<<< HEAD
-    /*if(!osString.startsWith("win")) {
-        cmd = ['sudo', cmd].join(' ');
-    }*/
-    var { stdout, stderr } = await exec(cmd);
-=======
     if (!osString.startsWith("win")) {
         cmd = ['sudo', cmd].join(' ');
     }
@@ -112,7 +106,6 @@ exports.createGrayscale = async function (fileName) {
         stdout,
         stderr
     } = await exec(cmd);
->>>>>>> 96a6a1ad7fd952ecf119c28a29ce8dd1884ce703
     if (stderr) {
         console.log(stderr)
         // break on error
