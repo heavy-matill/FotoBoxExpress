@@ -12,6 +12,12 @@ exports.setCameraIP = async function (strIP) {
 	await nconf.save()
 };
 
+exports.setIOSerialId = async function (strId) {
+	nconf.set("IO:SerialId", strId);
+	await nconf.save()
+};
+exports.strSerialId = nconf.get("IO:SerialId");
+
 exports.setEventName =  async function (strEventName) {
 	await nconf.set("Event:Name", strEventName);	
 	await nconf.save()

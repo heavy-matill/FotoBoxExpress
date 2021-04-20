@@ -54,16 +54,17 @@ var settingsController = require('./settingsController')
 var process = require('process')
 var osString = process.platform
 
-        exec('magick -version', (error, stdout, stderr) => {
-            if (error) {
-              console.error(`magick error: ${error}`);
-              return;
-            }
-            let strMagickVer = stdout.split(' ')[2]
-            if(parseInt(strMagickVer[0])<7)
-                console.log(`magick >7 may be required (https://www.tecmint.com/install-imagemagick-on-debian-ubuntu/ or https://imagemagick.org/script/download.php)`);
-            console.error(`magick error: ${stderr}`);
-          });
+exec('magick --version', (error, stdout, stderr) => {
+    if (error) {
+        console.error(`magick error: ${error}`);
+        return;
+    }
+    let strMagickVer = stdout.split(' ')[2]
+    if (parseInt(strMagickVer[0]) < 7)
+        console.log(`magick >7 may be required (https://www.tecmint.com/install-imagemagick-on-debian-ubuntu/ or https://imagemagick.org/script/download.php)`);
+    if (stderr)
+        console.error(`magick error: ${stderr}`);
+});
 
 exports.createGrayscale = async function (fileName) {
     // check if thumbnail exists
@@ -95,13 +96,16 @@ exports.createGrayscale = async function (fileName) {
     ( -clone 3 -alpha set -channel a -evaluate set 0% +channel ) ^
     ( -clone 3 -clone 4 -compose multiply -composite ) ^
    -delete 0-4 ob1.jpg*/
-    let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4'//nconf.get("Printer:grayscaleOptions")
+    let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4' //nconf.get("Printer:grayscaleOptions")
     let labelOptions = '-pointsize 30 -rotate 90 -background White label:"' + fileName.split('.')[0] + '" -gravity east -append -background White label:"' + nconf.get("Event:Name") + '" -gravity Center +swap -append -rotate 270'
     let cmd = ['magick', thumbnailImage, grayscaleOptions, labelOptions, grayscaleImage].join(' ');
-    if(!osString.startsWith("win")) {
+    if (!osString.startsWith("win")) {
         cmd = ['sudo', cmd].join(' ');
     }
-    var { stdout, stderr } = await exec(cmd);
+    var {
+        stdout,
+        stderr
+    } = await exec(cmd);
     if (stderr) {
         console.log(stderr)
         // break on error

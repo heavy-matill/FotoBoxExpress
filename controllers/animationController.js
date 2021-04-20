@@ -1,4 +1,5 @@
 const cameraController = require('./cameraController');
+const settingsController = require('./settingsController');
 const exec = require('child_process').exec;
 var date = require('date-and-time');
 
@@ -11,40 +12,61 @@ var pathSerialDev = '';
 var serialport;
 
 
-triggerCamera = function(data) {
+triggerCamera = function (data) {
     console.log(`received trigger via UART: ${data}`);
-    if (cameraController.ready) {		
-		const now = new Date();
-		fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
-		cameraController.takePicture(fileName);
-	} else {
-		console.log("camera not ready!");
-	}
+    if (cameraController.ready) {
+        const now = new Date();
+        fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
+        cameraController.takePicture(fileName);
+    } else {
+        console.log("camera not ready!");
+    }
 }
 
-exports.animate = function(tiDelay) {    
+exports.animate = function (tiDelay) {
     console.log(`sending animation requeset with delay ${tiDelay} via UART`);
-    serialport.write(String(tiDelay)+' ');
+    serialport.write(String(tiDelay) + ' ');
 }
 
-assignSerialPort = function() {
-    exec("sudo dir /dev/serial/by-id/", (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        pathSerialDev = pathById + stdout.slice(0,-1);    
-        serialport = new SerialPort(pathSerialDev);
-        console.log("Found serialport: %s", pathSerialDev);
-        const Readline = SerialPort.parsers.Readline
-        const parser = new Readline()
-        serialport.pipe(parser)
-        parser.on('data', triggerCamera)
+exports.listSerials = function () {
+    SerialPort.list().then(function (ports) {
+        ports.forEach(function (port) {
+            if (port.pnpId)
+                console.log("Port: ", port);
+        })
     });
 }
 
-setTimeout(assignSerialPort,3000);
+exports.listSerials = function (callback) {
+    SerialPort.list().then(function (ports) {
+        portsWithId = []
+        ports.forEach(function (port) {
+            if (port.pnpId) {
+                console.log("Port: ", port);
+                portsWithId.push(port);
+            }
+        })
+        return callback(portsWithId)
+    });
+}
+
+exports.getSerialPath = function (pnpId, callback) {
+    SerialPort.list().then(function (ports) {
+        ports.forEach(function (port) {
+            if (port.pnpId == pnpId)
+                return callback(port.Path)
+        })
+    });
+}
+
+assignSerialPort = function (pathSerialDev) {
+    serialport = new SerialPort(pathSerialDev);
+    var Readline = SerialPort.parsers.Readline
+    var parser = new Readline()
+    serialport.pipe(parser)
+    parser.on('data', triggerCamera)
+}
+
+setTimeout(function () {
+    assignSerialPort(settingsController.strSerialId)
+}, 3000);
