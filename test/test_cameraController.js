@@ -1,9 +1,6 @@
-
-//var server = require('../bin/www');
 var assert = require('assert');
 var fs = require('fs');
 var cameraController = require('../controllers/cameraController');
-var nconf = require('nconf');
 
 describe('Picture taking', function () {
     this.timeout(10000);

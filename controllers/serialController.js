@@ -6,7 +6,6 @@ exports.init = async function () {
     port = new SerialPort(config.get("Serial:Path"), { //config.get("Serial:Path")
         baudRate: 9600
     }, function () {
-
         port.on('readable', function () {
             let temp = 'RxSer: ' + port.read().toString();
             //console.log('RxSer: ' + port.read().toString())
@@ -18,7 +17,6 @@ exports.init = async function () {
     })
 };
 exports.init();
-
 
 exports.testCommand = async function (strTest) {
     port.write('TEST ' + strTest)
