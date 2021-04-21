@@ -18,19 +18,28 @@ exports.strSerialPath = config.get("Serial:Path");
 
 exports.setEventName = async function (strEventName) {
 	await config.set("Event:Name", strEventName);
+	await exports.setStringUnique(exports.strUnique)
 	await config.save()
 };
 exports.setEventDate = async function (strEventDate) {
 	await config.set("Event:Date", strEventDate);
+	await exports.setStringUnique(exports.strUnique)
 	await config.save()
 };
+exports.setStringUnique = async function(strUnique) {	
+	await config.set("Paths:strUnique", strUnique)
+	await config.set("Paths:localFotos", "public/fotos/" + strUnique)
+	await config.set("Paths:localThumbnails", "public/thumbnails/" + strUnique)
+	await config.set("Paths:publicFotos", "fotos/" + strUnique)
+	await config.set("Paths:publicThumbnails", "thumbnails/" + strUnique)
+} 
 exports.strUnique = (config.get("Event:Date") + "_" + config.get("Event:Name")).replace(/[^a-zA-Z0-9\-]+/g, "_");
 
-exports.pathLocalFotos = "public/fotos/" + exports.strUnique;
+/*exports.pathLocalFotos = "public/fotos/" + exports.strUnique;
 exports.pathLocalThumbnails = "public/thumbnails/" + exports.strUnique;
 exports.pathPublicFotos = "fotos/" + exports.strUnique;
 exports.pathPublicThumbnails = "thumbnails/" + exports.strUnique;
-
+*/
 exports.setMongoServer = async function (strMongoServer) {
 	config.set("Mongo:Server", strMongoServer);
 	await config.save()

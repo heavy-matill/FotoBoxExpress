@@ -1,7 +1,7 @@
 {
   "Event": {
-    "Name": "event",
-    "Date": "test",
+    "Name": "test event",
+    "Date": "2021-04-11",
     "strUnique": "manual_test_event"
   },
   "FotoBox": {
@@ -21,11 +21,11 @@
     "grayscaleOptions": "-equalize"
   },
   "Paths": {
-    "localFotos": "public/fotos/manual_test_event",
-    "localThumbnails": "public/thumbnails/manual_test_event",
-    "publicFotos": "fotos/manual_test_event",
-    "publicThumbnails": "thumbnails/manual_test_event",
-    "strUnique": "manual_test_event"
+    "localFotos": "public/fotos/2021-04-11_test_event",
+    "localThumbnails": "public/thumbnails/2021-04-11_test_event",
+    "publicFotos": "fotos/2021-04-11_test_event",
+    "publicThumbnails": "thumbnails/2021-04-11_test_event",
+    "strUnique": "2021-04-11_test_event"
   },
   "Mongo": {
     "Server": "localhost",

@@ -22,23 +22,25 @@ describe('changes Settings', function() {
         assert(config.get("Event:Date") == datEvent);
     });
     it('changes unique string', async function() {
-        assert(settingsController.strUnique == strUnique);
+        console.log(config.get("Paths:strUnique"))
+        console.log(strUnique)
+        assert(config.get("Paths:strUnique") == strUnique);
     });
     it('adapts paths', function() {
-        assert(settingsController.pathLocalFotos == "public/fotos/" + strUnique);
-        assert(settingsController.pathLocalThumbnails == "public/thumbnails/" + strUnique);
-        assert(settingsController.pathPublicFotos == "fotos/" + strUnique);
-        assert(settingsController.pathPublicThumbnails == "thumbnails/" + strUnique);
+        assert(config.get("Paths:localFotos") == "public/fotos/" + strUnique);
+        assert(config.get("Paths:localThumbnails") == "public/thumbnails/" + strUnique);
+        assert(config.get("Paths:publicFotos") == "fotos/" + strUnique);
+        assert(config.get("Paths:publicThumbnails") == "thumbnails/" + strUnique);
     });
     it('initializes paths', async function() { 
-        await fs.rmdirSync(settingsController.pathLocalFotos, { recursive: true });
-        await fs.rmdirSync(settingsController.pathLocalThumbnails, { recursive: true });
+        await fs.rmdirSync(config.get("Paths:localFotos"), { recursive: true });
+        await fs.rmdirSync(config.get("Paths:localThumbnails"), { recursive: true });
         await settingsController.saveInit();
-        assert(fs.existsSync(settingsController.pathLocalFotos));
-        assert(fs.existsSync(settingsController.pathLocalThumbnails));
+        assert(fs.existsSync(config.get("Paths:localFotos")));
+        assert(fs.existsSync(config.get("Paths:localThumbnails")));
     });
     it('change serial path', async function() {
-        let PathTemp = settingsController.strSerialPath
+        let PathTemp = config.get("Serial:Path")
         let Path1 = "COM12"
         let Path2 = "/dev/ttyUSB13"
         await settingsController.setSerialPath(Path1);

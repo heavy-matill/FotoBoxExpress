@@ -9,6 +9,7 @@ var path = require("path");
 var printerController = require('./printerController')
 var dbController = require('./dbController')
 var settingsController = require('./settingsController')
+var config = require('../config')
 //const perf = require('execution-time')();
 
 
@@ -24,17 +25,17 @@ exports.intervalNextFoto;
 // initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
 exports.init = async function () {
 	// create folders
-	if (!fs.existsSync(settingsController.pathLocalFotos)) {
-		fs.mkdirSync(settingsController.pathLocalFotos, {
+	if (!fs.existsSync(config.get("Paths:localFotos"))) {
+		fs.mkdirSync(config.get("Paths:localFotos"), {
 			recursive: true
 		});
 	}
-	if (!fs.existsSync(settingsController.pathLocalThumbnails)) {
-		fs.mkdirSync(settingsController.pathLocalThumbnails, {
+	if (!fs.existsSync(config.get("Paths:localThumbnails"))) {
+		fs.mkdirSync(config.get("Paths:localThumbnails"), {
 			recursive: true
 		});
 	}
-	await dbController.init("FotoBox", settingsController.strUnique);
+	await dbController.init("FotoBox", config.get("Paths:strUnique"));
 
 	exports.stop();
 
@@ -61,7 +62,7 @@ exports.startQueue = function () {
 exports.refreshFiles = async function () {
 	exports.stringsFiles = []
 	await dbController.deactivateAllFotos()
-	await fs.readdir(settingsController.pathLocalFotos, async function (err, files) {
+	await fs.readdir(config.get("Paths:localFotos"), async function (err, files) {
 		if (err) {
 			return console.error(err)
 		}
@@ -72,7 +73,7 @@ exports.refreshFiles = async function () {
 				} else {
 					await dbController.reactivateFoto(file)
 					await dbController.get(file, function (err, foto) {
-						if (!foto.readyThumb || !fs.existsSync(path.join(settingsController.pathLocalThumbnails, file))) {
+						if (!foto.readyThumb || !fs.existsSync(path.join(config.get("Paths:localThumbnails"), file))) {
 							queue.enqueue(exports.createThumbnail, {
 								args: [file]
 							})
@@ -121,7 +122,7 @@ function refreshDatabase() {
 }
 
 exports.displayFoto = function (fileName) {
-	io.emit('displayFoto', path.join(settingsController.pathPublicFotos, fileName));
+	io.emit('displayFoto', path.join(path.join(config.get("Paths:publicFotos"), fileName)));
 	console.log('Displaying ' + fileName);
 };
 
@@ -166,7 +167,7 @@ exports.downloadNewFoto = function (imageUrl) {
 	// https vs http request
 	if (imageUrl[4] === "s") {
 		const request = https.get(imageUrl, function (res) {
-			var stream = res.pipe(fs.createWriteStream(path.join(settingsController.pathLocalFotos, fileName)));
+			var stream = res.pipe(fs.createWriteStream(path.join(config.get("Paths:localFotos"), fileName)));
 			stream.on('finish', function () {
 				exports.displayNewFoto(fileName)
 				exports.addNewFoto(fileName)
@@ -176,7 +177,7 @@ exports.downloadNewFoto = function (imageUrl) {
 		})
 	} else {
 		const request = http.get(imageUrl, function (res) {
-			var stream = res.pipe(fs.createWriteStream(path.join(settingsController.pathLocalFotos, fileName)));
+			var stream = res.pipe(fs.createWriteStream(path.join(config.get("Paths:localFotos"), fileName)));
 			stream.on('finish', function () {
 				exports.displayNewFoto(fileName)
 				exports.addNewFoto(fileName)
@@ -189,8 +190,8 @@ exports.downloadNewFoto = function (imageUrl) {
 
 exports.createThumbnail = async function (fileName) {
 	console.log("createThumbnail", fileName)
-	let localSourceImage = path.join(settingsController.pathLocalFotos, fileName)
-	let localThumbImage = path.join(settingsController.pathLocalThumbnails, fileName)
+	let localSourceImage = path.join(config.get("Paths:localFotos"), fileName)
+	let localThumbImage = path.join(config.get("Paths:localThumbnails"), fileName)
 	if (!fs.existsSync(localThumbImage)) {
 		await sharp(localSourceImage)
 			.resize(null, 384)
