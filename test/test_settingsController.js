@@ -1,7 +1,5 @@
-
-var server = require('../bin/www');
 var assert = require('assert');
-var nconf = require('nconf');
+var config = require('../config');
 var fs = require('fs');
 
 var settingsController = require('../controllers/settingsController');
@@ -13,15 +11,15 @@ describe('changes Settings', function() {
     let strAdd = "add something"
     it('changes event name', async function() {
         await settingsController.setEventName(strEvent+strAdd);
-        assert(nconf.get("Event:Name") == strEvent+strAdd);
+        assert(config.get("Event:Name") == strEvent+strAdd);
         await settingsController.setEventName(strEvent);
-        assert(nconf.get("Event:Name") == strEvent);
+        assert(config.get("Event:Name") == strEvent);
     });
     it('changes event date', async function() {
         await settingsController.setEventDate(datEvent+strAdd);
-        assert(nconf.get("Event:Date") == datEvent+strAdd);
+        assert(config.get("Event:Date") == datEvent+strAdd);
         await settingsController.setEventDate(datEvent);
-        assert(nconf.get("Event:Date") == datEvent);
+        assert(config.get("Event:Date") == datEvent);
     });
     it('changes unique string', async function() {
         assert(settingsController.strUnique == strUnique);
@@ -38,6 +36,17 @@ describe('changes Settings', function() {
         await settingsController.saveInit();
         assert(fs.existsSync(settingsController.pathLocalFotos));
         assert(fs.existsSync(settingsController.pathLocalThumbnails));
+    });
+    it('change serial path', async function() {
+        let PathTemp = settingsController.strSerialPath
+        let Path1 = "COM12"
+        let Path2 = "/dev/ttyUSB13"
+        await settingsController.setSerialPath(Path1);
+        assert(config.get("Serial:Path") == Path1);
+        await settingsController.setSerialPath(Path2);
+        assert(config.get("Serial:Path") == Path2);
+        await settingsController.setSerialPath(PathTemp);
+        assert(config.get("Serial:Path") == PathTemp);
     });
 });
 

@@ -1,16 +1,16 @@
 var express = require('express');
 var router = express.Router();
-var nconf = require('nconf');
+var config = require('../config');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	res.render('settings', {
-		"Event": nconf.get("Event"), 
-		"FotoBox": nconf.get("FotoBox"), 
-		"Camera": nconf.get("Camera"), 
-		"Printer": nconf.get("Printer"), 
-		"Mongo": nconf.get("Mongo"), 
-		"Paths": nconf.get("Paths")
+		"Event": config.get("Event"), 
+		"FotoBox": config.get("FotoBox"), 
+		"Camera": config.get("Camera"), 
+		"Printer": config.get("Printer"), 
+		"Mongo": config.get("Mongo"), 
+		"Paths": config.get("Paths")
 	});
 });
 module.exports = router;

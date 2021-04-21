@@ -19,7 +19,7 @@ var app = express();
 var fotoBoxController = require('./controllers/fotoBoxController');
 //var gpioController = require('./controllers/gpioController');
 var animationController = require('./controllers/animationController');
-var nconf = require('nconf');
+var config = require('../config');
 // Further commands done in "www"
 //var server = require('http').Server(express);
 //var io = require('socket.io')(server);
@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //cookieSession
 app.use(session({
   secret: ['my keys']  ,
-  store: MongoStore.create({mongoUrl: nconf.get("Mongo:URL")}),
+  store: MongoStore.create({mongoUrl: config.get("Mongo:URL")}),
   resave: true,
   saveUninitialized: true
 }));

@@ -4,8 +4,8 @@
  * Module dependencies.
  */
 
-var nconf = require('nconf');
-nconf.argv().env().file({ file: 'config.json' });
+var config = require('../config');
+config.argv().env().file({ file: 'config.json' });
 var app = require('../app');
 var debug = require('debug')('fotoboxexpress:server');
 var http = require('http');
@@ -56,7 +56,7 @@ io.on('connection', function(client) {
   client.on('saveSettings', function(data) {
     log(data);
     settingsController.saveSettings(data)
-    nconf.argv().env().file({ file: 'config.json' });
+    config.argv().env().file({ file: 'config.json' });
   });
   client.on('shutdown', function(data) {
     if(data=="Secret"){

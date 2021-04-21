@@ -3,7 +3,7 @@ var gphoto2 = require('gphoto2');
 var waitOn = require('wait-on');
 var sleep = require('sleep');
 
-var nconf = require('nconf');
+var config = require('../config');
 var i = 0
 var camera = null;
 var GPhoto = null;
@@ -34,7 +34,7 @@ getCamera = async function () {
 
 /*exports.*/takePicture = async function () {
     // Pass filename to this function
-    var fileName = nconf.get('Paths:localFotos') + '/picture' + i++ + '.jpg';
+    var fileName = config.get('Paths:localFotos') + '/picture' + i++ + '.jpg';
     //exports.ready = false;
     try {
         await camera.takePicture({

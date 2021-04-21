@@ -2,17 +2,17 @@ var express = require('express')
 var router = express.Router()
 var path_module = require('path')
 var fs = require('fs')
-var nconf = require('nconf');
+var config = require('../config');
 var dbController = require('../controllers/dbController');
 var url = require('url');
 //setup cookies parsing
 /* set path variables */
-var publicImagesPath = nconf.get("Paths:publicFotos")
-var publicThumbnailsPath = nconf.get("Paths:publicThumbnails")
-var localImagesPath = nconf.get("Paths:localFotos")
-var localThumbnailsPath = nconf.get("Paths:localThumbnails")
+var publicImagesPath = config.get("Paths:publicFotos")
+var publicThumbnailsPath = config.get("Paths:publicThumbnails")
+var localImagesPath = config.get("Paths:localFotos")
+var localThumbnailsPath = config.get("Paths:localThumbnails")
 var numberImagesShow = 16
-var strUnique = nconf.get("Paths:strUnique")
+var strUnique = config.get("Paths:strUnique")
 
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
@@ -69,9 +69,9 @@ router.get('/', async function(req, res, next) {
 			var numberPagesMax = Math.ceil(numberImagesMax / numberImagesShow);
 			res.render("gallery", 
 				{ 
-					"FotoBox": nconf.get("FotoBox"), 
-					"Printer": nconf.get("Printer"), 
-					"Event": nconf.get("Event"), 
+					"FotoBox": config.get("FotoBox"), 
+					"Printer": config.get("Printer"), 
+					"Event": config.get("Event"), 
 					"number": numberPage, 
 					"imageList": imageList, 
 					"thisUrl": thisUrl, 

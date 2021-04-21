@@ -48,7 +48,7 @@ var fs = require('fs')
 var path = require('path')
 var util = require('util')
 const exec = util.promisify(require('child_process').exec);
-var nconf = require('nconf')
+var config = require('../config')
 var dbController = require('./dbController')
 var settingsController = require('./settingsController')
 var process = require('process')
@@ -96,8 +96,8 @@ exports.createGrayscale = async function (fileName) {
     ( -clone 3 -alpha set -channel a -evaluate set 0% +channel ) ^
     ( -clone 3 -clone 4 -compose multiply -composite ) ^
    -delete 0-4 ob1.jpg*/
-    let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4' //nconf.get("Printer:grayscaleOptions")
-    let labelOptions = '-pointsize 30 -rotate 90 -background White label:"' + fileName.split('.')[0] + '" -gravity east -append -background White label:"' + nconf.get("Event:Name") + '" -gravity Center +swap -append -rotate 270'
+    let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4' //config.get("Printer:grayscaleOptions")
+    let labelOptions = '-pointsize 30 -rotate 90 -background White label:"' + fileName.split('.')[0] + '" -gravity east -append -background White label:"' + config.get("Event:Name") + '" -gravity Center +swap -append -rotate 270'
     let cmd = ['magick', thumbnailImage, grayscaleOptions, labelOptions, grayscaleImage].join(' ');
     if (!osString.startsWith("win")) {
         cmd = ['sudo', cmd].join(' ');
@@ -122,7 +122,7 @@ exports.createGrayscale = async function (fileName) {
 }
 
 exports.printGrayscale = async function (fileName) {
-    let thumbnailPath = nconf.get("Paths:localThumbnails")
+    let thumbnailPath = config.get("Paths:localThumbnails")
     let grayscalePath = path.join(thumbnailPath, "grayscales")
     let grayscaleImage = path.join(grayscalePath, fileName)
     if (fs.existsSync(grayscaleImage)) {

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var nconf = require('nconf');
+var config = require('../config');
 var settings = require('../controllers/settingsController');
 
 /* GET home page. */
