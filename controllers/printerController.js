@@ -135,7 +135,7 @@ exports.printGrayscale = async function (fileName) {
 
 printImage = async function (filePath, comment = "") {
     console.log("printing ", filePath)
-    await exec('lp -d 58mmThermal -o portrait -o fit-to-page ' + filePath)
+    await exec('sudo lp -d zj58 -o portrait -o fit-to-page ' + filePath)
     if (comment != "") {
         await exec('echo "' + comment + '" | lp -d 58mmThermal')
     }
