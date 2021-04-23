@@ -50,7 +50,6 @@ var util = require('util')
 const exec = util.promisify(require('child_process').exec);
 var config = require('../config')
 var dbController = require('./dbController')
-var settingsController = require('./settingsController')
 var process = require('process')
 var osString = process.platform
 
@@ -68,7 +67,7 @@ exec('magick --version', (error, stdout, stderr) => {
 
 exports.createGrayscale = async function (fileName) {
     // check if thumbnail exists
-    let thumbnailPath = settingsController.pathLocalThumbnails;
+    let thumbnailPath = config.get('Paths:localThumbnails');
     let thumbnailImage = path.join(thumbnailPath, fileName)
     if (!fs.existsSync(thumbnailImage)) {
         //fotoBoxController.enqueuePrintJob(fileName)

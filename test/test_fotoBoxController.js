@@ -1,10 +1,11 @@
-var server = require('../bin/www');
+//var server = require('../bin/www');
 var assert = require('assert');
 var request = require('request');
 var fs = require('fs');
 var path = require("path");
 var fotoBoxController = require('../controllers/fotoBoxController');
 var settingsController = require('../controllers/settingsController');
+var config = require('../config')
 
 const {
   settings
@@ -31,56 +32,56 @@ describe('Setup', function () {
   it('initializes unique string', async function () {
     await settingsController.setEventDate(strUnique1);
     await settingsController.setEventName(strUnique2);
-    await settingsController.save();
-    assert(settingsController.strUnique == strUnique);
+    //await settingsController.save();
+    assert(config.get('Paths:strUnique') == strUnique);
   });
   it('initializes paths', async function () {
-    fs.rmdirSync(settingsController.pathLocalFotos, {
+    fs.rmdirSync(config.get('Paths:localFotos'), {
       recursive: true
     });
-    fs.rmdirSync(settingsController.pathLocalThumbnails, {
+    fs.rmdirSync(config.get('Paths:localThumbnails'), {
       recursive: true
     });
     await settingsController.saveInit();
-    assert(fs.existsSync(settingsController.pathLocalFotos));
-    assert(fs.existsSync(settingsController.pathLocalThumbnails));
+    assert(fs.existsSync(config.get('Paths:localFotos')));
+    assert(fs.existsSync(config.get('Paths:localThumbnails')));
   });
   it('refreshes with empty file list', async function () {
     assert(fotoBoxController.stringsFiles.length == 0)
   });
   it('lists a copied file', async function () {
-    fs.copyFileSync(fileSrc, path.join(settingsController.pathLocalFotos, fileFound));
+    fs.copyFileSync(fileSrc, path.join(config.get('Paths:localFotos'), fileFound));
     await fotoBoxController.refreshFiles()
     await sleep(100);
     assert(fotoBoxController.stringsFiles.length == 1)
   });
   it('generates thumbnail for found file if none existed before', async function () {
     await sleep(1000);
-    assert(fs.existsSync(path.join(settingsController.pathLocalThumbnails, fileFound)));
+    assert(fs.existsSync(path.join(config.get('Paths:localThumbnails'), fileFound)));
   });
   it('manually adds file', async function () {
     fotoBoxController.stop()
-    fs.copyFileSync(fileSrc, path.join(settingsController.pathLocalFotos, fileManual));
+    fs.copyFileSync(fileSrc, path.join(config.get('Paths:localFotos'), fileManual));
     let listLength = fotoBoxController.stringsFiles.length;
     fotoBoxController.addNewFoto(fileManual);
     assert(listLength + 1 == fotoBoxController.stringsFiles.length);
   });
   it('does not generate thumbnail if queue paused', async function () {
     await sleep(100);
-    assert(!fs.existsSync(path.join(settingsController.pathLocalThumbnails, fileManual)));
+    assert(!fs.existsSync(path.join(config.get('Paths:localThumbnails'), fileManual)));
   });
   it('manually generates thumbnail', async function () {
     await fotoBoxController.createThumbnail(fileManual);
-    assert(fs.existsSync(path.join(settingsController.pathLocalThumbnails, fileManual)));
+    assert(fs.existsSync(path.join(config.get('Paths:localThumbnails'), fileManual)));
   });
   it('adds and generates thumbnail', async function () {
     fotoBoxController.stopQueue();
-    fs.copyFileSync(fileSrc, path.join(settingsController.pathLocalFotos, fileAdd));
+    fs.copyFileSync(fileSrc, path.join(config.get('Paths:localFotos'), fileAdd));
     let listLength = fotoBoxController.stringsFiles.length;
     fotoBoxController.addNewFoto(fileAdd);
     fotoBoxController.startQueue();
     assert(listLength + 1 == fotoBoxController.stringsFiles.length);
     await sleep(500);
-    assert(fs.existsSync(path.join(settingsController.pathLocalThumbnails, fileAdd)));
+    assert(fs.existsSync(path.join(config.get('Paths:localThumbnails'), fileAdd)));
   });
 });

@@ -17,9 +17,9 @@ var app = express();
 
 
 var fotoBoxController = require('./controllers/fotoBoxController');
+var config = require('./config')
 //var gpioController = require('./controllers/gpioController');
-var animationController = require('./controllers/animationController');
-var config = require('../config');
+//var animationController = require('./controllers/animationController');
 // Further commands done in "www"
 //var server = require('http').Server(express);
 //var io = require('socket.io')(server);
