@@ -18,12 +18,12 @@ exports.strSerialPath = config.get("Serial:Path");
 
 exports.setEventName = async function (strEventName) {
 	await config.set("Event:Name", strEventName);
-	await exports.setStringUnique(exports.strUnique)
+	await exports.setStringUnique(exports.strUnique())
 	await config.save()
 };
 exports.setEventDate = async function (strEventDate) {
 	await config.set("Event:Date", strEventDate);
-	await exports.setStringUnique(exports.strUnique)
+	await exports.setStringUnique(exports.strUnique())
 	await config.save()
 };
 exports.setStringUnique = async function(strUnique) {	
@@ -32,8 +32,11 @@ exports.setStringUnique = async function(strUnique) {
 	await config.set("Paths:localThumbnails", "public/thumbnails/" + strUnique)
 	await config.set("Paths:publicFotos", "fotos/" + strUnique)
 	await config.set("Paths:publicThumbnails", "thumbnails/" + strUnique)
+	await config.save()
 } 
-exports.strUnique = (config.get("Event:Date") + "_" + config.get("Event:Name")).replace(/[^a-zA-Z0-9\-]+/g, "_");
+exports.strUnique = function() {
+	return (config.get("Event:Date") + "_" + config.get("Event:Name")).replace(/[^a-zA-Z0-9\-]+/g, "_");
+}
 
 /*exports.pathLocalFotos = "public/fotos/" + exports.strUnique;
 exports.pathLocalThumbnails = "public/thumbnails/" + exports.strUnique;

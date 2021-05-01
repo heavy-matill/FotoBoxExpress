@@ -33,6 +33,8 @@ describe('Setup', function () {
     await settingsController.setEventDate(strUnique1);
     await settingsController.setEventName(strUnique2);
     //await settingsController.save();
+        //console.log(config.get("Paths:strUnique"))
+        //console.log(strUnique)
     assert(config.get('Paths:strUnique') == strUnique);
   });
   it('initializes paths', async function () {
