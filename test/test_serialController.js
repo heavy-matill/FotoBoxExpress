@@ -54,6 +54,15 @@ describe('Send commands', async function () {
         spyLog.restore();
     });
 
+    it('Triggers camera', async function () {
+        const spyLog = sinon.spy(console, 'log')
+        let strTrigger = "Triggered camera"
+        serialController.testCommand("trigger");
+        await sleep(tiDelay);
+        expect(spyLog.calledWith(strTrigger)).to.be.true;
+        spyLog.restore();
+    });
+
     it('Closes the port', async function () {
         const spyLog = sinon.spy(console, 'log')
         serialController.closePort();

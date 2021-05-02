@@ -1,4 +1,6 @@
 var config = require('../config');
+const cameraController = require('./cameraController');
+
 const SerialPort = require('serialport')
 
 var port;
@@ -21,9 +23,12 @@ exports.init = async function () {
             console.log("RxSer connected")
         }
         port.on('readable', function () {
-            let temp = 'RxSer: ' + port.read().toString();
-            //console.log('RxSer: ' + port.read().toString())
-            console.log(temp);
+            let temp = port.read().toString();
+            if(temp.match('trigger'))
+            {
+                cameraController.triggerCamera();
+            }
+            console.log('RxSer: ' + temp);
         })
         port.on('close', function () {
             console.log('RxSer closed');
@@ -32,6 +37,16 @@ exports.init = async function () {
 };
 exports.init();
 
+triggerCamera = function (data) {
+    console.log(`received trigger via UART: ${data}`);
+    if (cameraController.ready) {
+        const now = new Date();
+        fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
+        cameraController.takePicture(fileName);
+    } else {
+        console.log("camera not ready!");
+    }
+}
 exports.testCommand = async function (strTest) {
     port.write('TEST ' + strTest)
 }

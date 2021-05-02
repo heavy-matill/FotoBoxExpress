@@ -9,6 +9,7 @@ var path = require("path");
 var printerController = require('./printerController')
 var dbController = require('./dbController')
 var settingsController = require('./settingsController')
+var serialController = require('./serialController')
 var config = require('../config')
 //const perf = require('execution-time')();
 
