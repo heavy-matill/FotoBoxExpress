@@ -15,6 +15,7 @@ exports.takePicture = async function (fileName) {
     var filePath = path.join(config.get('Paths:localFotos'),fileName);
     var  { stdout, stderr } = await exec('gphoto2 --capture-image-and-download --force-overwrite --filename='+filePath)
     if (stderr) {
+        exports.ready = true;
         console.log(stderr)
         if (stderr.includes("ERROR: Could not capture."))
         {
