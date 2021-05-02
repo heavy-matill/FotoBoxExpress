@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
-var serialController = require('../controllers/serialController');
+var serialController;
 
 
 function sleep(ms) {
@@ -12,6 +12,14 @@ function sleep(ms) {
 describe('Send commands', async function () {
     let tiDelay = 1500;
     this.timeout(tiDelay + 100);
+    it('Initializes and connects', async function () {
+        const spyLog = sinon.spy(console, 'log')
+        serialController = require('../controllers/serialController');
+        await sleep(tiDelay);
+        expect(spyLog.calledWith('RxSer initializing')).to.be.true;
+        expect(spyLog.calledWith('RxSer connected')).to.be.true;
+        spyLog.restore();
+    });
     it('Send test command and receive response', async function () {
         const spyLog = sinon.spy(console, 'log')
         let strTest = "zufaelliger_Teststring"
