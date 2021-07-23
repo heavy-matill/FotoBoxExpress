@@ -10,6 +10,7 @@
     "await-exec": "^0.1.2",
     "chai": "^4.3.3",
     "chokidar": "^2.0.3",
+    "config": "^3.3.6",
     "connect-mongo": "^4.4.1",
     "cookie-parser": "~1.4.3",
     "cookie-session": "^2.0.0-beta.3",
