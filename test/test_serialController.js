@@ -11,7 +11,7 @@ function sleep(ms) {
 
 describe('Send commands', async function () {
     let tiDelay = 1500;
-    this.timeout(tiDelay + 100);
+    this.timeout(tiDelay + 5000);
     it('Initializes and connects', async function () {
         const spyLog = sinon.spy(console, 'log')
         serialController = require('../controllers/serialController');

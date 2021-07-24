@@ -56,14 +56,14 @@ block content
 		}*/
 		function likeImage(element, sessionId, fileName) {
 			socket.emit("requestLike", {"sessionId": sessionId, "fileName": fileName});
-			element.src = "../images/ic_favorite_white_24dp_2x.png";
+			element.src = "../images/baseline_favorite_white_48dp.png";
 			element.setAttribute( "onclick", "dislikeImage(this, '" + sessionId + "', '" + fileName + "');");
 			var _likeCounter = document.getElementById("likeCounter-" + fileName.split(".")[0]);
 			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) + 1).toString() + ")";
 		}
 		function dislikeImage(element, sessionId, fileName) {
 			socket.emit("requestDislike", {"sessionId": sessionId, "fileName": fileName});
-			element.src = "../images/ic_favorite_border_white_24dp_2x.png";
+			element.src = "../images/baseline_favorite_border_white_48dp.png";
 			element.setAttribute( "onclick", "likeImage(this, '" + sessionId + "', '" + fileName + "');");
 			var _likeCounter = document.getElementById("likeCounter-" + fileName.split(".")[0]);
 			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) - 1).toString() + ")";

@@ -20,7 +20,7 @@ exports.init = async function () {
                 })
             });
         } else {
-            console.log("RxSer connected")
+            console.log('RxSer connected')
         }
         port.on('readable', function () {
             let temp = port.read().toString();
