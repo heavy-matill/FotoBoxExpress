@@ -16,6 +16,7 @@
     "Path": "/dev/ttyUSB0"
   },
   "Printer": {
+    "Name": "zj-58",
     "bEnable": true,
     "grayscaleOptions": "-equalize"
   },

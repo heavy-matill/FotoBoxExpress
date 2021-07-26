@@ -1,16 +1,3 @@
-//var server = require('../bin/www');
-var assert = require('assert');
-var request = require('request');
-var fs = require('fs');
-var path = require("path");
-var fotoBoxController = require('../controllers/fotoBoxController');
-var settingsController = require('../controllers/settingsController');
-var config = require('../config')
-
-const {
-  settings
-} = require('cluster');
-
 function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -18,6 +5,20 @@ function sleep(ms) {
 }
 
 describe('Setup', function () {
+
+  //var server = require('../bin/www');
+  let assert = require('assert');
+  let request = require('request');
+  let fs = require('fs');
+  let path = require("path");
+  let fotoBoxController = require('../controllers/fotoBoxController');
+  let settingsController = require('../controllers/settingsController');
+  let config = require('../config')
+
+  const {
+    settings
+  } = require('cluster');
+
   let fileSrc = "test/rick.jpg"
   let fileFound = "found.jpg"
   let fileAdd = "add.jpg"
@@ -27,14 +28,14 @@ describe('Setup', function () {
   let strUnique2 = "event"
   let strUnique = strUnique1 + "_" + strUnique2;
 
-  
+
   this.timeout(5000);
   it('initializes unique string', async function () {
     await settingsController.setEventDate(strUnique1);
     await settingsController.setEventName(strUnique2);
     //await settingsController.save();
-        //console.log(config.get("Paths:strUnique"))
-        //console.log(strUnique)
+    //console.log(config.get("Paths:strUnique"))
+    //console.log(strUnique)
     assert(config.get('Paths:strUnique') == strUnique);
   });
   it('initializes paths', async function () {

@@ -1,8 +1,8 @@
-var assert = require('assert');
-var config = require('../config');
+describe('changes configuration', function () {
+    let assert = require('assert');
+    let config = require('../config');
 
-describe('changes configuration', function() {
-    it('changes serial path', async function() {
+    it('changes serial path', async function () {
         let PathTemp = config.get("Serial:Path")
         let Path1 = "COM12"
         let Path2 = "/dev/ttyUSB13"

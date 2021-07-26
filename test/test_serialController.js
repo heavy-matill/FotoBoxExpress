@@ -1,8 +1,3 @@
-var expect = require('chai').expect;
-var sinon = require('sinon');
-var serialController;
-
-
 function sleep(ms) {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
@@ -10,11 +5,20 @@ function sleep(ms) {
 }
 
 describe('Send commands', async function () {
+
+    let expect = require('chai').expect;
+    let sinon = require('sinon');
+    let serialController;
+
     let tiDelay = 1500;
     this.timeout(tiDelay + 5000);
     it('Initializes and connects', async function () {
         const spyLog = sinon.spy(console, 'log')
         serialController = require('../controllers/serialController');
+        if (serialController.readyState == 1) {
+            serialController.closePort();
+            serialController.init();
+        }
         await sleep(tiDelay);
         expect(spyLog.calledWith('RxSer initializing')).to.be.true;
         expect(spyLog.calledWith('RxSer connected')).to.be.true;
