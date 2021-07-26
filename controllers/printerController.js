@@ -136,9 +136,15 @@ printImage = async function (filePath, comment = "") {
     let printerName = config.get('Printer:Name');
     console.log("printing " + filePath + " on " + printerName);
     await exec('sudo lp -d ' + printerName + ' -o portrait -o fit-to-page ' + filePath);
+    await printComment(comment);
+}
+exports.printComment = async function (comment = "") {
+    let printerName = config.get('Printer:Name');
     if (comment != "") {
-        await exec('echo "' + comment + '" | lp -d ' + printerName)
+        let printerCommentResponse = await exec('echo "' + comment + '" | lp -d ' + printerName)
+        return printerCommentResponse;
     }
+    return "no comment";
 }
 
 exports.printThumbnail = async function (fileName) {
