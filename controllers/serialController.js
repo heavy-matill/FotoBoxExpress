@@ -4,6 +4,7 @@ const cameraController = require('./cameraController');
 const SerialPort = require('serialport')
 
 var port;
+exports.readyState = 0;
 exports.init = async function () {
     console.log('RxSer initializing');
     port = new SerialPort(config.get("Serial:Path"), { //config.get("Serial:Path")
@@ -20,18 +21,19 @@ exports.init = async function () {
                 })
             });
         } else {
-            console.log("RxSer connected")
+            console.log('RxSer connected')
+            exports.readyState = 1;
         }
         port.on('readable', function () {
             let temp = port.read().toString();
-            if(temp.match('trigger'))
-            {
+            if (temp.match('trigger')) {
                 cameraController.triggerCamera();
             }
             console.log('RxSer: ' + temp);
         })
         port.on('close', function () {
             console.log('RxSer closed');
+            exports.readyState = 0;
         })
     })
 };

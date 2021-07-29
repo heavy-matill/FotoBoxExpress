@@ -1,21 +1,24 @@
-var assert = require('assert');
-var fs = require('fs');
-var cameraController = require('../controllers/cameraController');
-
 describe('Picture taking', function () {
+    let assert = require('assert');
+    let fs = require('fs');
+    let path = require("path");
+    let config = require('../config');
+    let cameraController = require('../controllers/cameraController');
+
     this.timeout(10000);
-    pathFile = './testpicture.jpg'
+    fileName = 'testpicture.jpg'
+    var filePath = path.join(config.get('Paths:localFotos'), fileName);
     try {
-        fs.unlinkSync(pathFile);
+        fs.unlinkSync(filePath);
     } catch (e) {
-        console.log('Tried removing file: ' + pathFile);
+        console.log('Tried removing file: ' + filePath);
         console.log(e);
     }
     it('take a Picture via gphoto2 shell and store locally', async function () {
-        await cameraController.takePicture(pathFile);
-        assert(fs.statSync(pathFile).size > 1e5);
-        console.log(fs.statSync(pathFile).size);
-        fs.unlinkSync(pathFile);
+        await cameraController.takePicture(fileName);
+        assert(fs.statSync(filePath).size > 1e5);
+        console.log(fs.statSync(filePath).size);
+        fs.unlinkSync(filePath);
     });
 });
 

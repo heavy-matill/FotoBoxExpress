@@ -1,7 +1,7 @@
 {
   "Event": {
-    "Name": "event",
-    "Date": "test",
+    "Name": "test event",
+    "Date": "2021-04-11",
     "strUnique": "manual_test_event"
   },
   "FotoBox": {
@@ -13,18 +13,19 @@
     "IP": "192.168.178.27"
   },
   "Serial": {
-    "Path": "/dev/ttyUSB1"
+    "Path": "/dev/ttyUSB0"
   },
   "Printer": {
+    "Name": "zj-58",
     "bEnable": true,
     "grayscaleOptions": "-equalize"
   },
   "Paths": {
-    "localFotos": "public/fotos/test_event",
-    "localThumbnails": "public/thumbnails/test_event",
-    "publicFotos": "fotos/test_event",
-    "publicThumbnails": "thumbnails/test_event",
-    "strUnique": "test_event"
+    "localFotos": "public/fotos/2021-04-11_test_event",
+    "localThumbnails": "public/thumbnails/2021-04-11_test_event",
+    "publicFotos": "fotos/2021-04-11_test_event",
+    "publicThumbnails": "thumbnails/2021-04-11_test_event",
+    "strUnique": "2021-04-11_test_event"
   },
   "Mongo": {
     "Server": "localhost",
