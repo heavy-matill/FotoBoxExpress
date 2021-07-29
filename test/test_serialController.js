@@ -10,7 +10,7 @@ describe('Send commands', async function () {
     let sinon = require('sinon');
     let serialController;
 
-    let tiDelay = 1500;
+    let tiDelay = 250;
     this.timeout(tiDelay + 5000);
     it('Initializes and connects', async function () {
         const spyLog = sinon.spy(console, 'log')

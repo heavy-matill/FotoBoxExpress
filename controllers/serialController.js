@@ -1,5 +1,6 @@
 var config = require('../config');
 const cameraController = require('./cameraController');
+const fotoBoxController = require('./fotoBoxController');
 
 const SerialPort = require('serialport')
 
@@ -39,28 +40,18 @@ exports.init = async function () {
 };
 exports.init();
 
-triggerCamera = function (data) {
-    console.log(`received trigger via UART: ${data}`);
-    if (cameraController.ready) {
-        const now = new Date();
-        fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
-        cameraController.takePicture(fileName);
-    } else {
-        console.log("camera not ready!");
-    }
-}
 exports.testCommand = async function (strTest) {
-    port.write('TEST ' + strTest)
+    port.write('TEST ' + strTest + '\n')
 }
 
 exports.countdownCommand = async function (tiAnim) {
-    port.write('COUNTDOWN ' + tiAnim)
+    port.write('COUNTDOWN ' + tiAnim + '\n')
 }
 exports.standbyCommand = async function () {
-    port.write('STANDBY')
+    port.write('STANDBY' + '\n')
 }
 exports.offCommand = async function () {
-    port.write('OFF')
+    port.write('OFF' + '\n')
 }
 exports.closePort = function () {
     port.close();
