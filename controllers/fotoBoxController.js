@@ -127,6 +127,10 @@ exports.displayFoto = function (fileName) {
 	console.log('Displaying ' + fileName);
 };
 
+exports.displayCountdown = function (timeCountdown = 3000) {
+	io.emit('displayCountdown', timeCountdown);
+};
+
 exports.displayNewFoto = function (fileName) {
 	exports.displayFoto(fileName);
 	clearTimeout(exports.intervalNextFoto);

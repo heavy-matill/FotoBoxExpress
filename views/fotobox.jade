@@ -1,6 +1,6 @@
 doctype html
 html        
-	link(rel='stylesheet', href='/stylesheets/fotobox.css')
+	link(rel='stylesheet' href='/stylesheets/fotobox.css')
 	script(src="/socket.io/socket.io.js")
 	script.
 		//var socket = io.connect('http://localhost:8000');		
@@ -25,8 +25,8 @@ html
 	head
 		title= title
 	body
-		img(id="image", src="../images/aperture.png", onclick="hideNavigation();")
-		
+		img(id="image" src="../images/aperture.png" onclick="hideNavigation();")
+
 		div#nav
 			a#navButton( onclick="showNavigation();").navImage.navButton
 				img(src="../images/baseline_menu_white_48dp.png")     
@@ -34,7 +34,7 @@ html
 				img(src="../images/baseline_view_module_white_48dp.png")
 			a#settingsButton(href="../admin/settings").navImage.navButtonOpt.navHide
 				img(src="../images/baseline_settings_white_48dp.png")
-				
+
 			if Printer.bEnable
 				a#printButton(onclick="console.log('nothing to print')").navImage.navButton
 					img(src="../images/baseline_print_white_48dp.png")
@@ -45,5 +45,22 @@ html
 			socket.on('displayFoto', function(imagePath) {
 				document.getElementById("image").src = "../" + imagePath
 				let imageFile = imagePath.split('/').slice(-1)[0]
-				document.getElementById("printButton").setAttribute("onclick","printImage('" + imageFile + "')")
-				})
+				let printButton = document.getElementById("printButton");
+				printButton.setAttribute("onclick","printImage('" + imageFile + "')")
+				printButton.classList.remove("navHide");
+			})
+			socket.on('displayCountdown', function(tiCountdown) {
+				console.log("display countdown")
+				setTimeout(function() {
+					document.getElementById("image").src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" // empty gif
+					}, tiCountdown);
+				setTimeout(function() {
+					document.getElementById("image").src = "../images/321_0002_1.png"
+					}, tiCountdown*2/3);
+				setTimeout(function() {
+					document.getElementById("image").src = "../images/321_0001_2.png"
+					}, tiCountdown/3);
+				document.getElementById("image").src = "../images/321_0000_3.png"
+				let printButton = document.getElementById("printButton");
+				printButton.classList.add("navHide");
+			})

@@ -4,12 +4,13 @@ const exec = util.promisify(require('child_process').exec);
 var path = require("path");
 
 const fotoBoxController = require('./fotoBoxController');
+const serialController = require('./serialController');
 var config = require('../config');
 
 exports.ready = true;
 
 exports.takePicture = async function (fileName) {
-    exports.ready = false;
+    //exports.ready = false;
     //animationController.animate(3000);
     //await delay(3000);
     var filePath = path.join(config.get('Paths:localFotos'),fileName);
@@ -36,9 +37,14 @@ exports.takePicture = async function (fileName) {
 exports.triggerCamera = function() {
     console.log("Triggered camera")
     if (exports.ready) {
-        const now = new Date();
-        fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
-        exports.takePicture(fileName);
+        exports.ready = false;        
+        fotoBoxController.displayCountdown(3000);
+        serialController.countdownCommand(3000);
+        setTimeout(function () {
+            const now = new Date();
+            fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
+            exports.takePicture(fileName);
+        }, 3000);
     } else {
         console.log("camera not ready!");
     }
