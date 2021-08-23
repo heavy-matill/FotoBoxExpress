@@ -56,7 +56,7 @@ io.on('connection', function(client) {
   client.on('saveSettings', function(data) {
     log(data);
     settingsController.saveSettings(data)
-    config.argv().env().file({ file: 'config.json' });
+    //config.argv().env().file({ file: 'config.json' });
   });
   client.on('shutdown', function(data) {
     if(data=="Secret"){

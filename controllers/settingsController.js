@@ -76,16 +76,17 @@ exports.urlMongoDB = function () {
 	return "mongodb://" + this.strMongoServer + ":" + this.strMongoPort + "/" + this.strMongoDB;
 };
 
-/*exports.saveSettings = async function (data) {
-	// change this to call each of the setter functions than overwriting with the passed bunch
-	config.set("Event", data.Event)
-	config.set("FotoBox", data.FotoBox)
-	config.set("Camera", data.Camera)
-	config.set("Printer", data.Printer)
-	config.set("Mongo", data.Mongo)
-	config.set("Paths", data.Paths)
-	await config.save()
-};*/
+exports.saveSettings = async function (data) {
+	await exports.setEventName(data.Event.Name);
+	await exports.setEventDate(data.Event.Date);
+	await exports.setFotoBoxSettings(data.FotoBox.tOutStartSlideShow, data.FotoBox.tOutNextSlide, data.FotoBox.tTriggerDelay);
+	//"Camera": "IP": document.getElementById("Camera-IP").value
+	await exports.setPrinterSettings(data.Printer.bEnable, data.Printer.grayscaleOptions);
+	await exports.setMongoServer(data.Mongo.Server);
+	await exports.setMongoPort(data.Mongo.Port);
+	await exports.setMongoDB(data.Mongo.DB);
+	await config.saveInit();
+};
 exports.save = async function () {
 	await config.save();
 };
