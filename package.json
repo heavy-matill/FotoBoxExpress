@@ -9,6 +9,7 @@
   "dependencies": {
     "await-exec": "^0.1.2",
     "chai": "^4.3.3",
+    "child_process": "^1.0.2",
     "chokidar": "^2.0.3",
     "commander": "^8.0.0",
     "config": "^3.3.6",
