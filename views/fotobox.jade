@@ -38,6 +38,8 @@ html
 			if Printer.bEnable
 				a#printButton(onclick="console.log('nothing to print')").navImage.navButton
 					img(src="../images/baseline_print_white_48dp.png")
+			a#storageButton(href="../admin/settings").navImage.navButton.navWarning.navHide
+				img(src="../images/baseline_sd_card_alert_white_48dp.png")
 
 		script(src="/socket.io/socket.io.js")
 		script.
@@ -70,4 +72,12 @@ html
 				document.getElementById("image").src = "../images/321_0000_3.png"
 				let printButton = document.getElementById("printButton");
 				printButton.classList.add("navHide");
+			})
+			socket.on('storageWarning', function(bWarning) {				
+				let storageButton = document.getElementById("storageButton");
+				if(bWarning) {
+					storageButton.classList.remove("navHide");
+				} else {
+					storageButton.classList.add("navHide");
+				}
 			})

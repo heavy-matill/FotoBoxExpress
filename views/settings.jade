@@ -17,7 +17,8 @@ block content
                 "FotoBox": {
                     "tOutStartSlideShow": document.getElementById("FotoBox-tOutStartSlideShow").value,
                     "tOutNextSlide": document.getElementById("FotoBox-tOutNextSlide").value,
-                    "tTriggerDelay": document.getElementById("FotoBox-tTriggerDelay").value
+                    "tTriggerDelay": document.getElementById("FotoBox-tTriggerDelay").value,
+                    "numLeft": document.getElementById("FotoBox-numLeft").value
                     },
                 "Camera": {
                     "IP": document.getElementById("Camera-IP").value
@@ -74,6 +75,11 @@ block content
             td Delay to trigger camera
             td
                 input(id="FotoBox-tTriggerDelay" type="text" value="#{FotoBox.tTriggerDelay}")
+
+        tr
+            td Delay to trigger camera
+            td
+                input(id="FotoBox-numLeft" type="text" value="#{FotoBox.numLeft}")
 
         tr
             td

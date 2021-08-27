@@ -49,6 +49,10 @@ img {
     cursor: pointer;
 }
 
+.navWarning {
+    background: rgba(255, 0, 0, 1);
+}
+
 .navButtonOpt {
     position: relative;
     right: 0;

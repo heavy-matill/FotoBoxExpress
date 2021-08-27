@@ -108,6 +108,11 @@ io.on('connection', function(client) {
         console.log(data)
         printerController.printThumbnail(data.fileName)
     });
+    client.on('storageWarning', function(data) {
+        console.log('storageWarning')
+        console.log(data)
+        client.emit("storageWarning", data);
+    });
 });
 
 /**
