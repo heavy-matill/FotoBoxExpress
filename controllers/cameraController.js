@@ -21,11 +21,14 @@ exports.takePicture = async function(fileName) {
         if (stderr.includes("ERROR: Could not capture.") | stderr.includes("FEHLER: Konnte nicht aufnehmen.")) {
             // maybe retry
             // maybe storage full
+            console.log("ERROR")
+            console.log(stderr)
         } else {
             //new error that may have to be handled
-            throw stderr
+            console.log("ERROR")
+            console.log(stderr)
         }
-
+        fotoBoxController.continue();
     } else {
         fotoBoxController.displayNewFoto(fileName)
         fotoBoxController.addNewFoto(fileName)
