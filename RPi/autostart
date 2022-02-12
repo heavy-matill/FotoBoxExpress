@@ -1,0 +1,12 @@
+#/etc/xdg/lxsession/LXDE-pi/autostart
+@lxpanel --profile LXDE-pi
+@pcmanfm --desktop --profile LXDE-pi
+@xscreensaver -no-splash
+# start chromium after start
+@xset s off
+@xset -dpms
+@xset s noblank
+@chromium --user-data-dir=/home/pi/FotoBoxExpress/chromium_user/temp1 --window-position=0,0 --new-window --kiosk http://localhost:8000/fotobox
+@chromium --user-data-dir=/home/pi/FotoBoxExpress/chromium_user/temp2 --window-position=2000,0 --new-window --kiosk http://localhost:8000/gallery
+# remove mouse (requires sudo apt-get install unclutter)
+@unclutter -idle 0.1 -root
