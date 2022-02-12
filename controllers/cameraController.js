@@ -14,27 +14,17 @@ exports.takePicture = async function(fileName) {
     //animationController.animate(3000);
     //await delay(3000);
     var filePath = path.join(config.get('Paths:localFotos'), fileName);
-    var { stdout, stderr } = await exec('gphoto2 --capture-image-and-download --force-overwrite --filename=' + filePath)
-    if (stderr) {
-        exports.ready = true;
-        console.log(stderr)
-        if (stderr.includes("ERROR: Could not capture.") | stderr.includes("FEHLER: Konnte nicht aufnehmen.")) {
-            // maybe retry
-            // maybe storage full
-            console.log("ERROR")
-            console.log(stderr)
-        } else {
-            //new error that may have to be handled
-            console.log("ERROR")
-            console.log(stderr)
-        }
-        fotoBoxController.continue();
-    } else {
+    try {
+        var { stdout, stderr } = await exec('gphoto2 --capture-image-and-download --force-overwrite --filename=' + filePath);
         fotoBoxController.displayNewFoto(fileName)
         fotoBoxController.addNewFoto(fileName)
+        console.log('Camera ready');
+    } catch (e) {
+        console.log('Caught Error: ', e);
+        fotoBoxController.continue();
+    } finally {
+        exports.ready = true;
     }
-    console.log('Camera ready');
-    exports.ready = true;
 }
 
 exports.triggerCamera = function() {
