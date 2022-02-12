@@ -9,6 +9,7 @@ var path = require("path");
 var printerController = require('./printerController')
 var dbController = require('./dbController')
 var settingsController = require('./settingsController')
+var displayController = require('./displayController')
 var serialController = require('./serialController')
 var config = require('../config')
     //const perf = require('execution-time')();
@@ -25,6 +26,7 @@ exports.intervalNextFoto;
 
 // initialize Fotos collection with db.Fotos.createIndex({name: 1, ctime: 1}, {unique:true})
 exports.init = async function() {
+
     // create folders
     if (!fs.existsSync(config.get("Paths:localFotos"))) {
         fs.mkdirSync(config.get("Paths:localFotos"), {
@@ -43,6 +45,7 @@ exports.init = async function() {
     exports.refreshFiles();
 
     exports.continue();
+    displayController.init();
 }
 exports.stop = function() {
     clearInterval(exports.intervalNextFoto);
