@@ -57,6 +57,8 @@ exec('sudo rm -r /var/spool/cups', value => {
     console.log(value.stdout + value.stderr);
     exec('sudo systemctl restart cups.service', value => console.log(value.stdout + value.stderr));
 });
+// kill all gphoto2 processes
+exec('sudo pkill -f gphoto2', value => console.log(value.stdout + value.stderr));
 
 exec('magick --version', (error, stdout, stderr) => {
     if (error) {
