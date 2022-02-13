@@ -1,0 +1,110 @@
+block content
+	script(src="/socket.io/socket.io.js")
+	script(src="/javascripts/img_box.js")
+	script.
+		var socket = io.connect(window.location.search.split("/")[0]);
+		function displayImageName(name) {
+			popupS.alert({content: 'Bitte trage die Nummer '+name.slice(-4)+' in das Fotobuch ein!'});
+		}
+		function printImage(sessionId, fileName) {
+			socket.emit("printImage", {"sessionId": sessionId, "fileName": fileName});
+		}
+
+		// Refresh Rate is how often you want to refresh the page 
+		// bassed off the user inactivity. 
+		var refresh_rate = 200; //In seconds, change to your needs
+		var last_user_action = 0;
+		// Reset the Timer on users last action
+		function reset() {
+			last_user_action = 0;
+			//console.log("Reset");
+		}
+		// Count Down that executes ever second
+		setInterval(function () {
+			last_user_action++;
+			refreshCheck();
+		}, 1000);
+		// The code that checks if the window needs to reload
+		function refreshCheck() {
+			if ((last_user_action >= refresh_rate && document.readyState == "complete") ) {
+				window.location.replace(location.pathname);
+				reset(); // We want to reset just to make sure the location reload is not called.
+			}
+		}
+		window.addEventListener("mousemove", reset, false);
+		window.addEventListener("scroll", reset, false);
+		document.addEventListener("touchMove", reset, false);
+		document.addEventListener("touchEnd", reset, false);
+
+		function likeImage(element, sessionId, fileName) {
+			socket.emit("requestLike", {"sessionId": sessionId, "fileName": fileName});
+			element.src = "../images/baseline_favorite_white_48dp.png";
+			element.setAttribute( "onclick", "dislikeImage(this, '" + sessionId + "', '" + fileName + "');");
+			var _likeCounter = document.getElementById("likeCounter-" + fileName.split(".")[0]);
+			_likeCounter.innerHTML  = (parseInt(_likeCounter.innerHTML) + 1).toString();
+		}
+		function dislikeImage(element, sessionId, fileName) {
+			socket.emit("requestDislike", {"sessionId": sessionId, "fileName": fileName});
+			element.src = "../images/baseline_favorite_border_white_48dp.png";
+			element.setAttribute( "onclick", "likeImage(this, '" + sessionId + "', '" + fileName + "');");
+			var _likeCounter = document.getElementById("likeCounter-" + fileName.split(".")[0]);
+			_likeCounter.innerHTML  = (parseInt(_likeCounter.innerHTML) - 1).toString();
+		}
+		function updateURLParameter(param, paramVal) {
+			// https://stackoverflow.com/questions/1090948/change-url-parameters/10997390#10997390
+			var url = window.location.search
+			var newAdditionalURL = "";
+			var tempArray = url.split("?");
+			var baseURL = tempArray[0];
+			var additionalURL = tempArray[1];
+			var temp = "";
+			if (additionalURL) {
+				tempArray = additionalURL.split("&");
+				for (var i=0; i<tempArray.length; i++){
+					if(tempArray[i].split('=')[0] != param){
+						newAdditionalURL += temp + tempArray[i];
+						temp = "&";
+					}
+				}
+			}
+			var rows_txt = temp + "" + param + "=" + paramVal;
+			return baseURL + "?" + newAdditionalURL + rows_txt;
+		}
+		function showPageNumber(numberPage){
+			window.location.search=updateURLParameter("numberPage", numberPage);
+		}
+	link(rel='stylesheet', href='/stylesheets/terminal.css')
+	//h1 Gallery - #{Event.Name}
+	//p Page #{number+1}
+	//input(type="button" value="login mathe" onclick="window.location.search += '&user=mathe23491@gmx.de'")
+	//input(type="button" value="alert" onclick="userPopup()")
+	//input(type="button" value="mesage" onclick="socketApi.sendNotification")
+	div(class="routing") 
+		- for (var n = 1; n <= numberPagesMax; n++)
+			if(n == number+1)				
+				.div(style="border-style: inset;")=n
+			else
+				.div(onclick="showPageNumber(" + (n - 1) + ")")=n
+	div#image_container
+		each image in imageList
+			div(class="responsive" id="gallery_item_#{number}")
+				div(class="gallery")
+					//a(class="image_ref" target="_blank" href="../fotos/#{strUnique}/#{image.file}.#{image.extension}")
+					img(class="image_thumb" src="../thumbnails/#{strUnique}/#{image.file}.#{image.extension}" alt="#{image.file}" onclick="img_box('../fotos/#{strUnique}/#{image.file}.#{image.extension}')")
+					div(class="bottom-left")										
+						text #{image.file}
+					div(class="bottom-right")
+						text(id="likeCounter-#{image.file}") #{image.likeCounter}
+						if image.likedBool
+							img(id="likeImg-#{image.file}" src="../images/baseline_favorite_white_48dp.png" onclick="dislikeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")
+						else
+							img(id="likeImg-#{image.file}" src="../images/baseline_favorite_border_white_48dp.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")								
+					
+						//- li
+						//- 	img(id="commentImg-#{image.file}" src="../images/ic_message_white_24dp_2x.png" onclick="commentImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="commentButton")
+						//- li(id="commentCounter-#{image.file}") (#{image.commentCounter})
+						
+						if Printer.bEnable	
+							img(id="commentImg-#{image.file}" src="../images/baseline_print_white_48dp.png" onclick="printImage('#{sessionId}', '#{image.file}.#{image.extension}');"  class="imageButton")							
+
+	div(class="clearfix")

@@ -1,10 +1,11 @@
-body{
+body {
     color: white;
     background: black;
 }
+
 div.gallery {
     border: 1px solid black;
-    background-color: #404040; 
+    background-color: #404040;
 }
 
 div.gallery:hover {
@@ -16,16 +17,14 @@ div.gallery:hover {
     height: auto;
 }
 
-@media (pointer:fine) 
-{
+@media (pointer:fine) {
     .imageButton {
         width: 36px;
         height: auto;
     }
 }
 
-@media (pointer:coarse) 
-{
+@media (pointer:coarse) {
     .imageButton {
         width: 48px;
         height: auto;
@@ -38,24 +37,30 @@ div.gallery:hover {
     list-style: none;
     display: flex;
 }
-.space-between{
+
+.space-between {
     flex-flow: row wrap;
     justify-content: space-between;
 }
-.align-center{
+
+.align-center {
     align-items: center;
 }
+
 * {
     box-sizing: border-box;
 }
-.routing {    
+
+.routing {
     display: flex;
     justify-content: flex-end;
-}.div{
+}
+
+.div {
     padding: 5px;
     margin: 5px;
-    background-color: #404040;  
-    border: 1px solid #777;   
+    background-color: #404040;
+    border: 1px solid #777;
     cursor: pointer;
 }
 
@@ -63,16 +68,16 @@ div.gallery:hover {
     padding: 0 6px;
     float: left;
     width: 100%;
-        margin: 2px 0;
+    margin: 2px 0;
 }
 
-@media only screen and (min-width: 721px){
+@media only screen and (min-width: 721px) {
     .responsive {
         width: 49.99999%;
     }
 }
 
-@media only screen and (min-width: 1200px){
+@media only screen and (min-width: 1200px) {
     .responsive {
         width: 24.99999%;
     }

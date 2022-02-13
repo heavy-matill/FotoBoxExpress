@@ -18,11 +18,11 @@ var app = express();
 
 var fotoBoxController = require('./controllers/fotoBoxController');
 var config = require('./config')
-//var gpioController = require('./controllers/gpioController');
-//var animationController = require('./controllers/animationController');
-// Further commands done in "www"
-//var server = require('http').Server(express);
-//var io = require('socket.io')(server);
+    //var gpioController = require('./controllers/gpioController');
+    //var animationController = require('./controllers/animationController');
+    // Further commands done in "www"
+    //var server = require('http').Server(express);
+    //var io = require('socket.io')(server);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,24 +40,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //cookieSession
 app.use(session({
-  secret: ['my keys']  ,
-  store: MongoStore.create({mongoUrl: config.get("Mongo:URL")}),
-  resave: true,
-  saveUninitialized: true
+    secret: ['my keys'],
+    store: MongoStore.create({ mongoUrl: config.get("Mongo:URL") }),
+    resave: true,
+    saveUninitialized: true
 }));
 
-function requireLogin(req, res, next){
-  if (req.session.loggedIn){
-    next(); //allow the next route to run
-  } else {
-    // require the user to login
-    res.redirect("/login?ref="+req.url); //or render a form etc
-  }
+function requireLogin(req, res, next) {
+    if (req.session.loggedIn) {
+        next(); //allow the next route to run
+    } else {
+        // require the user to login
+        res.redirect("/login?ref=" + req.url); //or render a form etc
+    }
 }
 
 // automatically apply the require Login middleare to allroutes starting with admin
-app.all("/admin/*", requireLogin, function(req,res,next){
-  next(); //if middleware allowed to get us here, just move on to the next route
+app.all("/admin/*", requireLogin, function(req, res, next) {
+    next(); //if middleware allowed to get us here, just move on to the next route
 });
 
 // route to other js files
@@ -66,15 +66,17 @@ var users = require('./routes/users');
 var settings = require('./routes/settings');
 var fotobox = require('./routes/fotobox');
 var gallery = require('./routes/gallery');
+var terminal = require('./routes/terminal');
 var cookies = require('./routes/cookies');
-var newfoto = require('./routes/newfoto');	
-var login = require('./routes/login');	
+var newfoto = require('./routes/newfoto');
+var login = require('./routes/login');
 
 app.use('/', index);
 app.use('/users', users);
 app.use('/admin/settings', settings);
 app.use('/fotobox', fotobox);
 app.use('/gallery', gallery);
+app.use('/terminal', terminal);
 app.use('/cookies', cookies);
 app.use('/newfoto', newfoto);
 app.use('/login', login);
@@ -84,20 +86,20 @@ app.use('/foto', fotoRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 //start FotoBox

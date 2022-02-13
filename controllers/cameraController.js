@@ -18,11 +18,11 @@ exports.takePicture = async function(fileName) {
         var { stdout, stderr } = await exec('gphoto2 --capture-image-and-download --force-overwrite --filename=' + filePath);
         fotoBoxController.displayNewFoto(fileName)
         fotoBoxController.addNewFoto(fileName)
-        console.log('Camera ready');
     } catch (e) {
         console.log('Caught Error: ', e);
         fotoBoxController.continue();
     } finally {
+        console.log('Camera ready');
         exports.ready = true;
     }
 }

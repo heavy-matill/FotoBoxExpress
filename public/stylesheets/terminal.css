@@ -1,0 +1,103 @@
+    body {
+        color: white;
+        background: black;
+    }
+    
+    div.gallery {
+        border: 1px solid black;
+        background-color: #404040;
+        position: relative;
+    }
+    
+    div.gallery:hover {
+        border: 1px solid white;
+    }
+    
+    .image_thumb {
+        width: 100%;
+        height: auto;
+    }
+    
+    .bottom-left {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        text-align: left;
+        background-color: rgba(0, 0, 0, 0.3);
+        z-index: 9;
+    }
+    
+    .bottom-right {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 7;
+    }
+    
+    @media (pointer:fine) {
+        .imageButton {
+            width: 36px;
+            height: auto;
+        }
+    }
+    
+    @media (pointer:coarse) {
+        .imageButton {
+            width: 48px;
+            height: auto;
+        }
+    }
+    
+    .flex-container {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        display: flex;
+    }
+    
+    .space-between {
+        flex-flow: row wrap;
+        justify-content: space-between;
+    }
+    
+    .align-center {
+        align-items: center;
+    }
+    
+    * {
+        box-sizing: border-box;
+    }
+    
+    .routing {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+    
+    .div {
+        padding: 5px;
+        margin: 5px;
+        background-color: #404040;
+        border: 1px solid #777;
+        cursor: pointer;
+    }
+    
+    .responsive {
+        padding: 0 6px;
+        float: left;
+        width: 24.99999%;
+        margin: 2px 0;
+    }
+    
+    .clearfix:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    
+    #img_box>img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
