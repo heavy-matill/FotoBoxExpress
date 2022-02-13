@@ -52,6 +52,8 @@ var config = require('../config')
 var dbController = require('./dbController')
 var process = require('process')
 var osString = process.platform
+    // clear printer queue
+exec('sudo rm -r /var/spool/cups', value => log(value.stdout + value.stderr));
 
 exec('magick --version', (error, stdout, stderr) => {
     if (error) {
@@ -65,7 +67,7 @@ exec('magick --version', (error, stdout, stderr) => {
         console.error(`magick error: ${stderr}`);
 });
 
-exports.createGrayscale = async function (fileName) {
+exports.createGrayscale = async function(fileName) {
     // check if thumbnail exists
     let thumbnailPath = config.get('Paths:localThumbnails');
     let thumbnailImage = path.join(thumbnailPath, fileName)
@@ -83,18 +85,18 @@ exports.createGrayscale = async function (fileName) {
 
     // generate geryscale thumbnail with contrast settings
     let grayscaleImage = path.join(grayscalePath, fileName)
-    /*
-    var thumbnailImage = 'public/thumbnails/2019-03-29_RudiRockt/2020-02-10_20-43-41.jpg'
-    var grayscaleImage = 'public/thumbnails/2019-03-29_RudiRockt/grayscales/2020-02-10_20-43-41.jpg'
-    */
+        /*
+        var thumbnailImage = 'public/thumbnails/2019-03-29_RudiRockt/2020-02-10_20-43-41.jpg'
+        var grayscaleImage = 'public/thumbnails/2019-03-29_RudiRockt/grayscales/2020-02-10_20-43-41.jpg'
+        */
     let sketchOptions = '( -clone 0 -colorspace gray )  ( -clone 1 -negate -blur 0x4 )  ( -clone 1 -clone 2 -compose color_dodge -composite -level 100% )  ( -clone 3 -alpha set -channel a -evaluate set 0% +channel )  ( -clone 3 -clone 4 -compose multiply -composite ) -delete 0-4'
-    /*magick ob.jpg ^
-    ( -clone 0 -colorspace gray ) ^
-    ( -clone 1 -negate -blur 0x4 ) ^
-    ( -clone 1 -clone 2 -compose color_dodge -composite -level 100% ) ^
-    ( -clone 3 -alpha set -channel a -evaluate set 0% +channel ) ^
-    ( -clone 3 -clone 4 -compose multiply -composite ) ^
-   -delete 0-4 ob1.jpg*/
+        /*magick ob.jpg ^
+( -clone 0 -colorspace gray ) ^
+( -clone 1 -negate -blur 0x4 ) ^
+( -clone 1 -clone 2 -compose color_dodge -composite -level 100% ) ^
+( -clone 3 -alpha set -channel a -evaluate set 0% +channel ) ^
+( -clone 3 -clone 4 -compose multiply -composite ) ^
+-delete 0-4 ob1.jpg*/
     let grayscaleOptions = '-normalize -colorspace Gray -clahe 12.5x12.5%+128+4' //config.get("Printer:grayscaleOptions")
     let labelOptions = '-pointsize 30 -rotate 90 -background White label:"' + fileName.split('.')[0] + '" -gravity east -append -background White label:"' + config.get("Event:Name") + '" -gravity Center +swap -append -rotate 270'
     let cmd = ['magick', thumbnailImage, grayscaleOptions, labelOptions, grayscaleImage].join(' ');
@@ -107,12 +109,12 @@ exports.createGrayscale = async function (fileName) {
     } = await exec(cmd);
     if (stderr) {
         console.log(stderr)
-        // break on error
+            // break on error
         return
     }
     // print if printing was marked   
     await dbController.markReadyPrint(fileName)
-    dbController.get(fileName, function (err, foto) {
+    dbController.get(fileName, function(err, foto) {
         if (foto.requestedPrint) {
             exports.printGrayscale(fileName)
             console.log("requested Print is true")
@@ -120,7 +122,7 @@ exports.createGrayscale = async function (fileName) {
     })
 }
 
-exports.printGrayscale = async function (fileName) {
+exports.printGrayscale = async function(fileName) {
     let thumbnailPath = config.get("Paths:localThumbnails")
     let grayscalePath = path.join(thumbnailPath, "grayscales")
     let grayscaleImage = path.join(grayscalePath, fileName)
@@ -132,13 +134,13 @@ exports.printGrayscale = async function (fileName) {
     }
 }
 
-printImage = async function (filePath, comment = "") {
+printImage = async function(filePath, comment = "") {
     let printerName = config.get('Printer:Name');
     console.log("printing " + filePath + " on " + printerName);
     await exec('sudo lp -d ' + printerName + ' -o portrait -o fit-to-page ' + filePath);
     await printComment(comment);
 }
-exports.printComment = async function (comment = "") {
+exports.printComment = async function(comment = "") {
     let printerName = config.get('Printer:Name');
     if (comment != "") {
         let printerCommentResponse = await exec('echo "' + comment + '" | lp -d ' + printerName)
@@ -147,8 +149,8 @@ exports.printComment = async function (comment = "") {
     return "no comment";
 }
 
-exports.printThumbnail = async function (fileName) {
-    dbController.get(fileName, function (err, foto) {
+exports.printThumbnail = async function(fileName) {
+    dbController.get(fileName, function(err, foto) {
         if (foto.readyPrint) {
             exports.printGrayscale(fileName)
         } else {
@@ -157,6 +159,6 @@ exports.printThumbnail = async function (fileName) {
     })
 }
 
-exports.deleteAllGrayscales = function () {
+exports.deleteAllGrayscales = function() {
     // delete all grayscale images after settings were changed (ask for option)
 }

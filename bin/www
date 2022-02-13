@@ -76,6 +76,10 @@ io.on('connection', function(client) {
             process.exit()
         }
     });
+    client.on('clear-printer', function() {
+        log("Clearing printer queue.");
+        shellExec('sudo rm -r /var/spool/cups').then(value => log(value.stdout + value.stderr));
+    });
     client.on('restart', function(data) {
         if (data == "Secret") {
             const restartProcess = () => {
