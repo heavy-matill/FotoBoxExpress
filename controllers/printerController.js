@@ -53,7 +53,10 @@ var dbController = require('./dbController')
 var process = require('process')
 var osString = process.platform
     // clear printer queue
-exec('sudo rm -r /var/spool/cups', value => log(value.stdout + value.stderr));
+exec('sudo rm -r /var/spool/cups', value => {
+    console.log(value.stdout + value.stderr);
+    exec('sudo systemctl restart cups.service', value => console.log(value.stdout + value.stderr));
+});
 
 exec('magick --version', (error, stdout, stderr) => {
     if (error) {
