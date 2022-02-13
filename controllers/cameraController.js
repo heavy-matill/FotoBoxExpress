@@ -7,6 +7,9 @@ const fotoBoxController = require('./fotoBoxController');
 const serialController = require('./serialController');
 var config = require('../config');
 
+// kill all gphoto2 processes
+exec('sudo pkill -f gphoto2', (value) =>
+    console.log(value.stdout + value.stderr));
 exports.ready = true;
 
 exports.takePicture = async function(fileName) {
