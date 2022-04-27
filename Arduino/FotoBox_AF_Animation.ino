@@ -113,21 +113,25 @@ void confetti()
 void bpm()
 {
   // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
+  uint8_t partsPerStrip = 2; // greater equal 1
+  uint8_t colorsPerPart = 32; // 0-255
   uint8_t BeatsPerMinute = 62;
   CRGBPalette16 palette = PartyColors_p;
   uint8_t beat = beatsin8( BeatsPerMinute, 64, 255);
   for( int i = 0; i < NUM_LEDS; i++) { //9948
-    leds[i] = ColorFromPalette(palette, gHue+(i*2), beat-gHue+(i*10));
+    //leds[i] = ColorFromPalette(palette, 0, beat-gHue+(i*256/NUM_LEDS));
+    leds[i] = ColorFromPalette(palette, gHue+abs8(i-NUM_LEDS/2)*colorsPerPart*partsPerStrip/NUM_LEDS, beat-gHue+(i*256/NUM_LEDS*partsPerStrip));
   }
 }
 
 void juggle() {
-  // eight colored dots, weaving in and out of sync with each other
+  // a number of colored dots, weaving in and out of sync with each other
+  uint8_t numDots = 6;
   fadeToBlackBy( leds, NUM_LEDS, 20);
   byte dothue = 0;
-  for( int i = 0; i < 8; i++) {
-    leds[beatsin16( i+7, 0, NUM_LEDS-1 )] |= CHSV(dothue, 200, 255);
-    dothue += 32;
+  for( int i = 0; i < numDots; i++) {
+    leds[(beatsin16( i+7, 0, NUM_LEDS-1)+NUM_LEDS*i/numDots)%NUM_LEDS] |= CHSV(dothue, 200, 255);
+    dothue += 256 /numDots;
   }
 }
 
