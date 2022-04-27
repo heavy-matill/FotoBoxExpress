@@ -77,7 +77,9 @@ void nextPattern()
 void rainbow() 
 {
   // FastLED's built-in rainbow generator
-  fill_rainbow( leds, NUM_LEDS, gHue, 256/NUM_LEDS);
+  // fill_rainbow( leds, NUM_LEDS, gHue, 256/NUM_LEDS);
+  // more accurate in closed loop strips
+  fill_gradient	(	leds, 0, CHSV(gHue, 255, 255), NUM_LEDS-1, CHSV( gHue - 256/NUM_LEDS, 255, 255), LONGEST_HUES);
 }
 
 void rainbowWithGlitter() 
