@@ -11,49 +11,23 @@ block content
 		function printImage(sessionId, fileName) {
 			socket.emit("printImage", {"sessionId": sessionId, "fileName": fileName})
 		}
-		/*
-		socket.on('likeConfirmed', function(data) {
-			var _likeCounter = document.getElementById("likeCounter-" + data.imageName);
-			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) + 1).toString() + ")";
-		});
-		socket.on('dislikeConfirmed', function(data) {
-			var _likeCounter = document.getElementById("likeCounter-" + data.imageName);
-			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) - 1).toString() + ")";
-		});
-		*/
+		// refresh unless mouse movement
+		var bd = document.getElementsByTagName('body')[0];
 
-		/*function popup() {
-			popupS.confirm({
-				content: 'Do you want to delete ?',
-				labelOk: 'Yes',
-				labelCancel: 'No',
-				onSubmit: function() {
-					window.location.href = "/users/removeUser/}"
-				},
-				onClose: function() {
-					console.log(':(');
-				}
-			});
+		function setIdle(cb, interval) {
+			var timer; 
+			function refresh() {
+					clearInterval(timer);
+					timer = setTimeout(cb, interval);
+			};
+			bd.onmousemove = refresh;
+			refresh();
 		}
-		function userPopup() {
-			popupS.prompt({
-				title: 'Nutzername anlegen?',
-				content: 'Um Favoriten zu markieren muss ein Nutzername angegeben werden. Falls als Name eine valide E-Mail Adresse gewählt wurde, erhälte diese am Ende des Abends eine E-Mail mit den markierten Fotos.',
-				placeholder: 'Nutzername/E-Mail: ',
-				labelOk: 'Ok',
-				labelCancel: 'Abbruch',
-				onSubmit: function(val) {
-					console.log(':)')
-					//window.location.href = "/users/removeUser/}"
-					if (val)
-						window.location.search += ('&user=' + val)
-				},				
-				onClose: function() {
-					socket.emit('dislike', {user: '#{user}', image: 'IMGP9971'});
-					console.log(':(');
-				}
-			});
-		}*/
+
+		setIdle(function() {
+			window.location.replace(window.location.toString().split("?")[0]);
+		}, 3*60*1000);
+
 		function likeImage(element, sessionId, fileName) {
 			socket.emit("requestLike", {"sessionId": sessionId, "fileName": fileName});
 			element.src = "../images/baseline_favorite_white_48dp.png";
