@@ -21,7 +21,7 @@ block content
 			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) - 1).toString() + ")";
 		});
 		*/
-		
+
 		/*function popup() {
 			popupS.confirm({
 				content: 'Do you want to delete ?',
@@ -91,45 +91,84 @@ block content
 		function showPageNumber(numberPage){
 			window.location.search=updateURLParameter("numberPage", numberPage);
 		}
-	link(rel='stylesheet', href='/stylesheets/gallery.css')
-	h1 Gallery - #{Event.Name}
-	p Page #{number+1}
+	script(type="module").
+		import PhotoSwipeLightbox from './photoswipe/dist/photoswipe-lightbox.esm.js';
+		const lightbox = new PhotoSwipeLightbox({
+		gallery: '#my-gallery',
+		children: 'a',
+		pswpModule:  function() {return import('./photoswipe/dist/photoswipe.esm.js')}});
+		lightbox.init();
+		lightbox.on('uiRegister', function() {
+			// Download button
+			lightbox.pswp.ui.registerElement({
+				name: 'download-button',
+				order: 8,
+				isButton: true,
+				tagName: 'a',
+
+				// SVG with outline
+				html: {
+				isCustomSVG: true,
+				inner: '<path d="M20.5 14.3 17.1 18V10h-2.2v7.9l-3.4-3.6L10 16l6 6.1 6-6.1ZM23 23H9v2h14Z" id="pswp__icn-download"/>',
+				outlineID: 'pswp__icn-download'
+				},
+
+				// Or provide full svg:
+				// html: '<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" class="pswp__icn"><path d="M20.5 14.3 17.1 18V10h-2.2v7.9l-3.4-3.6L10 16l6 6.1 6-6.1ZM23 23H9v2h14Z" /></svg>',
+
+				// Or provide any other markup:
+				// html: '<i class="fa-solid fa-download"></i>' 
+
+				onInit: (el, pswp) => {
+				el.setAttribute('download', '');
+				el.setAttribute('target', '_blank');
+				el.setAttribute('rel', 'noopener');
+
+				pswp.on('change', () => {
+					console.log('change');
+					el.href = pswp.currSlide.data.src;
+				});
+				}
+			});
+			// print button
+			lightbox.pswp.ui.registerElement({
+				name: 'test-button',
+				ariaLabel: 'Toggle zoom',
+				order: 9,
+				isButton: true,
+				html: '<img src="../images/baseline_print_white_48dp.png" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" class="pswp__icn"/>',
+				onClick: (event, el) => {
+					if ( confirm('Do you want to print this image?') ) {
+						printImage('#{sessionId}', lightbox.pswp.currSlide.data.alt);
+					}
+				}
+			});
+		});
+	link(rel="stylesheet" href="photoswipe/dist/photoswipe.css")
+	link(rel='stylesheet' href='/stylesheets/gallery.css')
+	//h1 Gallery - #{Event.Name}
+	//p Page #{number+1}
 	//input(type="button" value="login mathe" onclick="window.location.search += '&user=mathe23491@gmx.de'")
 	//input(type="button" value="alert" onclick="userPopup()")
 	//input(type="button" value="mesage" onclick="socketApi.sendNotification")
+
 	div(class="routing") 
 		- for (var n = 1; n <= numberPagesMax; n++)
 			if(n == number+1)				
 				.div(style="border-style: inset;")=n
 			else
 				.div(onclick="showPageNumber(" + (n - 1) + ")")=n
-	div#image_container
+
+	div(class="pswp-gallery pswp-gallery--single-column" id="my-gallery")
 		each image in imageList
-			div(class="responsive" id="gallery_item_#{number}")
-				div(class="gallery")
-					a(class="image_ref" target="_blank" href="../fotos/#{strUnique}/#{image.file}.#{image.extension}")
-						img(class="image_thumb" src="../thumbnails/#{strUnique}/#{image.file}.#{image.extension}" alt="#{image.file}")
-					ul(class="flex-container space-between")						
-						li #{image.file}
-						li #{image.timestamp}
-					ul(class="flex-container space-between")
-						ul(class="flex-container align-center")
-							li 
-								if image.likedBool
-									img(id="likeImg-#{image.file}" src="../images/baseline_favorite_white_48dp.png" onclick="dislikeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")
-								else
-									img(id="likeImg-#{image.file}" src="../images/baseline_favorite_border_white_48dp.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")								
-							li(id="likeCounter-#{image.file}") (#{image.likeCounter}) 
-							//- li
-							//- 	img(id="commentImg-#{image.file}" src="../images/ic_message_white_24dp_2x.png" onclick="commentImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="commentButton")
-							//- li(id="commentCounter-#{image.file}") (#{image.commentCounter})
-							
-							if Printer.bEnable	
-								li
-									img(id="commentImg-#{image.file}" src="../images/baseline_print_white_48dp.png" onclick="printImage('#{sessionId}', '#{image.file}.#{image.extension}');"  class="imageButton")							
-						li
-							a(href="../fotos/#{strUnique}/#{image.file}.#{image.extension}" id="download-#{image.file}") 
-								img(src="../images/baseline_get_app_white_48dp.png" class="imageButton")
+			a(href="../fotos/#{strUnique}/#{image.file}.#{image.extension}"
+				class=""
+				data-pswp-width=Camera.width 
+				data-pswp-height=Camera.height  
+				target="_blank"
+			) 
+				img(src="../thumbnails/#{strUnique}/#{image.file}.#{image.extension}" alt="#{image.file}.#{image.extension}" class="responsive")
+
 	div(class="clearfix")
 	div(class="routing") 
 		- for (var n = 1; n <= numberPagesMax; n++)

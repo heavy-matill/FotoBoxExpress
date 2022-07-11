@@ -7,8 +7,10 @@ var io = socketApi.io;
 exports.strEvent = "Geburtstag_von_xyz"
 exports.strEventDate = "2018-03-26"
 
-exports.setCameraIP = async function(strIP) {
+exports.setCameraSettings = async function(strIP, strWidth, strHeight) {
     config.set("Camera:IP", strIP);
+    config.set("Camera:width", strWidth);
+    config.set("Camera:height", strHeight);
     await config.save()
 };
 
@@ -97,6 +99,7 @@ exports.saveSettings = async function(data) {
     await exports.setEventDate(data.Event.Date);
     await exports.setFotoBoxSettings(data.FotoBox.tOutStartSlideShow, data.FotoBox.tOutNextSlide, data.FotoBox.tTriggerDelay);
     await exports.setLeft(data.FotoBox.numLeft);
+    await exports.setCameraSettings(data.Camera.IP, data.Camera.width, data.Camera.height);
     //"Camera": "IP": document.getElementById("Camera-IP").value
     await exports.setPrinterSettings(data.Printer.bEnable, data.Printer.grayscaleOptions);
     await exports.setMongoServer(data.Mongo.Server);

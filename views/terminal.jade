@@ -1,54 +1,72 @@
+extends layout
+
 block content
 	script(src="/socket.io/socket.io.js")
-	script(src="/javascripts/img_box.js")
 	script.
+		//var socket = io.connect('http://localhost:8000');		
 		var socket = io.connect(window.location.search.split("/")[0]);
 		function displayImageName(name) {
 			popupS.alert({content: 'Bitte trage die Nummer '+name.slice(-4)+' in das Fotobuch ein!'});
 		}
 		function printImage(sessionId, fileName) {
-			socket.emit("printImage", {"sessionId": sessionId, "fileName": fileName});
+			socket.emit("printImage", {"sessionId": sessionId, "fileName": fileName})
 		}
+		/*
+		socket.on('likeConfirmed', function(data) {
+			var _likeCounter = document.getElementById("likeCounter-" + data.imageName);
+			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) + 1).toString() + ")";
+		});
+		socket.on('dislikeConfirmed', function(data) {
+			var _likeCounter = document.getElementById("likeCounter-" + data.imageName);
+			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) - 1).toString() + ")";
+		});
+		*/
 
-		// Refresh Rate is how often you want to refresh the page 
-		// bassed off the user inactivity. 
-		var refresh_rate = 200; //In seconds, change to your needs
-		var last_user_action = 0;
-		// Reset the Timer on users last action
-		function reset() {
-			last_user_action = 0;
-			//console.log("Reset");
+		/*function popup() {
+			popupS.confirm({
+				content: 'Do you want to delete ?',
+				labelOk: 'Yes',
+				labelCancel: 'No',
+				onSubmit: function() {
+					window.location.href = "/users/removeUser/}"
+				},
+				onClose: function() {
+					console.log(':(');
+				}
+			});
 		}
-		// Count Down that executes ever second
-		setInterval(function () {
-			last_user_action++;
-			refreshCheck();
-		}, 1000);
-		// The code that checks if the window needs to reload
-		function refreshCheck() {
-			if ((last_user_action >= refresh_rate && document.readyState == "complete") ) {
-				window.location.replace(location.pathname);
-				reset(); // We want to reset just to make sure the location reload is not called.
-			}
-		}
-		window.addEventListener("mousemove", reset, false);
-		window.addEventListener("scroll", reset, false);
-		document.addEventListener("touchMove", reset, false);
-		document.addEventListener("touchEnd", reset, false);
-
+		function userPopup() {
+			popupS.prompt({
+				title: 'Nutzername anlegen?',
+				content: 'Um Favoriten zu markieren muss ein Nutzername angegeben werden. Falls als Name eine valide E-Mail Adresse gewählt wurde, erhälte diese am Ende des Abends eine E-Mail mit den markierten Fotos.',
+				placeholder: 'Nutzername/E-Mail: ',
+				labelOk: 'Ok',
+				labelCancel: 'Abbruch',
+				onSubmit: function(val) {
+					console.log(':)')
+					//window.location.href = "/users/removeUser/}"
+					if (val)
+						window.location.search += ('&user=' + val)
+				},				
+				onClose: function() {
+					socket.emit('dislike', {user: '#{user}', image: 'IMGP9971'});
+					console.log(':(');
+				}
+			});
+		}*/
 		function likeImage(element, sessionId, fileName) {
 			socket.emit("requestLike", {"sessionId": sessionId, "fileName": fileName});
 			element.src = "../images/baseline_favorite_white_48dp.png";
 			element.setAttribute( "onclick", "dislikeImage(this, '" + sessionId + "', '" + fileName + "');");
 			var _likeCounter = document.getElementById("likeCounter-" + fileName.split(".")[0]);
-			_likeCounter.innerHTML  = (parseInt(_likeCounter.innerHTML) + 1).toString();
+			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) + 1).toString() + ")";
 		}
 		function dislikeImage(element, sessionId, fileName) {
 			socket.emit("requestDislike", {"sessionId": sessionId, "fileName": fileName});
 			element.src = "../images/baseline_favorite_border_white_48dp.png";
 			element.setAttribute( "onclick", "likeImage(this, '" + sessionId + "', '" + fileName + "');");
 			var _likeCounter = document.getElementById("likeCounter-" + fileName.split(".")[0]);
-			_likeCounter.innerHTML  = (parseInt(_likeCounter.innerHTML) - 1).toString();
+			_likeCounter.innerHTML  = "(" + (parseInt(_likeCounter.innerHTML .slice(1, -1)) - 1).toString() + ")";
 		}
 		function updateURLParameter(param, paramVal) {
 			// https://stackoverflow.com/questions/1090948/change-url-parameters/10997390#10997390
@@ -73,38 +91,88 @@ block content
 		function showPageNumber(numberPage){
 			window.location.search=updateURLParameter("numberPage", numberPage);
 		}
-	link(rel='stylesheet', href='/stylesheets/terminal.css')
+	script(type="module").
+		import PhotoSwipeLightbox from './photoswipe/dist/photoswipe-lightbox.esm.js';
+		const lightbox = new PhotoSwipeLightbox({
+		gallery: '#my-gallery',
+		children: 'a',
+		pswpModule:  function() {return import('./photoswipe/dist/photoswipe.esm.js')}});
+		lightbox.init();
+		lightbox.on('uiRegister', function() {
+			// Download button disabled in terminal
+			lightbox.pswp.ui.registerElement({
+				name: 'download-button',
+				order: 8,
+				isButton: true,
+				tagName: 'a',
+
+				// SVG with outline
+				html: {
+				isCustomSVG: true,
+				inner: '<path d="M20.5 14.3 17.1 18V10h-2.2v7.9l-3.4-3.6L10 16l6 6.1 6-6.1ZM23 23H9v2h14Z" id="pswp__icn-download"/>',
+				outlineID: 'pswp__icn-download'
+				},
+
+				// Or provide full svg:
+				// html: '<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" class="pswp__icn"><path d="M20.5 14.3 17.1 18V10h-2.2v7.9l-3.4-3.6L10 16l6 6.1 6-6.1ZM23 23H9v2h14Z" /></svg>',
+
+				// Or provide any other markup:
+				// html: '<i class="fa-solid fa-download"></i>' 
+
+				onInit: (el, pswp) => {
+				el.setAttribute('download', '');
+				el.setAttribute('target', '_blank');
+				el.setAttribute('rel', 'noopener');
+
+				pswp.on('change', () => {
+					console.log('change');
+					el.href = pswp.currSlide.data.src;
+				});
+				}
+			});
+			// print button
+			lightbox.pswp.ui.registerElement({
+				name: 'test-button',
+				ariaLabel: 'Toggle zoom',
+				order: 9,
+				isButton: true,
+				html: '<img src="../images/baseline_print_white_48dp.png" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" class="pswp__icn"/>',
+				onClick: (event, el) => {
+					if ( confirm('Do you want to print this image?') ) {
+						printImage('#{sessionId}', lightbox.pswp.currSlide.data.alt);
+					}
+				}
+			});
+		});
+	link(rel="stylesheet" href="photoswipe/dist/photoswipe.css")
+	link(rel='stylesheet' href='/stylesheets/terminal.css')
 	//h1 Gallery - #{Event.Name}
 	//p Page #{number+1}
 	//input(type="button" value="login mathe" onclick="window.location.search += '&user=mathe23491@gmx.de'")
 	//input(type="button" value="alert" onclick="userPopup()")
 	//input(type="button" value="mesage" onclick="socketApi.sendNotification")
+
 	div(class="routing") 
 		- for (var n = 1; n <= numberPagesMax; n++)
 			if(n == number+1)				
 				.div(style="border-style: inset;")=n
 			else
 				.div(onclick="showPageNumber(" + (n - 1) + ")")=n
-	div#image_container
+
+	div(class="pswp-gallery pswp-gallery--single-column" id="my-gallery")
 		each image in imageList
-			div(class="responsive" id="gallery_item_#{number}")
-				div(class="gallery")
-					//a(class="image_ref" target="_blank" href="../fotos/#{strUnique}/#{image.file}.#{image.extension}")
-					img(class="image_thumb" src="../thumbnails/#{strUnique}/#{image.file}.#{image.extension}" alt="#{image.file}" onclick="img_box('../fotos/#{strUnique}/#{image.file}.#{image.extension}')")
-					div(class="bottom-left")										
-						text #{image.file}
-					div(class="bottom-right")
-						text(id="likeCounter-#{image.file}") #{image.likeCounter}
-						if image.likedBool
-							img(id="likeImg-#{image.file}" src="../images/baseline_favorite_white_48dp.png" onclick="dislikeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")
-						else
-							img(id="likeImg-#{image.file}" src="../images/baseline_favorite_border_white_48dp.png" onclick="likeImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="imageButton")								
-					
-						//- li
-						//- 	img(id="commentImg-#{image.file}" src="../images/ic_message_white_24dp_2x.png" onclick="commentImage(this, '#{sessionId}', '#{image.file}.#{image.extension}');" class="commentButton")
-						//- li(id="commentCounter-#{image.file}") (#{image.commentCounter})
-						
-						if Printer.bEnable	
-							img(id="commentImg-#{image.file}" src="../images/baseline_print_white_48dp.png" onclick="printImage('#{sessionId}', '#{image.file}.#{image.extension}');"  class="imageButton")							
+			a(href="../fotos/#{strUnique}/#{image.file}.#{image.extension}"
+				class=""
+				data-pswp-width=Camera.width 
+				data-pswp-height=Camera.height  
+				target="_blank"
+			) 
+				img(src="../thumbnails/#{strUnique}/#{image.file}.#{image.extension}" alt="#{image.file}.#{image.extension}" class="responsive")
 
 	div(class="clearfix")
+	div(class="routing") 
+		- for (var n = 1; n <= numberPagesMax; n++)
+			if(n == number+1)				
+				.div(style="border-style: inset;")=n
+			else
+				.div(onclick="showPageNumber(" + (n - 1) + ")")=n

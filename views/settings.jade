@@ -21,7 +21,9 @@ block content
                     "numLeft": document.getElementById("FotoBox-numLeft").value
                     },
                 "Camera": {
-                    "IP": document.getElementById("Camera-IP").value
+                    "IP": document.getElementById("Camera-IP").value,
+                    "width": document.getElementById("Camera-Width").value,
+                    "height": document.getElementById("Camera-Height").value
                     },
                 "Printer": {
                     "bEnable": document.getElementById("Printer-bEnable").checked,
@@ -44,7 +46,7 @@ block content
                 }
             );            
         }
-    link(rel='stylesheet', href='/stylesheets/settings.css')
+    link(rel='stylesheet' href='/stylesheets/settings.css')
     h1 Settings
     table
         tr
@@ -88,6 +90,14 @@ block content
             td Camera IP
             td
                 input(id="Camera-IP" type="text" value="#{Camera.IP}")
+        tr
+            td Image width
+            td
+                input(id="Camera-Width" type="text" value="#{Camera.width}")
+        tr
+            td Image height
+            td
+                input(id="Camera-Height" type="text" value="#{Camera.height}")
 
         tr
             td

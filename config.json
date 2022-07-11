@@ -8,10 +8,12 @@
     "tOutStartSlideShow": "15000",
     "tOutNextSlide": "5000",
     "tTriggerDelay": "2000",
-    "numLeft": 1901
+    "numLeft": "1852"
   },
   "Camera": {
-    "IP": "192.168.178.27"
+    "IP": "192.168.178.27",
+    "width": "5184",
+    "height": "3456"
   },
   "Serial": {
     "Path": "/dev/ttyUSB0"

@@ -88,3 +88,7 @@ div.gallery:hover {
     display: table;
     clear: both;
 }
+
+.topnav {
+    display: none;
+}

@@ -66,9 +66,10 @@ router.get('/', async function(req, res, next) {
         dbController.count(imageFilter, function(err, count) {
             numberImagesMax = count;
             var numberPagesMax = Math.ceil(numberImagesMax / numberImagesShow);
-            res.render("terminal", {
+            res.render("gallery", {
                 "FotoBox": config.get("FotoBox"),
                 "Printer": config.get("Printer"),
+                "Camera": config.get("Camera"),
                 "Event": config.get("Event"),
                 "number": numberPage,
                 "imageList": imageList,
