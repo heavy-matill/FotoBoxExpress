@@ -98,3 +98,21 @@
     .topnav {
         display: none;
     }
+    
+    .pswp__icn {
+        position: unset;
+        top: unset;
+        left: unset;
+        height: 6em;
+        width: 6em;
+    }
+    
+    .pswp__button {
+        height: 7em;
+        width: 7em;
+    }
+    
+    .pswp__counter {
+        font-size: 3em;
+        line-height: 1em;
+    }
