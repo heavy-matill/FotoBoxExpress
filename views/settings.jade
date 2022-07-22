@@ -175,6 +175,8 @@ block content
                 input(type="button" value="Update" onclick="socket.emit('update',prompt('Enter password to pull update from git:'));")
                 input(type="button" value="Shutdown" onclick="socket.emit('shutdown',prompt('Enter password to shutdown:'));")
                 input(type="button" value="Reboot" onclick="socket.emit('reboot',prompt('Enter password to reboot:'));")
+                input(type="button" value="Online" onclick="socket.emit('online');")
+                input(type="button" value="Offline" onclick="socket.emit('offline');")
 
     textarea#log
     script(src="/socket.io/socket.io.js")

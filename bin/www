@@ -119,6 +119,18 @@ io.on('connection', function(client) {
         console.log(data)
         client.emit("storageWarning", data);
     });
+    client.on('offline', function() {
+        // /etc/dnsmasq.conf.off contains a line to redirect all web requests to local ip: address=/#/10.3.141.1
+        shellExec('sudo cp /etc/dnsmasq.conf.off /etc/dnsmasq.conf')
+        shellExec('sudo service dnsmasq restart')
+        log("Switched to offline.");
+    });
+    client.on('online', function() {
+        // /etc/dnsmasq.conf.orig does not contain the blocking line
+        shellExec('sudo cp /etc/dnsmasq.conf.orig /etc/dnsmasq.conf')
+        shellExec('sudo service dnsmasq restart')
+        log("Switched to online.");
+    });
 });
 
 /**
