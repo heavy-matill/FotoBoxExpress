@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=Touchscreen
+Exec=lxterminal -e "xinput map-to-output 'pointer:UsbHID SingWon-CTP-V1.18B' HDMI-1 && xinput set-prop 'pointer:UsbHID SingWon-CTP-V1.18B' 'libinput Calibration Matrix' -1 0 1 0 -1 1 0 0 1 && xinput map-to-output 'pointer:ILITEK ILITEK-TP' HDMI-2"

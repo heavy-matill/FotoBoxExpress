@@ -3,3 +3,12 @@ https://pimylifeup.com/raspberry-pi-wireless-access-point/
 
 Capitve portal mit nodogsplash
 https://pimylifeup.com/raspberry-pi-captive-portal/
+
+Assign Touchscreens to monitor, Rotate Touchscreens
+https://askubuntu.com/questions/51445/how-do-i-calibrate-a-touchscreen-on-a-dual-monitor-system
+https://raspberrypi.stackexchange.com/questions/104822/raspberry-pi-4-touchscreen-misbehaving-when-using-a-secondary-monitor
+
+# Autostart
+place 'autostart' at '/etc/xdg/lxsession/LXDE-pi/autostart'
+place 'etc-rc.local' at '/etc/rc.local'
+place '*.desktop' files at '/home/*user*/.config/autostart/*.desktop'

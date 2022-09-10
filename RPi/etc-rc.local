@@ -16,11 +16,11 @@ _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
-#cd /home/pi/FotoBoxExpress/
-#npm start
-export PATH=/sbin:/usr/sbin:$PATH
-#add sbin to path so you can run shutdown command from anywhere
-/etc/init.d/FotoBoxExpress start
-iptables-restore < /etc/iptables.ipv4.nat
-#nodogsplash # for captive portal
+
+# run python script for shutdown button
+python /home/pi/Raspberry-Pi-Safe-Reboot-and-Shutdown-Button/Firmware/safe_restart_shutdown_interrupt_Pi.py &
+
+# start FotoBox
+cd /home/pi/FotoBoxExpress
+npm start
 exit 0

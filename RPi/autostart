@@ -8,7 +8,6 @@
 @xset s noblank
 @chromium --user-data-dir=/home/pi/FotoBoxExpress/chromium_user/temp1 --window-position=0,0 --new-window --kiosk http://localhost:8000/fotobox
 @chromium --user-data-dir=/home/pi/FotoBoxExpress/chromium_user/temp2 --window-position=2000,0 --new-window --kiosk http://localhost:8000/terminal
-# map touchscreen to second monitor https://raspberrypi.stackexchange.com/questions/104822/raspberry-pi-4-touchscreen-misbehaving-when-using-a-secondary-monitor
-xinput map-to-output 6 HDMI-2
+
 # remove mouse (requires sudo apt-get install unclutter)
 @unclutter -idle 0.1 -root
