@@ -52,7 +52,11 @@ var config = require('../config')
 var dbController = require('./dbController')
 var process = require('process')
 var osString = process.platform
-    // clear printer queue
+
+var socketApi = require('../socketApi');
+var io = socketApi.io;
+
+// clear printer queue
 exec('sudo rm -r /var/spool/cups', () => {
     exec('sudo systemctl restart cups.service');
 });
@@ -131,6 +135,7 @@ exports.printGrayscale = async function(fileName) {
     if (fs.existsSync(grayscaleImage)) {
         console.log("printGrayscale", fileName)
         printImage(grayscaleImage)
+
     } else {
         console.log("Attempted to print " + fileName + " but grayscale was not found.")
     }
@@ -140,7 +145,7 @@ printImage = async function(filePath, comment = "") {
     let printerName = config.get('Printer:Name');
     console.log("printing " + filePath + " on " + printerName);
     await exec('sudo lp -d ' + printerName + ' -o portrait -o fit-to-page ' + filePath);
-    await printComment(comment);
+    await exports.printComment(comment);
 }
 exports.printComment = async function(comment = "") {
     let printerName = config.get('Printer:Name');
@@ -158,6 +163,7 @@ exports.printThumbnail = async function(fileName) {
         } else {
             dbController.markRequestedPrint(fileName)
         }
+        io.emit("printing", fileName);
     })
 }
 
