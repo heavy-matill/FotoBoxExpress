@@ -2,6 +2,7 @@ const util = require('util');
 var date = require('date-and-time');
 const exec = util.promisify(require('child_process').exec);
 var path = require("path");
+var waitOn = require('wait-on');
 
 const fotoBoxController = require('./fotoBoxController');
 const serialController = require('./serialController');
@@ -13,19 +14,37 @@ exec('sudo pkill -f gphoto2', (value) =>
 exports.ready = true;
 
 exports.takePicture = async function(fileName) {
-    //exports.ready = false;
-    //animationController.animate(3000);
-    //await delay(3000);
     var filePath = path.join(config.get('Paths:localFotos'), fileName);
+    var wait_opts = {
+        resources: [
+            filePath
+        ],
+        delay: 1000, // initial delay in ms, default 0
+        interval: 100, // poll interval in ms, default 250ms
+        simultaneous: 1, // limit to 1 connection per resource at a time
+        timeout: 10000, // timeout in ms, default Infinity
+    };
     try {
-        var { stdout, stderr } = await exec('gphoto2 --capture-image-and-download --force-overwrite --filename=' + filePath);
-        fotoBoxController.displayNewFoto(fileName)
-        fotoBoxController.addNewFoto(fileName)
+        exec('gphoto2 --capture-image-and-download --force-overwrite --filename=' + filePath).then(out => {
+            if (out.stderr) {
+                console.log('gphoto2 error: ', out.stderr);
+                throw (out.stderr);
+            }
+            if (out.stdout) {
+                console.log('gphoto2: ', out.stdout);
+            }
+        })
+        await waitOn(wait_opts).then(() => {
+            fotoBoxController.displayNewFoto(fileName)
+            fotoBoxController.addNewFoto(fileName)
+        }).catch((e) => {
+            console.log("waitOn error: ", e)
+            throw (e)
+        });
     } catch (e) {
-        console.log('Caught Error: ', e);
         fotoBoxController.continue();
     } finally {
-        console.log('Camera ready');
+        console.log('Camera controller ready');
         exports.ready = true;
     }
 }
