@@ -39,7 +39,7 @@
         "process": "^0.11.10",
         "serialport": "^9.2.8",
         "serve-favicon": "~2.4.5",
-        "sharp": "^0.28.3",
+        "sharp": "^0.30.5",
         "shell-exec": "^1.0.2",
         "sinon": "^9.2.4",
         "socket.io": "^2.0.4",
