@@ -16,5 +16,5 @@ echo "###########################################" >> /home/pi/FotoBoxExpress/RP
 # xinput --list-props 'pointer:UsbHID SingWon-CTP-V1.18B' >> /home/pi/FotoBoxExpress/RPi/log.txt
 xinput map-to-output 'pointer:UsbHID SingWon-CTP-V1.18B' HDMI-1 >> /home/pi/FotoBoxExpress/RPi/log.txt 2>&1
 #xinput set-prop 'pointer:UsbHID SingWon-CTP-V1.18B' 'libinput Calibration Matrix' -1 0 1 0 -1 1 0 0 1 >> /home/pi/FotoBoxExpress/RPi/log.txt 2>&1
-#xinput map-to-output 'pointer:ILITEK ILITEK-TP' HDMI-2 >> /home/pi/FotoBoxExpress/RPi/log.txt 2>&1
+xinput map-to-output 'pointer:ILITEK ILITEK-TP' HDMI-2 >> /home/pi/FotoBoxExpress/RPi/log.txt 2>&1
 xinput --list-props 'pointer:UsbHID SingWon-CTP-V1.18B' >> /home/pi/FotoBoxExpress/RPi/log.txt 2>&1
