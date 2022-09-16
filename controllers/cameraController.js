@@ -49,10 +49,18 @@ exports.takePicture = async function(fileName) {
     }
 }
 
+exports.wakeCamera = async function() {
+    try {
+        //await exec('gphoto2 --list-config')
+        await exec('pkill -f gvfs-gphoto2-volume-monitor')
+    } catch (e) {}
+}
+
 exports.triggerCamera = function() {
     console.log("Triggered camera")
     if (exports.ready) {
         exports.ready = false;
+        exports.wakeCamera();
         fotoBoxController.displayCountdown(3000);
         serialController.countdownCommand(3000);
         setTimeout(function() {
