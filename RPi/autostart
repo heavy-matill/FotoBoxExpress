@@ -6,8 +6,12 @@
 @xset s off
 @xset -dpms
 @xset s noblank
-@chromium --user-data-dir=/home/pi/FotoBoxExpress/chromium_user/temp1 --window-position=0,0 --new-window --kiosk http://localhost:8000/fotobox
-@chromium --user-data-dir=/home/pi/FotoBoxExpress/chromium_user/temp2 --window-position=2000,0 --new-window --kiosk http://localhost:8000/terminal
-
+@chromium --user-data-dir=/home/pi/FotoBoxExpress/chromium_user/temp1 --window-position=0,0 --new-window --kiosk http://localhost:8000/fotobox --disable-pinch
+@chromium --user-data-dir=/home/pi/FotoBoxExpress/chromium_user/temp2 --window-position=2000,0 --new-window --kiosk http://localhost:8000/terminal --disable-pinch
+# map touchscreens to second monitor https://raspberrypi.stackexchange.com/questions/104822/raspberry-pi-4-touchscreen-misbehaving-when-using-a-secondary-monitor
+/home/pi/FotoBoxExpress/RPi/map_touchscreens.sh
 # remove mouse (requires sudo apt-get install unclutter)
-@unclutter -idle 0.1 -root
+unclutter -idle 0.1 -root
+# start fotobox 
+#npm start --prefix /home/pi/FotoBoxExpress/ > log.txt &
+

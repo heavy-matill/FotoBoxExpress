@@ -18,9 +18,10 @@ if [ "$_IP" ]; then
 fi
 
 # run python script for shutdown button
-python /home/pi/Raspberry-Pi-Safe-Reboot-and-Shutdown-Button/Firmware/safe_restart_shutdown_interrupt_Pi.py &
+python /home/pi/FotoBoxExpress/RPi/safe_restart_shutdown_interrupt_Pi.py &
 
 # start FotoBox
 cd /home/pi/FotoBoxExpress
-npm start
+npm start > log.txt &
+
 exit 0
