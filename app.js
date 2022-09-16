@@ -70,6 +70,7 @@ var terminal = require('./routes/terminal');
 var cookies = require('./routes/cookies');
 var newfoto = require('./routes/newfoto');
 var login = require('./routes/login');
+var restart = require('./routes/restart');
 
 app.use('/', index);
 app.use('/users', users);
@@ -77,6 +78,7 @@ app.use('/admin/settings', settings);
 app.use('/fotobox', fotobox);
 app.use('/gallery', gallery);
 app.use('/terminal', terminal);
+app.use('/restart', restart);
 app.use('/cookies', cookies);
 app.use('/newfoto', newfoto);
 app.use('/login', login);
