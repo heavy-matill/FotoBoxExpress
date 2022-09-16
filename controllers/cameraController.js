@@ -60,7 +60,6 @@ exports.triggerCamera = function() {
     console.log("Triggered camera")
     if (exports.ready) {
         exports.ready = false;
-        exports.wakeCamera();
         fotoBoxController.displayCountdown(3000);
         serialController.countdownCommand(3000);
         setTimeout(function() {
@@ -68,6 +67,7 @@ exports.triggerCamera = function() {
             fileName = date.format(now, 'YYYY-MM-DD_HH-mm-ss') + '.jpg';
             exports.takePicture(fileName);
         }, 3000);
+        exports.wakeCamera();
     } else {
         console.log("camera not ready!");
     }
