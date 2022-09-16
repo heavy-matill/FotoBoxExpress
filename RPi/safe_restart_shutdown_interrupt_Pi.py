@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # safe_restart_shutdown_interrupt_Pi.py
 #
 # -----------------------------------------------------------------------------
@@ -60,6 +61,14 @@
 import time
 import RPi.GPIO as GPIO #Python Package Reference: https://pypi.org/project/RPi.GPIO/
 
+import os
+import signal
+import subprocess
+from subprocess import check_output
+
+def get_pid(port):
+    return int(check_output(['ss', '-ltnup', 'sport = :'+str(port)]).split(',')[-2][4:])
+
 # Pin definition
 reset_shutdown_pin = 24
 led_pin = 23
@@ -84,18 +93,14 @@ GPIO.setup(reset_shutdown_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # modular function to restart script
 def restart_script():
-    print("restarting script")
-    command = "pkill -f node && cd /home/pi/FotoBoxExpress && npm start"
-    import subprocess
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
+    import requests                                 # To use request package in current program 
+    response = requests.get("http://localhost:8000/restart") 
     print(output)
 
 # modular function to reboot Pi
 def reboot():
     print("rebooting Pi")
     command = "/usr/bin/sudo /sbin/shutdown -r now"
-    import subprocess
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
     print(output)
@@ -104,7 +109,6 @@ def reboot():
 def shut_down():
     print("shutting down")
     command = "/usr/bin/sudo /sbin/shutdown -h now"
-    import subprocess
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
     print(output)
@@ -128,13 +132,13 @@ while True:
         # For troubleshooting, uncomment this line to output button status on command line
         #print('GPIO state is = ', GPIO.input(reset_shutdown_pin))
         timer = 0
-        delay = 0.1
+        delay = 0.075
         output = True
         action = 0
         while GPIO.input(reset_shutdown_pin) == False:
             if timer > 1 and action == 0:
                 action = 1
-                delay = 0.2
+                delay = 0.15
             elif timer > 2 and action == 1:
                 action = 2
                 # light up LED
