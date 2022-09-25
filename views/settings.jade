@@ -177,6 +177,7 @@ block content
                 input(type="button" value="Reboot" onclick="socket.emit('reboot',prompt('Enter password to reboot:'));")
                 input(type="button" value="Online" onclick="socket.emit('online');")
                 input(type="button" value="Offline" onclick="socket.emit('offline');")
+                input(type="button" value="Set Date" onclick="socket.emit('set-date', prompt('Enter date:', new Date()));")
 
     textarea#log
     script(src="/socket.io/socket.io.js")

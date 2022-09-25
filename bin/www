@@ -131,6 +131,9 @@ io.on('connection', function(client) {
         shellExec('sudo service dnsmasq restart')
         log("Switched to online.");
     });
+    client.on('set-date', function(date) {
+        shellExec(`sudo date -s "${date}"`).then(value => log(value.stdout + value.stderr));
+    });
 });
 
 /**
