@@ -135,6 +135,11 @@ exports.displayCountdown = function(timeCountdown = 3000) {
     io.emit('displayCountdown', timeCountdown);
 };
 
+exports.displayWarning = function() {
+    clearTimeout(exports.intervalNextFoto);
+    io.emit('displayWarning');
+};
+
 exports.displayNewFoto = function(fileName) {
     exports.displayFoto(fileName);
     clearTimeout(exports.intervalNextFoto);

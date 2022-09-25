@@ -38,6 +38,7 @@ exports.takePicture = async function(fileName) {
             fotoBoxController.displayNewFoto(fileName)
             fotoBoxController.addNewFoto(fileName)
         }).catch((e) => {
+            fotoBoxController.displayWarning();
             console.log("waitOn error: ", e)
             throw (e)
         });

@@ -63,6 +63,13 @@ html
 				let printButton = document.getElementById("printButton");
 				printButton.classList.add("navHide");
 			})
+			socket.on('displayWarning', function() {
+				console.log("display warning")			
+				document.getElementById("image").src = "../images/warning.png"
+				document.getElementById("image").classList.remove("rotate");	
+				let printButton = document.getElementById("printButton");
+				printButton.classList.add("navHide");
+			})
 			socket.on('printing', function(imageFile) {
 				if(document.getElementById("image").src.endsWith(imageFile)) {
 					let printButton = document.getElementById("printButton");
