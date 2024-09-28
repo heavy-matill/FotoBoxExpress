@@ -7,7 +7,8 @@ These instructions are only necessary if you need the newest builds or want to m
 It was necessary to reduce waiting-for-file-time from 35s to 5s in case my Sony Alpha 7III did not catch a focus. 
 Tested on my RPi 4b.
 
-#### Modifications for Sony MTP cameras with short exposure
+#### Modifications of libgphoto source code
+##### for Sony MTP cameras with short exposure
 In case you are using a Sony camera via MTP, it's camlib will wait for the file to be available. 
 In case of long exposure this can take up to 30 seconds, which is why the gphoto2 also waits 30 seconds in case of an error. 
 If you are using short exposure times only, you may want to reduce that parameter. 
@@ -20,6 +21,15 @@ searching for:
 	/* 30 seconds are maximum capture time currently, so use 30 seconds + 5 seconds image saving at most. */
 	} while (time_since (event_start) < 35000);
 ```
+##### for Sony Camera without startup time
+There are a few cameras that seem to require `gphoto2 to wait` a startup time of 3 seconds. This results in any capture event being delayed for 3 seconds. Since my Sony A7III never needed this delay, I reduced it to 0:
+Search for:
+```c
+		while (time_since (params->starttime) < 3000) {
+			/* drain the queue first */
+			if (ptp_get_one_event(params, &event)) {
+```
+and modify the 3000 ms to e.g. 0.
 
 #### Install dependencies
 ```
