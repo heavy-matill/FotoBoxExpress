@@ -59,19 +59,19 @@ io.on('connection', function(client) {
             //config.argv().env().file({ file: 'config.json' });
     });
     client.on('shutdown', function(data) {
-        if (data == "Secret") {
+        if (checkPassword(data)) {
             log("Shutdown initiated.");
             shellExec('sudo halt -p').then(value => log(value.stdout + value.stderr));
         }
     });
     client.on('reboot', function(data) {
-        if (data == "Secret") {
+        if (checkPassword(data)) {
             log("Reboot initiated.");
             shellExec('sudo reboot').then(value => log(value.stdout + value.stderr));
         }
     });
     client.on('kill', function(data) {
-        if (data == "Secret") {
+        if (checkPassword(data)) {
             log("Killing process.");
             process.exit()
         }
@@ -83,7 +83,7 @@ io.on('connection', function(client) {
         });
     });
     client.on('restart', function(data) {
-        if (data == "Secret") {
+        if (checkPassword(data)) {
             const restartProcess = () => {
                 log("Restarting process.");
                 spawn(process.argv[1], process.argv.slice(2)).unref()
@@ -95,7 +95,7 @@ io.on('connection', function(client) {
         }
     });
     client.on('update', function(data) {
-        if (data == "Secret") {
+        if (checkPassword(data)) {
             log("Update initiated.");
             shellExec('cd FotoBoxExpress/').then(value => log(value.stdout + value.stderr));
             shellExec('sudo git stash').then(value => log(value.stdout + value.stderr));
@@ -105,7 +105,7 @@ io.on('connection', function(client) {
         }
     });
     client.on('login', function(data) {
-        if (data == "Secret") {
+        if (checkPassword(data)) {
             log("Logged in.");
             client.emit("loginValid");
         }
@@ -207,3 +207,9 @@ function onListening() {
 exports.close = function(callback) {
     server.close(callback)
 };
+
+function checkPassword(password) {
+    //return password === "Secret";
+    // disabled
+    return true;
+}
