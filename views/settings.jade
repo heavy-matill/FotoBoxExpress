@@ -79,13 +79,25 @@ block content
                 input(id="FotoBox-tTriggerDelay" type="text" value="#{FotoBox.tTriggerDelay}")
 
         tr
-            td Delay to trigger camera
+            td Fotos left
             td
-                input(id="FotoBox-numLeft" type="text" value="#{FotoBox.numLeft}")
+                input(id="FotoBox-numLeft" type="text" value="#{FotoBox.numLeft}" disabled)
 
         tr
             td
                 h2 Camera
+        tr 
+            td Modus 
+            td Automatik 
+        tr
+            td USB (Favoriten)
+            td PC-Remote 
+        tr 
+            td Fokus mit Shutter
+            td Ja
+        tr 
+            td 
+            td Ausschalten und einschalten zum Speichern der Einstellungen
         tr
             td Camera IP
             td
@@ -184,3 +196,5 @@ block content
     script.
         var socket = io();  
         socket.on('message', function(data){document.getElementById("log").append(data+"\r\n")});
+
+    
