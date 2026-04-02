@@ -31,7 +31,7 @@
         "mongoose": "^5.11.18",
         "monk": "^7.3.3",
         "morgan": "^1.9.1",
-        "nconf": "^0.11.3",
+        "nconf": "^0.11.4",
         "node-gyp": "^8.0.0",
         "node-thumbnail": "^0.9.0",
         "path": "^0.12.7",
